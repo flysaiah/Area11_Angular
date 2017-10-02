@@ -1,0 +1,15 @@
+<!-- <search-toolbar></search-toolbar>
+<anime-catalogue></anime-catalouge>
+Hey, this is the home screen!
+<details-view></details-view>
+<chooser-tool></chooser-tool> -->
+
+<!-- Anime catalogue -->
+Want to watch ({{ wantToWatchList.length }}):
+<ul>
+  <li *ngFor="let anime of wantToWatchList">{{ anime.name }}</li>
+</ul>
+Considering ({{ consideringList.length }}):
+<ul>
+  <li *ngFor="let anime of consideringList">{{ anime.name }}</li>
+</ul>
