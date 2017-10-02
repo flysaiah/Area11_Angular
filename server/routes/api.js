@@ -47,4 +47,20 @@ router.get('/fetchAnime', (req, res) => {
             });
     });
 });
+
+router.get('/malTest', (req, res) => {
+  var parser = require('xml2json');
+  const request = require('request');
+  request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=Geass'}, function (error, response, body) {
+    if (!error) {
+      var jsonString = parser.toJson(body);
+      res.json(jsonString)
+    } else {
+      res.json({hasFailed: true})
+    }
+  });
+  //res.json({hasFailed: true})
+})
+
+
 module.exports = router;

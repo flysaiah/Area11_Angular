@@ -4,6 +4,20 @@ Hey, this is the home screen!
 <details-view></details-view>
 <chooser-tool></chooser-tool> -->
 
+<!-- Search assistant toolbar -->
+<md-toolbar>
+  <button md-button (click)="openAddAnimePrompt()">Add Anime</button>
+</md-toolbar>
+<br>
+
+<!-- Add anime prompt -->
+<!-- <form *ngIf="addAnimePromptOpen"> -->
+  <md-form-field class="example-full-width">
+    <input mdInput placeholder="Title of Anime">
+  </md-form-field>
+  <button md-button (click)="malTest()">Link</button>
+<!-- </form> -->
+<br>
 <!-- Anime catalogue -->
 Want to watch ({{ wantToWatchList.length }}):
 <ul>

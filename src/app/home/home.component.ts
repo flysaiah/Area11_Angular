@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Anime } from '../anime'
-import { HttpClient } from '@angular/common/http'
+import { Anime } from '../anime';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'home-page',
@@ -11,11 +13,26 @@ export class HomeComponent {
   wantToWatchList: Anime[];
   consideringList: Anime[];
   testNumber: number;
+  addAnimePromptOpen: boolean;
+
+  openAddAnimePrompt() {
+    this.addAnimePromptOpen = true;
+  }
+  closeAddAnimePrompt() {
+    this.addAnimePromptOpen = false;
+  }
+  malTest() {
+    this.http.get("/api/malTest").subscribe(res => {
+      console.log(JSON.parse(res.toString()));
+    });
+  }
+
   constructor(private http: HttpClient
     // Don't really need anything here yet
   ) {}
 
   ngOnInit() {
+    this.addAnimePromptOpen = false;
     this.wantToWatchList = [];
     this.consideringList = [];
     // Start by fetching all anime stored in database and update our lists
@@ -28,6 +45,7 @@ export class HomeComponent {
         this.consideringList.push(new Anime(res["data"]["cAnime"][i]["name"]));
       }
     });
+
     console.log("HomeComponent has been instantiated");
   }
 }
