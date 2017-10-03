@@ -57,8 +57,9 @@ router.post('/malSearch', (req, res) => {
       let jsonString = parser.toJson(body);
       res.json(jsonString)
     } else {
-      if (error.toString == "Error: Parse Error") {
+      if (error.toString() == "Error: Parse Error") {
         res.json({hasFailed: true, reason: "noResults"})
+        return;   // We need this because of a weird error that happens in express due to the way errors are handled
       }
       res.json({hasFailed: true, reason: "unkown"})
     }
@@ -74,6 +75,7 @@ router.post('/addAnimeToCatalog', (req, res) => {
             .insert({name: anime['name'], description: anime['description'], rating: anime['rating'], thumbnail: anime['thumbnail'], malID: anime['malID'], category: cat})
             .then((wwAnime) => {
                 console.log('Successful insert');
+                res.json({wasSuccessful: true})
             })
             .catch((err) => {
                 sendError(err, res);

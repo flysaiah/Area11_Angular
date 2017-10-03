@@ -16,6 +16,7 @@ export class HomeComponent {
   showAddAnimePrompt: boolean;   // If true, "Add anime" prompt is visible
   linkAnimeSuggestions: Anime[];
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
+  selectedAnime: Anime;   // Currently selected anime that we show details for
 
   openAddAnimePrompt() {
     this.showAddAnimePrompt = true;
@@ -23,6 +24,9 @@ export class HomeComponent {
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime("", "", -1, "", -1);
+  }
+  showAnimeDetails(anime: Anime) {
+    this.selectedAnime = anime;
   }
 
   malSearch() {
@@ -64,12 +68,12 @@ export class HomeComponent {
 
         dialogRef.afterClosed().subscribe(result => {
           // Result is the index of the anime they chose to link, if they chose to link one
-          if (result) {
+          if (result || result == 0) {
             this.animeToAdd = this.linkAnimeSuggestions[result];
           }
           // Make sure to reset suggestion list
           this.linkAnimeSuggestions = [];
-          // TODO: Refresh catalogue with updated link/etc?
+          // TODO: Need to let user know their anime has been linked
         });
       }
     });
@@ -80,6 +84,7 @@ export class HomeComponent {
     // TODO: Probably refactor into service
     this.http.post("/api/addAnimeToCatalog", {category: "Want to Watch", anime: this.animeToAdd}).subscribe(res => {
       console.log(res);
+      this.refresh();
     });
     this.showAddAnimePrompt = false;
     // NOTE: This redundant reset may be unnecessary
@@ -90,26 +95,17 @@ export class HomeComponent {
     // TODO: Probably refactor into service
     // Add anime to database under 'Considering'
     this.http.post("/api/addAnimeToCatalog", {category: "Considering", anime: this.animeToAdd}).subscribe(res => {
-      console.log(res);
+      this.refresh();
     });
     this.showAddAnimePrompt = false;
     // NOTE: This redundant reset may be unnecessary
     this.animeToAdd = new Anime("", "", -1, "", -1);
   }
 
-  constructor(
-    private http: HttpClient,
-    private dialog: MdDialog
-  ) {}
-
-  ngOnInit() {
-    this.showAddAnimePrompt = false;
+  refresh() {
+    // Fetch all anime stored in database and update our lists
     this.wantToWatchList = [];
     this.consideringList = [];
-    this.linkAnimeSuggestions = [];
-    this.animeToAdd = new Anime("", "", -1, "", -1)   // -1 will be the default "has not been assigned for Anime number properties"
-
-    // Start by fetching all anime stored in database and update our lists
     this.http.get("/api/fetchAnime").subscribe(res => {
       // TODO: Do some validation here so we don't error out
       const wwAnime = res["data"]["wwAnime"];
@@ -121,6 +117,20 @@ export class HomeComponent {
         this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"]));
       }
     });
+  }
+
+  constructor(
+    private http: HttpClient,
+    private dialog: MdDialog
+  ) {}
+
+  ngOnInit() {
+    this.showAddAnimePrompt = false;
+    this.linkAnimeSuggestions = [];
+    this.animeToAdd = new Anime("", "", -1, "", -1)   // -1 will be the default "has not been assigned for Anime number properties"
+    this.selectedAnime = new Anime("", "", -1, "", -1);
+
+    this.refresh();
   }
 }
 

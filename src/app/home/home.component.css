@@ -1,0 +1,12 @@
+.catalog {
+  width: 30%;
+  float: left;
+}
+.catalog-item {
+  margin-top: -10px !important;
+}
+.details-panel {
+  float: left;
+  width: 30%;
+  margin-left: 20px;
+}

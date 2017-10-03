@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
-import { MdButtonModule, MdToolbarModule, MatInputModule, MatDialogModule } from '@angular/material';
+import { MdButtonModule, MdToolbarModule, MatInputModule, MatDialogModule, MatListModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { HomeComponent, LinkAnimeDialog } from './home/home.component';
@@ -24,7 +24,8 @@ import { HomeModule } from './home/home.module';
     MdToolbarModule,
     MatInputModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent],
