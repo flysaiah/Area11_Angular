@@ -1,6 +1,37 @@
+.search-toolbar {
+  width: 100%;
+  color: #f0f0f0;
+  vertical-align: middle;
+  background-color: #800015;
+  border: 1px solid #330000;
+  border-width: 2px;
+  height: 40px;
+  line-height: 40px;
+  text-shadow: 1px 1px 0 #444;
+}
+.add-anime-prompt {
+  width: 400px;
+  height: 100px;
+}
+.add-anime-name {
+  width: 300px;
+  margin-right: 10px;
+}
+.link-button {
+  width: 30px;
+  margin-right: -10px;
+  border-radius: 25px;
+}
+.tri-panel-container {
+  margin-top: 10px;
+}
 .catalog {
   width: 30%;
   float: left;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  background-color: white;
 }
 .catalog-item {
   margin-top: -10px !important;
@@ -9,4 +40,10 @@
   float: left;
   width: 30%;
   margin-left: 20px;
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  max-height: 600px;
+  overflow: scroll;
 }
