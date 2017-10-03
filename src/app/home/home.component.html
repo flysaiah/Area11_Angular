@@ -6,17 +6,21 @@ Hey, this is the home screen!
 
 <!-- Search assistant toolbar -->
 <md-toolbar>
+  <!-- TODO: Replace this with different button while add prompt is open -->
   <button md-button (click)="openAddAnimePrompt()">Add Anime</button>
 </md-toolbar>
 <br>
 
 <!-- Add anime prompt -->
-<!-- <form *ngIf="addAnimePromptOpen"> -->
+<form *ngIf="showAddAnimePrompt" (ngSubmit)=addAnimeSubmit()>
   <md-form-field class="example-full-width">
-    <input mdInput placeholder="Title of Anime">
+    <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
   </md-form-field>
-  <button md-button (click)="malTest()">Link</button>
-<!-- </form> -->
+  <button md-button type=button (click)="malSearch()">Link</button>
+  <br>
+  <button md-button type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
+  <button md-button type=button (click)="addAnimeToConsidering()">Add to Considering</button>
+</form>
 <br>
 <!-- Anime catalogue -->
 Want to watch ({{ wantToWatchList.length }}):

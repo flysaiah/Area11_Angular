@@ -11,7 +11,7 @@ const connection = (closure) => {
         closure(db);
     });
 };
-//
+
 // Error handling
 const sendError = (err, res) => {
     response.status = 501;
@@ -48,19 +48,38 @@ router.get('/fetchAnime', (req, res) => {
     });
 });
 
-router.get('/malTest', (req, res) => {
-  var parser = require('xml2json');
+router.post('/malSearch', (req, res) => {
+  const query = encodeURIComponent(req["body"]["query"]);
+  const parser = require('xml2json');
   const request = require('request');
-  request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=Geass'}, function (error, response, body) {
+  request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (error, response, body) {
     if (!error) {
-      var jsonString = parser.toJson(body);
+      let jsonString = parser.toJson(body);
       res.json(jsonString)
     } else {
-      res.json({hasFailed: true})
+      if (error.toString == "Error: Parse Error") {
+        res.json({hasFailed: true, reason: "noResults"})
+      }
+      res.json({hasFailed: true, reason: "unkown"})
     }
   });
-  //res.json({hasFailed: true})
 })
+
+router.post('/addAnimeToCatalog', (req, res) => {
+  // TODO: Validation to make sure that we don't insert the same anime into our DB twice (probably filter by name)
+  const anime = req['body']['anime']
+  const cat = req['body']['category']
+    connection((db) => {
+        db.collection('anime')
+            .insert({name: anime['name'], description: anime['description'], rating: anime['rating'], thumbnail: anime['thumbnail'], malID: anime['malID'], category: cat})
+            .then((wwAnime) => {
+                console.log('Successful insert');
+            })
+            .catch((err) => {
+                sendError(err, res);
+            });
+    });
+});
 
 
 module.exports = router;
