@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-
 import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule } from '@angular/material';
 
 import { AppComponent } from './app.component';

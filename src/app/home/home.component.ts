@@ -13,10 +13,12 @@ import { MdDialogRef, MdDialog, MD_DIALOG_DATA } from '@angular/material';
 export class HomeComponent {
   wantToWatchList: Anime[];
   consideringList: Anime[];
+  completedList: Anime[];
   showAddAnimePrompt: boolean;   // If true, "Add anime" prompt is visible
   linkAnimeSuggestions: Anime[];
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
+  sortCriteria: string;
 
   openAddAnimePrompt() {
     this.showAddAnimePrompt = true;
@@ -27,6 +29,20 @@ export class HomeComponent {
   }
   showAnimeDetails(anime: Anime) {
     this.selectedAnime = anime;
+  }
+
+  private sortByField(fieldName, direction) {
+    // Returns comparator to sort an array of object by fieldName
+    // Direction specifies ascending vs descending
+    if (direction == "ascending") {
+      return function (a,b) {
+        return (a[fieldName] < b[fieldName]) ? -1 : (a[fieldName] > b[fieldName]) ? 1 : 0;
+      }
+    }
+    return function (a,b) {
+      return (a[fieldName] > b[fieldName]) ? -1 : (a[fieldName] < b[fieldName]) ? 1 : 0;
+    }
+
   }
 
   malSearch() {
@@ -79,16 +95,21 @@ export class HomeComponent {
     });
   }
 
+  sortAnime(criteria) {
+    // Sort all anime lists by the criteria picked in the toolbar select
+    const c1 = criteria.split(",")[0];
+    const c2 = criteria.split(",")[1];
+    this.wantToWatchList.sort(this.sortByField(c1, c2));
+    this.consideringList.sort(this.sortByField(c1, c2));
+    this.completedList.sort(this.sortByField(c1, c2));
+  }
+
   addAnimeToWW() {
     // Add anime to database under 'Want to Watch'
     // TODO: Probably refactor into service
     this.http.post("/api/addAnimeToCatalog", {category: "Want to Watch", anime: this.animeToAdd}).subscribe(res => {
-      console.log(res);
       this.refresh();
     });
-    this.showAddAnimePrompt = false;
-    // NOTE: This redundant reset may be unnecessary
-    this.animeToAdd = new Anime("", "", -1, "", -1);
   }
 
   addAnimeToConsidering() {
@@ -97,24 +118,37 @@ export class HomeComponent {
     this.http.post("/api/addAnimeToCatalog", {category: "Considering", anime: this.animeToAdd}).subscribe(res => {
       this.refresh();
     });
-    this.showAddAnimePrompt = false;
-    // NOTE: This redundant reset may be unnecessary
-    this.animeToAdd = new Anime("", "", -1, "", -1);
+  }
+
+  addAnimeToCompleted() {
+    // TODO: Probably refactor into service
+    // Add anime to database under 'Considering'
+    this.http.post("/api/addAnimeToCatalog", {category: "Completed", anime: this.animeToAdd}).subscribe(res => {
+      this.refresh();
+    });
   }
 
   refresh() {
     // Fetch all anime stored in database and update our lists
     this.wantToWatchList = [];
     this.consideringList = [];
+    this.completedList = [];
+    this.showAddAnimePrompt = false;
+    this.animeToAdd = new Anime("", "", -1, "", -1);
+
     this.http.get("/api/fetchAnime").subscribe(res => {
       // TODO: Do some validation here so we don't error out
       const wwAnime = res["data"]["wwAnime"];
       const cAnime = res["data"]["cAnime"];
+      const compAnime = res["data"]["compAnime"];
       for (let i=0; i<wwAnime.length; i++) {
-        this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"]));
+        this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["_id"]));
       }
       for (let i=0; i<cAnime.length; i++) {
-        this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"]));
+        this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["_id"]));
+      }
+      for (let i=0; i<compAnime.length; i++) {
+        this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["_id"]));
       }
     });
   }
@@ -129,7 +163,7 @@ export class HomeComponent {
     this.linkAnimeSuggestions = [];
     this.animeToAdd = new Anime("", "", -1, "", -1)   // -1 will be the default "has not been assigned for Anime number properties"
     this.selectedAnime = new Anime("", "", -1, "", -1);
-
+    this.sortCriteria = "mongoID,ascending"
     this.refresh();
   }
 }

@@ -4,6 +4,7 @@ export class Anime {
     public description: String,
     public rating: number,
     public thumbnail: String,
-    public malID: number
+    public malID: number,
+    public mongoID?: number
   ) {}
 }

@@ -9,7 +9,18 @@
   line-height: 40px;
   text-shadow: 1px 1px 0 #444;
 }
+.add-anime-button {
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-left: 20px;
+}
+.catalog-sort-label {
+  margin-left: 50px;
+}
 .add-anime-prompt {
+  margin-top: 5px;
   width: 400px;
   height: 100px;
 }
@@ -32,9 +43,15 @@
   border-style: double;
   border-width: 5px;
   background-color: white;
+  overflow: scroll;
 }
 .catalog-item {
   margin-top: -10px !important;
+}
+.catalog-rating {
+  position: absolute;
+  right: 10px;
+  top: 15px;
 }
 .details-panel {
   float: left;

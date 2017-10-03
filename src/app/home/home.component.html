@@ -5,9 +5,17 @@ Hey, this is the home screen!
 <chooser-tool></chooser-tool> -->
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
-  <!-- TODO: Replace this with different button while add prompt is open -->
-  <button md-button *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
-  <button md-button *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
+  <button md-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
+  <button md-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
+
+  <!-- Filtering/sorting -->
+  <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
+  <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
+    <option value="mongoID,ascending">Default (Date added)</option>
+    <option value="name,ascending">Alphabetical</option>
+    <option value="rating,descending">Rating (High to Low)</option>
+    <option value="rating,ascending">Rating (Low to High)</option>
+  </select>
 </div>
 
 <!-- Add anime prompt -->
@@ -30,12 +38,17 @@ Hey, this is the home screen!
     <md-nav-list dense #animeCatalog>
       <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
       <md-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
-        {{ anime.name }}
+        {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
       </md-list-item>
       <md-divider></md-divider>
       <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
       <md-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of consideringList">
-        {{ anime.name }}
+        {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
+      </md-list-item>
+      <md-divider></md-divider>
+      <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
+      <md-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of completedList">
+        {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
       </md-list-item>
     </md-nav-list>
   </div>
