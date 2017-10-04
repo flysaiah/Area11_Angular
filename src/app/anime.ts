@@ -5,6 +5,7 @@ export class Anime {
     public rating: number,
     public thumbnail: String,
     public malID: number,
-    public mongoID?: number
+    public mongoID?: number,
+    public comments?: String[]
   ) {}
 }

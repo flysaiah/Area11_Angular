@@ -26,6 +26,34 @@ let response = {
   message: null
 };
 
+router.post('/removeAnimeFromCatalog', (req, res) => {
+  connection((db) => {
+    db.collection('anime')
+    .remove({'_id': ObjectID(req["body"]["id"])}, 1)
+    .then((dummy) => {
+      res.json({wasSuccessful: true});
+    })
+    .catch((err) => {
+      sendError(err, res);
+    });
+  })
+});
+
+router.post('/changeCategory', (req, res) => {
+  const id = ObjectID(req["body"]["id"]);
+  const newCategory = req["body"]["category"];
+  connection((db) => {
+    db.collection('anime')
+    .update({'_id': id}, {$set: {'category': newCategory}})
+    .then((dummy) => {
+      res.json({wasSuccessful: true})
+    })
+    .catch((err) => {
+      sendError(err, res);
+    })
+  })
+});
+
 router.get('/fetchAnime', (req, res) => {
   connection((db) => {
     db.collection('anime')
@@ -70,7 +98,7 @@ router.post('/malSearch', (req, res) => {
       res.json({hasFailed: true, reason: "unkown"})
     }
   });
-})
+});
 
 router.post('/addAnimeToCatalog', (req, res) => {
   // TODO: Validation to make sure that we don't insert the same anime into our DB twice (probably filter by name)
@@ -79,8 +107,7 @@ router.post('/addAnimeToCatalog', (req, res) => {
   connection((db) => {
     db.collection('anime')
     .insert({name: anime['name'], description: anime['description'], rating: anime['rating'], thumbnail: anime['thumbnail'], malID: anime['malID'], category: cat})
-    .then((wwAnime) => {
-      console.log('Successful insert');
+    .then((dummy) => {
       res.json({wasSuccessful: true})
     })
     .catch((err) => {

@@ -14,10 +14,14 @@ export class HomeComponent {
   wantToWatchList: Anime[];
   consideringList: Anime[];
   completedList: Anime[];
+  selectionList: Anime[];
   showAddAnimePrompt: boolean;   // If true, "Add anime" prompt is visible
   linkAnimeSuggestions: Anime[];
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
+  selectedAnimeCategory: string;   // "Want to Watch", "Considering", or "Completed"
+  canSelectAsFinalist: boolean;
+
   sortCriteria: string;
 
   openAddAnimePrompt() {
@@ -27,8 +31,10 @@ export class HomeComponent {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime("", "", -1, "", -1);
   }
-  showAnimeDetails(anime: Anime) {
+  showAnimeDetails(anime: Anime, category: string) {
     this.selectedAnime = anime;
+    this.selectedAnimeCategory = category;
+    this.validateSelectAsFinalistButton();
   }
 
   private sortByField(fieldName, direction) {
@@ -64,13 +70,17 @@ export class HomeComponent {
           console.log("Error in /api/malSearch");
         }
       } else {
+        console.log(JSON.parse(res.toString()));
         const animeList = JSON.parse(res.toString())["anime"]["entry"];
 
         // Display the top 5 suggestions
         // IDEA: In the future, it would be nice to have user preferences for how many
         // anime they would like to have show up during the link step
-
         const numSuggestions = Math.min(5, animeList.length);
+        // Special case is where there is only 1 entry, in which case it is not an array
+        if (animeList.hasOwnProperty("title")) {
+          this.linkAnimeSuggestions.push(new Anime(animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"]));
+        }
         for (let i=0; i<numSuggestions; i++) {
           // IDEA: Option for specifying English vs Japanese title or even just keep their own name
           // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
@@ -128,11 +138,80 @@ export class HomeComponent {
     });
   }
 
-  refresh() {
+  private validateSelectAsFinalistButton() {
+    // Custom validation for 'select as finalist' button
+    if (this.selectedAnimeCategory != "Completed") {
+      this.canSelectAsFinalist = true;
+      for (let anime of this.selectionList) {
+        if (this.selectedAnime["mongoID"] == anime["mongoID"]) {
+          this.canSelectAsFinalist = false;
+          break;
+        }
+      }
+    }
+  }
+
+  selectAsFinalist() {
+    // Add selected anime to chooser panel
+    // First bring up a dialog to allow them to enter any comments
+    let dialogRef = this.dialog.open(FinalistCommentsDialog, {
+      width: '300px',
+      data: {comments: ""}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.selectedAnime["comments"] = result.split(";");
+      }
+      this.selectionList.push(this.selectedAnime);
+      this.validateSelectAsFinalistButton();
+    });
+  }
+
+  removeAnimeFromCatalog() {
+    // remove anime from database
+    // TODO: Confirmation dialog (possibly)
+    // TODO: Toast for each of these adds/deletes if they were not successful
+    this.http.post("/api/removeAnimeFromCatalog", {id: this.selectedAnime["mongoID"]}).subscribe(res => {
+      this.refresh();
+      this.selectedAnime = new Anime("", "", -1, "", -1);
+      this.selectedAnimeCategory = "";
+    });
+  }
+
+  changeCategory(newCategory: string) {
+    // Update database entry to reflect category change of anime
+    this.http.post("/api/changeCategory", {id: this.selectedAnime["mongoID"], category: newCategory}).subscribe(res => {
+      this.refresh();
+      this.selectedAnimeCategory = newCategory;
+    })
+  }
+
+  editComments(index: number) {
+    // Bring up the dialog for editing the comments of a finalist
+    let dialogRef = this.dialog.open(FinalistCommentsDialog, {
+      width: '300px',
+      data: {comments: this.selectionList[index]["comments"].join(";")}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.selectionList[index]["comments"] = result.split(";");
+      }
+    });
+  }
+
+  removeFinalist(index: number) {
+    // TODO: Cool toast here
+    this.selectionList.splice(index,1);
+    this.validateSelectAsFinalistButton();
+  }
+
+  private refresh() {
     // Fetch all anime stored in database and update our lists
     this.wantToWatchList = [];
     this.consideringList = [];
     this.completedList = [];
+    this.selectionList = [];
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime("", "", -1, "", -1);
 
@@ -163,6 +242,7 @@ export class HomeComponent {
     this.linkAnimeSuggestions = [];
     this.animeToAdd = new Anime("", "", -1, "", -1)   // -1 will be the default "has not been assigned for Anime number properties"
     this.selectedAnime = new Anime("", "", -1, "", -1);
+    this.selectedAnimeCategory = "";
     this.sortCriteria = "mongoID,ascending"
     this.refresh();
   }
@@ -176,6 +256,20 @@ export class HomeComponent {
 export class LinkAnimeDialog {
   constructor(
     public dialogRef: MdDialogRef<LinkAnimeDialog>,
+    @Inject(MD_DIALOG_DATA) public data: any
+  ) {}
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: 'finalist-comments',
+  templateUrl: './finalist-comments.html'
+})
+export class FinalistCommentsDialog {
+  constructor(
+    public dialogRef: MdDialogRef<FinalistCommentsDialog>,
     @Inject(MD_DIALOG_DATA) public data: any
   ) {}
   onNoClick(): void {

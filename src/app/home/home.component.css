@@ -20,12 +20,13 @@
   margin-left: 50px;
 }
 .add-anime-prompt {
+  margin-left: 12px;
   margin-top: 5px;
-  width: 400px;
+  width: 350px;
   height: 100px;
 }
 .add-anime-name {
-  width: 300px;
+  width: 250px;
   margin-right: 10px;
 }
 .link-button {
@@ -33,17 +34,18 @@
   margin-right: -10px;
   border-radius: 25px;
 }
-.tri-panel-container {
-  margin-top: 10px;
-}
 .catalog {
-  width: 30%;
+  width: 29%;
   float: left;
+  margin-left: 12px;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
   background-color: white;
   overflow: scroll;
+  min-height: 300px;
+  max-height: 600px;
+  margin-top: 10px;
 }
 .catalog-item {
   margin-top: -10px !important;
@@ -55,12 +57,82 @@
 }
 .details-panel {
   float: left;
-  width: 30%;
+  width: 29%;
   margin-left: 20px;
   text-align: center;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
-  max-height: 600px;
+  margin-top: 10px;
+}
+.details-panel-placeholder {
+  text-align: left;
+}
+.details-panel-content {
   overflow: scroll;
+  max-height: 550px;
+}
+.details-button-container {
+  border-top: 1px solid #c3c3c3;
+  height: 50px;
+}
+.details-button {
+  margin: 5px !important;
+}
+.chooser-tool {
+  width: 29%;
+  margin-left: 20px;
+  float: left;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  background-color: white;
+  overflow: scroll;
+  max-height: 600px;
+  margin-top: 10px;
+}
+.chooser-tool-placeholder {
+  width: 29%;
+  margin-left: 20px;
+  float: left;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  margin-top: 10px;
+}
+.finalist-item {
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+  list-style-type: none;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+.finalist-item-name {
+  margin-left: 20px;
+}
+.finalist-button-container {
+  float: right;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  margin-right: 20px;
+}
+.finalist-button {
+  border-radius: 50px;
+  height: 20px;
+  vertical-align: middle;
+  line-height: 20px;
+}
+.comments-chiplist {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+  margin-left: 20px;
+}
+.finalist-divider {
+  display: block;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgba(0,0,0,.12);
+  margin: 0;
+  width: 100%;
+  clear: both;
 }

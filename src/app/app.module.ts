@@ -3,17 +3,18 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule } from '@angular/material';
+import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
-import { HomeComponent, LinkAnimeDialog } from './home/home.component';
+import { HomeComponent, LinkAnimeDialog, FinalistCommentsDialog} from './home/home.component';
 import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LinkAnimeDialog
+    LinkAnimeDialog,
+    FinalistCommentsDialog
   ],
   imports: [
     BrowserModule,
@@ -24,10 +25,11 @@ import { HomeModule } from './home/home.module';
     MatDialogModule,
     FormsModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
 })
 export class AppModule { }
