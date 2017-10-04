@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule } from '@angular/material';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent, LinkAnimeDialog, FinalistCommentsDialog} from './home/home.component';
 import { HomeModule } from './home/home.module';
@@ -26,7 +27,8 @@ import { HomeModule } from './home/home.module';
     FormsModule,
     MatListModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent],
