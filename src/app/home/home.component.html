@@ -19,37 +19,39 @@ Hey, this is the home screen!
 </div>
 
 <!-- Add anime prompt -->
-<md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
-  <form>
-    <md-form-field class="add-anime-name">
-      <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
-    </md-form-field>
-    <button md-raised-button class="link-button" color="primary" type=button (click)="malSearch()">Link</button>
-    <br>
-    <!-- TODO: Disable buttons if name isn't filled out -->
-    <button md-raised-button type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
-    <button md-raised-button type=button (click)="addAnimeToConsidering()">Add to Considering</button>
-  </form>
-</md-card>
+<div class="catalog-container">
+  <md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
+    <form>
+      <md-form-field class="add-anime-name">
+        <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
+      </md-form-field>
+      <button md-raised-button class="link-button" color="primary" type=button (click)="malSearch()">Link</button>
+      <br>
+      <!-- TODO: Disable buttons if name isn't filled out -->
+      <button md-raised-button type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
+      <button md-raised-button type=button (click)="addAnimeToConsidering()">Add to Considering</button>
+    </form>
+  </md-card>
 
-<!-- Anime catalogue -->
-<div class="catalog">
-  <md-nav-list dense #animeCatalog>
-    <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
-    <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
-      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-    </md-list-item>
-    <md-divider></md-divider>
-    <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
-    <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
-      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-    </md-list-item>
-    <md-divider></md-divider>
-    <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
-    <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
-      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-    </md-list-item>
-  </md-nav-list>
+  <!-- Anime catalogue -->
+  <div class="catalog">
+    <md-nav-list dense #animeCatalog>
+      <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
+      <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
+        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+      </md-list-item>
+      <md-divider></md-divider>
+      <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
+      <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
+        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+      </md-list-item>
+      <md-divider></md-divider>
+      <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
+      <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
+        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+      </md-list-item>
+    </md-nav-list>
+  </div>
 </div>
 
 <!-- Details View -->

@@ -20,7 +20,6 @@
   margin-left: 50px;
 }
 .add-anime-prompt {
-  margin-left: 12px;
   margin-top: 5px;
   width: 350px;
   height: 75px;
@@ -35,10 +34,12 @@
   margin-right: -10px;
   border-radius: 25px;
 }
-.catalog {
-  width: 29%;
+.catalog-container {
   float: left;
+  width: 29%;
   margin-left: 12px;
+}
+.catalog {
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
