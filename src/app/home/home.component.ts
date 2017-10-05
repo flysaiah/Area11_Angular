@@ -17,7 +17,6 @@ export class HomeComponent {
   linkAnimeSuggestions: Anime[];
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
-  selectedAnimeCategory: string;   // "Want to Watch", "Considering", or "Completed"
   canSelectAsFinalist: boolean;
 
   sortCriteria: string;
@@ -29,9 +28,8 @@ export class HomeComponent {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime("");
   }
-  showAnimeDetails(anime: Anime, category: string) {
+  showAnimeDetails(anime: Anime) {
     this.selectedAnime = anime;
-    this.selectedAnimeCategory = category;
     this.validateSelectAsFinalistButton();
   }
 
@@ -147,7 +145,7 @@ export class HomeComponent {
 
   private validateSelectAsFinalistButton() {
     // Custom validation for 'select as finalist' button
-    if (this.selectedAnimeCategory != "Completed") {
+    if (this.selectedAnime["category"] != "Completed") {
       this.canSelectAsFinalist = true;
       for (let anime of this.selectionList) {
         if (this.selectedAnime["mongoID"] == anime["mongoID"]) {
@@ -183,7 +181,6 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
         this.selectedAnime = new Anime("");
-        this.selectedAnimeCategory = "";
       } else {
         console.log(res["message"]);
       }
@@ -194,8 +191,9 @@ export class HomeComponent {
     // Update database entry to reflect category change of anime
     this.animeService.changeCategory(this.selectedAnime["mongoID"], newCategory).subscribe(res => {
       if (res["success"]) {
+        // Have to manually update currently selected anime's category
+        this.selectedAnime["category"] = newCategory;
         this.refresh();
-        this.selectedAnimeCategory = newCategory;
       } else {
         console.log(res["message"]);
       }
@@ -236,13 +234,13 @@ export class HomeComponent {
         const cAnime = res["cAnime"];
         const compAnime = res["compAnime"];
         for (let i=0; i<wwAnime.length; i++) {
-          this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["_id"]));
+          this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["category"], wwAnime[i]["_id"]));
         }
         for (let i=0; i<cAnime.length; i++) {
-          this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["_id"]));
+          this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["category"], cAnime[i]["_id"]));
         }
         for (let i=0; i<compAnime.length; i++) {
-          this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["_id"]));
+          this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["category"], compAnime[i]["_id"]));
         }
       } else {
         console.log(res["message"]);
@@ -261,7 +259,6 @@ export class HomeComponent {
     this.linkAnimeSuggestions = [];
     this.animeToAdd = new Anime("");
     this.selectedAnime = new Anime("");
-    this.selectedAnimeCategory = "";
     this.sortCriteria = "mongoID,ascending"
     this.refresh();
   }
