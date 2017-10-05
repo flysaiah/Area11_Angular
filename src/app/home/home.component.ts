@@ -29,7 +29,7 @@ export class HomeComponent {
   }
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime("", "", -1, "", -1);
+    this.animeToAdd = new Anime("");
   }
   showAnimeDetails(anime: Anime, category: string) {
     this.selectedAnime = anime;
@@ -173,7 +173,7 @@ export class HomeComponent {
     // TODO: Toast for each of these adds/deletes if they were not successful
     this.http.post("/api/removeAnimeFromCatalog", {id: this.selectedAnime["mongoID"]}).subscribe(res => {
       this.refresh();
-      this.selectedAnime = new Anime("", "", -1, "", -1);
+      this.selectedAnime = new Anime("");
       this.selectedAnimeCategory = "";
     });
   }
@@ -212,7 +212,7 @@ export class HomeComponent {
     this.completedList = [];
     this.selectionList = [];
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime("", "", -1, "", -1);
+    this.animeToAdd = new Anime("");
 
     this.http.get("/api/fetchAnime").subscribe(res => {
       // TODO: Do some validation here so we don't error out
@@ -244,8 +244,8 @@ export class HomeComponent {
   ngOnInit() {
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
-    this.animeToAdd = new Anime("", "", -1, "", -1)   // -1 will be the default "has not been assigned for Anime number properties"
-    this.selectedAnime = new Anime("", "", -1, "", -1);
+    this.animeToAdd = new Anime("");
+    this.selectedAnime = new Anime("");
     this.selectedAnimeCategory = "";
     this.sortCriteria = "mongoID,ascending"
     this.refresh();

@@ -37,17 +37,17 @@ Hey, this is the home screen!
   <md-nav-list dense #animeCatalog>
     <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
     <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
-      {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
+      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
     </md-list-item>
     <md-divider></md-divider>
     <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
     <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
-      {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
+      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
     </md-list-item>
     <md-divider></md-divider>
     <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
     <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
-      {{ anime.name }} <span *ngIf="anime['rating'] != -1" class="catalog-rating">({{ anime["rating"] }})</span>
+      {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
     </md-list-item>
   </md-nav-list>
 </div>

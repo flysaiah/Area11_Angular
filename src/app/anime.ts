@@ -1,11 +1,12 @@
 export class Anime {
   constructor(
-    public name: String,
-    public description: String,
-    public rating: number,
-    public thumbnail: String,
-    public malID: number,
+    public name: string,
+    public description?: string,
+    public rating?: number,
+    public thumbnail?: string,
+    public malID?: number,
     public mongoID?: number,
-    public comments?: String[]
+    public user?: string,
+    public comments?: string[]
   ) {}
 }

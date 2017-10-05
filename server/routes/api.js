@@ -10,18 +10,6 @@ let response = {
   message: null
 };
 
-// router.post('/removeAnimeFromCatalog', (req, res) => {
-//   connection((db) => {
-//     db.collection('anime')
-//     .remove({'_id': ObjectID(req["body"]["id"])}, 1)
-//     .then((dummy) => {
-//       res.json({wasSuccessful: true});
-//     })
-//     .catch((err) => {
-//       sendError(err, res);
-//     });
-//   })
-// });
 router.post('/removeAnimeFromCatalog', (req, res) => {
   Anime.findOne({ '_id': ObjectID(req.body.id)}, (err, anime) => {
     if (err) {
@@ -38,21 +26,6 @@ router.post('/removeAnimeFromCatalog', (req, res) => {
   })
 });
 
-// router.post('/changeCategory', (req, res) => {
-//   const id = ObjectID(req["body"]["id"]);
-//   const newCategory = req["body"]["category"];
-//   connection((db) => {
-//     db.collection('anime')
-//     .update({'_id': id}, {$set: {'category': newCategory}})
-//     .then((dummy) => {
-//       res.json({wasSuccessful: true})
-//     })
-//     .catch((err) => {
-//       sendError(err, res);
-//     })
-//   })
-// });
-
 router.post('/changeCategory', (req, res) => {
   Anime.findOneAndUpdate({ "_id": ObjectID(req.body.id) }, { $set: { category: req.body.category } }, (err, anime) => {
     if (err) {
@@ -62,34 +35,6 @@ router.post('/changeCategory', (req, res) => {
     }
   })
 })
-
-// router.get('/fetchAnime', (req, res) => {
-//   connection((db) => {
-//     db.collection('anime')
-//     .find({'category': 'Want to Watch'})
-//     .toArray()
-//     .then((wwAnime) => {
-//       db.collection('anime')
-//       .find({'category': 'Considering'})
-//       .toArray().then((cAnime) => {
-//         db.collection('anime')
-//         .find({'category': 'Completed'})
-//         .toArray()
-//         .then((compAnime) => {
-//           response.data = {'wwAnime': wwAnime, 'cAnime': cAnime, 'compAnime': compAnime};
-//           res.json(response);
-//         }).catch((err) => {
-//           sendError(err, res);
-//         })
-//       })
-//       .catch((err) => {
-//         sendError(err, res);
-//       });
-//     }).catch((err) => {
-//       sendError(err, res);
-//     });
-//   });
-// });
 
 router.get('/fetchAnime', (req, res) => {
   Anime.find({ 'category': 'Want to Watch' }, (err, wwAnime) => {
@@ -130,21 +75,6 @@ router.post('/malSearch', (req, res) => {
     }
   });
 });
-
-// router.post('/addAnimeToCatalog', (req, res) => {
-//   const anime = req['body']['anime']
-//   const cat = req['body']['category']
-//   connection((db) => {
-//     db.collection('anime')
-//     .insert({name: anime['name'], description: anime['description'], rating: anime['rating'], thumbnail: anime['thumbnail'], malID: anime['malID'], category: cat})
-//     .then((dummy) => {
-//       res.json({wasSuccessful: true})
-//     })
-//     .catch((err) => {
-//       sendError(err, res);
-//     });
-//   });
-// });
 
 router.post('/addAnimeToCatalog', (req, res) => {
   // TODO: Validation to make sure that we don't insert the same anime into our DB twice (probably filter by name)
