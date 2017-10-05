@@ -23,11 +23,12 @@
   margin-left: 12px;
   margin-top: 5px;
   width: 350px;
-  height: 100px;
+  height: 75px;
 }
 .add-anime-name {
   width: 250px;
   margin-right: 10px;
+  margin-top: -20px;
 }
 .link-button {
   width: 30px;

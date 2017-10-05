@@ -70,7 +70,6 @@ export class HomeComponent {
           console.log("Error in /api/malSearch");
         }
       } else {
-        console.log(JSON.parse(res.toString()));
         const animeList = JSON.parse(res.toString())["anime"]["entry"];
 
         // Display the top 5 suggestions
@@ -217,18 +216,23 @@ export class HomeComponent {
 
     this.http.get("/api/fetchAnime").subscribe(res => {
       // TODO: Do some validation here so we don't error out
-      const wwAnime = res["data"]["wwAnime"];
-      const cAnime = res["data"]["cAnime"];
-      const compAnime = res["data"]["compAnime"];
-      for (let i=0; i<wwAnime.length; i++) {
-        this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["_id"]));
+      if (res["success"]) {
+        const wwAnime = res["wwAnime"];
+        const cAnime = res["cAnime"];
+        const compAnime = res["compAnime"];
+        for (let i=0; i<wwAnime.length; i++) {
+          this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["_id"]));
+        }
+        for (let i=0; i<cAnime.length; i++) {
+          this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["_id"]));
+        }
+        for (let i=0; i<compAnime.length; i++) {
+          this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["_id"]));
+        }
+      } else {
+        console.log(res["message"]);
       }
-      for (let i=0; i<cAnime.length; i++) {
-        this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["_id"]));
-      }
-      for (let i=0; i<compAnime.length; i++) {
-        this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["_id"]));
-      }
+
     });
   }
 
