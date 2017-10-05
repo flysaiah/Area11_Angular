@@ -13,6 +13,7 @@ import { HomeModule } from './home/home.module';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';
+import { AnimeService } from './services/anime.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { AuthService } from './services/auth.service';
     AppRoutingModule,
     HttpModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, AnimeService],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
 })

@@ -65,7 +65,7 @@ router.post('/malSearch', (req, res) => {
   request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
     if (!err) {
       let jsonString = parser.toJson(body);
-      res.json({ success: true, data: jsonString });
+      res.json({ success: true, data: JSON.parse(jsonString.toString())["anime"]["entry"] });
     } else {
       res.json({ success: false, message: err.toString()})
       return;   // We need this because of a weird error that happens in express due to the way errors are handled

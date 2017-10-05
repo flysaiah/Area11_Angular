@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { tokenNotExpired } from 'angular2-jwt';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class AuthService {
   user;
   authToken;
   options;
+  domain = environment.domain;
 
   constructor(
     private http: Http
@@ -19,10 +21,10 @@ export class AuthService {
   }
 
   registerUser(user) {
-    return this.http.post('http://localhost:3000/authentication/register', user).map(res => res.json());
+    return this.http.post(this.domain + '/authentication/register', user).map(res => res.json());
   }
   login(user) {
-    return this.http.post('http://localhost:3000/authentication/login', user).map(res => res.json());
+    return this.http.post(this.domain + '/authentication/login', user).map(res => res.json());
   }
   logout() {
     this.authToken = null;
@@ -49,7 +51,7 @@ export class AuthService {
   }
   getProfile() {
     this.createAuthenticationHeaders();
-    return this.http.get('http://localhost:3000/authentication/profile', this.options).map(res => res.json());
+    return this.http.get(this.domain + '/authentication/profile', this.options).map(res => res.json());
   }
 
   // this.authService.getProfile().subscribe(profile => {

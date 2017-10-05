@@ -83,7 +83,6 @@ Hey, this is the home screen!
 <div *ngIf="selectionList.length" class="chooser-tool">
   <div class="finalist-item" *ngFor="let anime of selectionList; let i = index;">
     <span class="finalist-item-name">{{ anime["name"] }}</span>
-    <!-- FIXME: If chip list is too long the list doesn't adjust well -->
     <div class="comments-chiplist">
       <md-chip-list>
         <md-chip *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>

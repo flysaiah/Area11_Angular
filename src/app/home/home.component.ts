@@ -1,9 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Anime } from '../anime';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpParams } from '@angular/common/http';
 import { MdDialogRef, MdDialog, MD_DIALOG_DATA } from '@angular/material';
+import { AnimeService } from '../services/anime.service';
 
 @Component({
   selector: 'home-page',
@@ -59,7 +57,8 @@ export class HomeComponent {
       console.log("Empty query");
       return;
     }
-    this.http.post("/api/malSearch", {query: this.animeToAdd["name"]}).subscribe(res => {
+    // this.animeToAdd["name"]
+    this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
       if (!res["success"]) {
         // MAL API is weird because if there are no results it yields a parse error
         if (res["message"] == "Error: Parse Error") {
@@ -70,7 +69,7 @@ export class HomeComponent {
           console.log(res["message"]);
         }
       } else {
-        const animeList = JSON.parse(res["data"].toString())["anime"]["entry"];
+        const animeList = res["data"];
 
         // Display the top 5 suggestions
         // IDEA: In the future, it would be nice to have user preferences for how many
@@ -81,7 +80,7 @@ export class HomeComponent {
           this.linkAnimeSuggestions.push(new Anime(animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"]));
         }
         for (let i=0; i<numSuggestions; i++) {
-          // IDEA: Option for specifying English vs Japanese title or even just keep their own name
+          // IDEA: Option in user settings for specifying English vs Japanese title when linked
           // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
           this.linkAnimeSuggestions.push(new Anime(animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"]))
         }
@@ -115,8 +114,7 @@ export class HomeComponent {
 
   addAnimeToWW() {
     // Add anime to database under 'Want to Watch'
-    // TODO: Probably refactor into service
-    this.http.post("/api/addAnimeToCatalog", {category: "Want to Watch", anime: this.animeToAdd}).subscribe(res => {
+    this.animeService.addAnimeToCatalog(this.animeToAdd, "Want to Watch").subscribe(res => {
       if (res["success"]) {
         this.refresh();
       } else {
@@ -126,20 +124,19 @@ export class HomeComponent {
   }
 
   addAnimeToConsidering() {
-    // TODO: Probably refactor into service
     // Add anime to database under 'Considering'
-    this.http.post("/api/addAnimeToCatalog", {category: "Considering", anime: this.animeToAdd}).subscribe(res => {
+    this.animeService.addAnimeToCatalog(this.animeToAdd, "Considering").subscribe(res => {
       if (res["success"]) {
         this.refresh();
       } else {
         console.log(res["message"]);
-      }    });
+      }
+    });
   }
 
   addAnimeToCompleted() {
-    // TODO: Probably refactor into service
     // Add anime to database under 'Considering'
-    this.http.post("/api/addAnimeToCatalog", {category: "Completed", anime: this.animeToAdd}).subscribe(res => {
+    this.animeService.addAnimeToCatalog(this.animeToAdd, "Completed").subscribe(res => {
       if (res["success"]) {
         this.refresh();
       } else {
@@ -182,7 +179,7 @@ export class HomeComponent {
     // remove anime from database
     // TODO: Confirmation dialog (possibly)
     // TODO: Toast for each of these adds/deletes if they were not successful
-    this.http.post("/api/removeAnimeFromCatalog", {id: this.selectedAnime["mongoID"]}).subscribe(res => {
+    this.animeService.removeAnimeFromCatalog(this.selectedAnime["mongoID"]).subscribe(res => {
       if (res["success"]) {
         this.refresh();
         this.selectedAnime = new Anime("");
@@ -195,7 +192,7 @@ export class HomeComponent {
 
   changeCategory(newCategory: string) {
     // Update database entry to reflect category change of anime
-    this.http.post("/api/changeCategory", {id: this.selectedAnime["mongoID"], category: newCategory}).subscribe(res => {
+    this.animeService.changeCategory(this.selectedAnime["mongoID"], newCategory).subscribe(res => {
       if (res["success"]) {
         this.refresh();
         this.selectedAnimeCategory = newCategory;
@@ -233,8 +230,7 @@ export class HomeComponent {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime("");
 
-    this.http.get("/api/fetchAnime").subscribe(res => {
-      // TODO: Do some validation here so we don't error out
+    this.animeService.fetchAnime().subscribe(res => {
       if (res["success"]) {
         const wwAnime = res["wwAnime"];
         const cAnime = res["cAnime"];
@@ -256,8 +252,8 @@ export class HomeComponent {
   }
 
   constructor(
-    private http: HttpClient,
-    private dialog: MdDialog
+    private dialog: MdDialog,
+    private animeService: AnimeService
   ) {}
 
   ngOnInit() {
