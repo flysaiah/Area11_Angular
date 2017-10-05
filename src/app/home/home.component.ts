@@ -60,17 +60,17 @@ export class HomeComponent {
       return;
     }
     this.http.post("/api/malSearch", {query: this.animeToAdd["name"]}).subscribe(res => {
-      if (res.hasOwnProperty("hasFailed")) {
-        // MAL query fails if no results
-        if (res["reason"] == "noResults") {
+      if (!res["success"]) {
+        // MAL API is weird because if there are no results it yields a parse error
+        if (res["message"] == "Error: Parse Error") {
           // TODO: Handle this better, maybe with toast dialog
           console.log("No results");
           return;
         } else {
-          console.log("Error in /api/malSearch");
+          console.log(res["message"]);
         }
       } else {
-        const animeList = JSON.parse(res.toString())["anime"]["entry"];
+        const animeList = JSON.parse(res["data"].toString())["anime"]["entry"];
 
         // Display the top 5 suggestions
         // IDEA: In the future, it would be nice to have user preferences for how many
@@ -117,7 +117,11 @@ export class HomeComponent {
     // Add anime to database under 'Want to Watch'
     // TODO: Probably refactor into service
     this.http.post("/api/addAnimeToCatalog", {category: "Want to Watch", anime: this.animeToAdd}).subscribe(res => {
-      this.refresh();
+      if (res["success"]) {
+        this.refresh();
+      } else {
+        console.log(res["message"]);
+      }
     });
   }
 
@@ -125,15 +129,22 @@ export class HomeComponent {
     // TODO: Probably refactor into service
     // Add anime to database under 'Considering'
     this.http.post("/api/addAnimeToCatalog", {category: "Considering", anime: this.animeToAdd}).subscribe(res => {
-      this.refresh();
-    });
+      if (res["success"]) {
+        this.refresh();
+      } else {
+        console.log(res["message"]);
+      }    });
   }
 
   addAnimeToCompleted() {
     // TODO: Probably refactor into service
     // Add anime to database under 'Considering'
     this.http.post("/api/addAnimeToCatalog", {category: "Completed", anime: this.animeToAdd}).subscribe(res => {
-      this.refresh();
+      if (res["success"]) {
+        this.refresh();
+      } else {
+        console.log(res["message"]);
+      }
     });
   }
 
@@ -172,17 +183,25 @@ export class HomeComponent {
     // TODO: Confirmation dialog (possibly)
     // TODO: Toast for each of these adds/deletes if they were not successful
     this.http.post("/api/removeAnimeFromCatalog", {id: this.selectedAnime["mongoID"]}).subscribe(res => {
-      this.refresh();
-      this.selectedAnime = new Anime("");
-      this.selectedAnimeCategory = "";
+      if (res["success"]) {
+        this.refresh();
+        this.selectedAnime = new Anime("");
+        this.selectedAnimeCategory = "";
+      } else {
+        console.log(res["message"]);
+      }
     });
   }
 
   changeCategory(newCategory: string) {
     // Update database entry to reflect category change of anime
     this.http.post("/api/changeCategory", {id: this.selectedAnime["mongoID"], category: newCategory}).subscribe(res => {
-      this.refresh();
-      this.selectedAnimeCategory = newCategory;
+      if (res["success"]) {
+        this.refresh();
+        this.selectedAnimeCategory = newCategory;
+      } else {
+        console.log(res["message"]);
+      }
     })
   }
 

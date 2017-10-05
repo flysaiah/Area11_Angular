@@ -62,16 +62,13 @@ router.post('/malSearch', (req, res) => {
   const query = encodeURIComponent(req["body"]["query"]);
   const parser = require('xml2json');
   const request = require('request');
-  request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (error, response, body) {
-    if (!error) {
+  request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
+    if (!err) {
       let jsonString = parser.toJson(body);
-      res.json(jsonString)
+      res.json({ success: true, data: jsonString });
     } else {
-      if (error.toString() == "Error: Parse Error") {
-        res.json({hasFailed: true, reason: "noResults"})
-        return;   // We need this because of a weird error that happens in express due to the way errors are handled
-      }
-      res.json({hasFailed: true, reason: "unkown"})
+      res.json({ success: false, message: err.toString()})
+      return;   // We need this because of a weird error that happens in express due to the way errors are handled
     }
   });
 });
@@ -90,7 +87,6 @@ router.post('/addAnimeToCatalog', (req, res) => {
   });
   newAnime.save((err) => {
     if (err) {
-      console.log(err);
       res.json({ success: false, message: err });
     } else {
       res.json({ success: true, message: 'Anime added to catalog!' });
