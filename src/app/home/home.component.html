@@ -3,6 +3,7 @@
 Hey, this is the home screen!
 <details-view></details-view>
 <chooser-tool></chooser-tool> -->
+
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
   <button md-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
@@ -25,11 +26,10 @@ Hey, this is the home screen!
       <md-form-field class="add-anime-name">
         <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
       </md-form-field>
-      <button md-raised-button class="link-button" color="primary" type=button (click)="malSearch()">Link</button>
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="primary" type=button (click)="malSearch()">Link</button>
       <br>
-      <!-- TODO: Disable buttons if name isn't filled out -->
-      <button md-raised-button type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
-      <button md-raised-button type=button (click)="addAnimeToConsidering()">Add to Considering</button>
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToConsidering()">Add to Considering</button>
     </form>
   </md-card>
 
@@ -75,6 +75,8 @@ Hey, this is the home screen!
     </md-card-actions>
   </div>
 </md-card>
+
+<div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 
 <md-card class="chooser-tool-placeholder" *ngIf="!selectionList.length">
   Anime you add to your final selection process will appear here!

@@ -18,8 +18,21 @@ export class HomeComponent {
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
   canSelectAsFinalist: boolean;
+  // We do simple toasts without outside packages
+  showToast: boolean;
+  toastMessage: string;
 
   sortCriteria: string;
+
+  private displayToast(message: string) {
+    // Display toast in application with message and timeout after 3 sec
+    this.showToast = true;
+    this.toastMessage = message;
+    setTimeout(() => {
+      this.showToast = false;
+      this.toastMessage = "";
+    }, 3000);
+  }
 
   openAddAnimePrompt() {
     this.showAddAnimePrompt = true;
@@ -48,22 +61,14 @@ export class HomeComponent {
   }
 
   malSearch() {
-    // TODO: Refactor this into a service?
-
-    if (!this.animeToAdd["name"]) {
-      // TODO: Better validation than this
-      console.log("Empty query");
-      return;
-    }
-    // this.animeToAdd["name"]
     this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
       if (!res["success"]) {
         // MAL API is weird because if there are no results it yields a parse error
         if (res["message"] == "Error: Parse Error") {
-          // TODO: Handle this better, maybe with toast dialog
-          console.log("No results");
+          this.displayToast("No results found.")
           return;
         } else {
+          this.displayToast("There was a problem.")
           console.log(res["message"]);
         }
       } else {
@@ -92,10 +97,10 @@ export class HomeComponent {
           // Result is the index of the anime they chose to link, if they chose to link one
           if (result || result == 0) {
             this.animeToAdd = this.linkAnimeSuggestions[result];
+            this.displayToast("Anime successfully linked!")
           }
           // Make sure to reset suggestion list
           this.linkAnimeSuggestions = [];
-          // TODO: Need to let user know their anime has been linked
         });
       }
     });
@@ -116,6 +121,7 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
     });
@@ -127,6 +133,7 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
     });
@@ -138,6 +145,7 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
     });
@@ -176,12 +184,13 @@ export class HomeComponent {
   removeAnimeFromCatalog() {
     // remove anime from database
     // TODO: Confirmation dialog (possibly)
-    // TODO: Toast for each of these adds/deletes if they were not successful
     this.animeService.removeAnimeFromCatalog(this.selectedAnime["mongoID"]).subscribe(res => {
       if (res["success"]) {
         this.refresh();
         this.selectedAnime = new Anime("");
+        this.displayToast("Anime successfully removed!");
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
     });
@@ -195,6 +204,7 @@ export class HomeComponent {
         this.selectedAnime["category"] = newCategory;
         this.refresh();
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
     })
@@ -214,7 +224,7 @@ export class HomeComponent {
   }
 
   removeFinalist(index: number) {
-    // TODO: Cool toast here
+    // IDEA: Change title of chooser tool depending on # of anime left
     this.selectionList.splice(index,1);
     this.validateSelectAsFinalistButton();
   }
@@ -243,6 +253,7 @@ export class HomeComponent {
           this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["category"], compAnime[i]["_id"]));
         }
       } else {
+        this.displayToast("There was a problem.")
         console.log(res["message"]);
       }
 
@@ -260,11 +271,12 @@ export class HomeComponent {
     this.animeToAdd = new Anime("");
     this.selectedAnime = new Anime("");
     this.sortCriteria = "mongoID,ascending"
+    this.showToast = false;
+    this.toastMessage = "";
     this.refresh();
   }
 }
 
-// TODO: Check best practices guide to see if this belongs in a separate file
 @Component({
   selector: 'link-anime',
   templateUrl: './link-anime.html',
