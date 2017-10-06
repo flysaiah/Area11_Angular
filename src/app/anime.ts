@@ -7,7 +7,8 @@ export class Anime {
     public thumbnail?: string,
     public malID?: number,
     public category?: string,
-    public mongoID?: number,
-    public comments?: string[]
+    public _id?: string,
+    public comments?: string[],
+    public isFinalist?: boolean
   ) {}
 }

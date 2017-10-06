@@ -37,23 +37,11 @@ router.post('/changeCategory', (req, res) => {
 })
 
 router.post('/fetchAnime', (req, res) => {
-  Anime.find({ user: req.body.user, 'category': 'Want to Watch' }, (err, wwAnime) => {
+  Anime.find({ user: req.body.user}, (err, animeList) => {
     if (err) {
       res.json({ success: false, message: err });
     } else {
-      Anime.find({ user: req.body.user, 'category': 'Considering' }, (err, cAnime) => {
-        if (err) {
-          res.json({ success: false, message: err });
-        } else {
-          Anime.find({ user: req.body.user, 'category': 'Completed' }, (err, compAnime) => {
-            if (err) {
-              res.json({ success: false, message: err });
-            } else {
-              res.json({ success: true, 'wwAnime': wwAnime, 'cAnime': cAnime, 'compAnime': compAnime});
-            }
-          })
-        }
-      })
+      res.json({ success: true, animeList: animeList})
     }
   })
 })
@@ -75,19 +63,18 @@ router.post('/malSearch', (req, res) => {
 
 router.post('/addAnimeToCatalog', (req, res) => {
   const anime = req.body.anime;
-  const cat = req.body.category;
   // First check to make sure they haven't added this anime already
-  Anime.findOne({ user: anime['user'], name: anime['name']}, (err, anime) => {
+  Anime.findOne({ user: anime['user'], name: anime['name']}, (err, animeF) => {
     if (err) {
       res.json({ success: false, message: err })
-    } else if (anime) {
+    } else if (animeF) {
       res.json({ success: false, message: 'Anime already in catalog'});
     } else {
-      Anime.findOne({ user: anime['user'], malID: anime['malID']}, (err, anime) => {
+      Anime.findOne({ user: anime['user'], malID: anime['malID']}, (err, animeFF) => {
         if (err) {
           res.json({ success: false, message: err })
           return;
-        } else if (anime) {
+        } else if (animeFF) {
           res.json({ success: false, message: 'Anime already in catalog'});
           return;
         } else {
@@ -98,7 +85,8 @@ router.post('/addAnimeToCatalog', (req, res) => {
             rating: anime['rating'],
             thumbnail: anime['thumbnail'],
             malID: anime['malID'],
-            category: cat
+            category: anime['category'],
+            isFinalist: anime['isFinalist']
           });
           newAnime.save((err) => {
             if (err) {
@@ -111,7 +99,17 @@ router.post('/addAnimeToCatalog', (req, res) => {
       })
     }
   })
-})
+});
 
+router.post('/changeFinalistStatus', (req, res) => {
+  console.log(req.body);
+  Anime.findOneAndUpdate({ "_id": ObjectID(req.body.id) }, { $set: { isFinalist: req.body.newStatus, comments: (req.body.comments ? req.body.comments : []) } }, (err, anime) => {
+    if (err) {
+      res.json({ success: false, message: err });
+    } else {
+      res.json({ success: true, message: "Finalist status changed!" });
+    }
+  })
+})
 
 module.exports = router;

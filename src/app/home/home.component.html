@@ -10,7 +10,7 @@
   <!-- Filtering/sorting -->
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
   <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
-    <option value="mongoID,ascending">Default (Date added)</option>
+    <option value="_id,ascending">Default (Date added)</option>
     <option value="name,ascending">Alphabetical</option>
     <option value="rating,descending">Rating (High to Low)</option>
     <option value="rating,ascending">Rating (Low to High)</option>
@@ -77,13 +77,13 @@
 
 <div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 
-<md-card class="chooser-tool-placeholder" *ngIf="!selectionList.length">
+<md-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
   Anime you add to your final selection process will appear here!
 </md-card>
 
 <!-- FIXME: These aren't clickable right now -->
-<div *ngIf="selectionList.length" class="chooser-tool">
-  <div class="finalist-item" *ngFor="let anime of selectionList; let i = index;">
+<div *ngIf="finalistList.length" class="chooser-tool">
+  <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
     <span class="finalist-item-name">{{ anime["name"] }}</span>
     <div class="comments-chiplist">
       <md-chip-list>
@@ -94,6 +94,6 @@
       <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
       <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
     </div>
-    <span *ngIf="selectionList.length != 1 && i != (selectionList.length - 1)" class="finalist-divider"></span>
+    <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
   </div>
 </div>
