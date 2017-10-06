@@ -183,7 +183,6 @@ export class HomeComponent {
 
   removeAnimeFromCatalog() {
     // remove anime from database
-    // TODO: Confirmation dialog (possibly)
     this.animeService.removeAnimeFromCatalog(this.selectedAnime["mongoID"]).subscribe(res => {
       if (res["success"]) {
         this.refresh();

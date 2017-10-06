@@ -1,17 +1,23 @@
-<div class="container">
-    <h1>Registration Form</h1>
-    <form #userForm="ngForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input [(ngModel)]="model.username" type="text" id="name" name="name" required>
-      </div>
+<h1 class="register-logo">Area 11</h1>
+<!-- TODO: Add some vertical banners on either side or something -->
+<div class="registration-container">
+    <form #userForm="ngForm" class="register-form" (ngSubmit)="onSubmit()">
+      <md-form-field class="register-input">
+        <input mdInput placeholder="Username" [(ngModel)]="model.username" type="text" id="name" name="name" #name="ngModel" required>
+        <md-error *ngIf="name.invalid"> Username is required </md-error>
+      </md-form-field>
 
-      <div class="form-group">
-        <label for="pass">Password</label>
-        <input [(ngModel)]="model.password" type="text" id="pass" name="pass">
-      </div>
+      <md-form-field class="register-input">
+        <input mdInput placeholder="Password" [(ngModel)]="model.password" type="text" id="pass" name="pass" #pass="ngModel" required>
+        <md-error *ngIf="pass.invalid && (pass.dirty || pass.touched)"> Password is required </md-error>
+      </md-form-field>
 
-      <button type="submit">Submit</button>
+      <md-form-field class="register-input">
+        <input mdInput placeholder="Best Girl" [(ngModel)]="model.bestgirl" type="text" id="bestgirl" name="bestgirl" #bestgirl="ngModel" required>
+        <md-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Password is required </md-error>
+      </md-form-field>
+
+      <button md-raised-button color="primary" [disabled]="name.invalid || pass.invalid || submitted" type="submit">Register</button>
 
     </form>
 </div>

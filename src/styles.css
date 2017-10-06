@@ -5,3 +5,7 @@
 /* NOTE: If we ever use md-slide-toggle, md-slider, or mdTooltip, we have to install HammerJS as specified
 here: https://material.angular.io/guide/getting-started. In general, if something isn't working,
 check there because there are lots of optional packages that make certain things work */
+
+body {
+  background-image: url("assets/gray.png");
+}

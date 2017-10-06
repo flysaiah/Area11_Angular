@@ -1,9 +1,7 @@
-<!-- <search-toolbar></search-toolbar>
-<anime-catalogue></anime-catalouge>
-Hey, this is the home screen!
-<details-view></details-view>
-<chooser-tool></chooser-tool> -->
-
+<!-- TODO: Make logo clickable -->
+<div class="top-wrapper">
+  <h1 class="main-logo">Area 11</h1>
+</div>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
   <button md-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
@@ -82,6 +80,7 @@ Hey, this is the home screen!
   Anime you add to your final selection process will appear here!
 </md-card>
 
+<!-- FIXME: These aren't clickable right now -->
 <div *ngIf="selectionList.length" class="chooser-tool">
   <div class="finalist-item" *ngFor="let anime of selectionList; let i = index;">
     <span class="finalist-item-name">{{ anime["name"] }}</span>

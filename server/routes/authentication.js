@@ -6,11 +6,12 @@ module.exports = (router) => {
   router.post('/register', (req, res) => {
     // TODO: Validation
     if (!req.body.username || !req.body.password) {
-      res.json({wasSuccessful: false, message: "Username/password not provided"});
+      res.json({ success: false, message: "Username/password not provided" });
     } else {
       let user = new User({
         username: req.body.username.toLowerCase(),
-        password: req.body.password
+        password: req.body.password,
+        bestgirl: req.body.bestgirl
       });
       user.save((err) => {
         if (err) {

@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material';
 import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,7 +37,8 @@ import { AnimeService } from './services/anime.service';
     MatCardModule,
     MatChipsModule,
     AppRoutingModule,
-    HttpModule
+    HttpModule,
+    MatFormFieldModule
   ],
   providers: [AuthService, AnimeService],
   bootstrap: [AppComponent],

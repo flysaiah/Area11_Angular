@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true, lowercase: false},
-  password: { type: String, required: true, unique: true, lowercase: false},
-  friends: { type: [String], required: false, unique: false, lowercase: false},
+  password: { type: String, required: true, unique: false, lowercase: false},
+  bestgirl: { type: String, required: true, unique: false, lowercase: false},
+  friends: [String]
 })
 
 // This runs any time the user Schema is activated

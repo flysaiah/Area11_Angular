@@ -1,0 +1,30 @@
+.register-logo {
+  font-size: 75px;
+  font-family: "Syncopate";
+  color: #800015;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  border: 3px solid #800015;
+  border-style: groove;
+  border-width: 3px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  padding: 10px;
+}
+.registration-container {
+  width: 100%;
+  text-align: center;
+}
+.no-account {
+  margin-top: 10px;
+}
+.register-input {
+  width: 100%;
+}

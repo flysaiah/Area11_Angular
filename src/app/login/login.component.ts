@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent {
 
-  model:User = new User("", "");
+  model:User = new User("", "", "");
 
   constructor(
     private router: Router,
