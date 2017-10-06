@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { tokenNotExpired } from 'angular2-jwt';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -13,7 +14,8 @@ export class AuthService {
   domain = environment.domain;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private router: Router
   ) { }
 
   isLoggedIn() {
@@ -30,6 +32,7 @@ export class AuthService {
     this.authToken = null;
     this.user = null;
     localStorage.clear();
+    this.router.navigate(['/login']);
   }
   storeUserData(token, user) {
     localStorage.setItem('token', token);
@@ -38,10 +41,10 @@ export class AuthService {
     this.user = user;
   }
   loadToken() {
-    return localStorage.getItem('token');
+    this.authToken = localStorage.getItem('token');
   }
   createAuthenticationHeaders() {
-    const authToken = this.loadToken();
+    this.loadToken();
     this.options = new RequestOptions({
       headers: new Headers({
         'Content-type': 'application/json',

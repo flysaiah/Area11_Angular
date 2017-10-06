@@ -61,8 +61,6 @@ module.exports = (router) => {
   });
 
   router.get('/profile', (req, res) => {
-    console.log(req.decoded);
-    console.log(req.decoded.userId)
     User.findOne({ _id: req.decoded.userId }).select('username').exec((err, user) => {
       if (err) {
         res.json({ success: false, message: err});

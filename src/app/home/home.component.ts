@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Anime } from '../anime';
 import { MdDialogRef, MdDialog, MD_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'home-page',
@@ -21,8 +22,9 @@ export class HomeComponent {
   // We do simple toasts without outside packages
   showToast: boolean;
   toastMessage: string;
-
   sortCriteria: string;
+
+  currentUser: string;
 
   private displayToast(message: string) {
     // Display toast in application with message and timeout after 3 sec
@@ -39,7 +41,7 @@ export class HomeComponent {
   }
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime("");
+    this.animeToAdd = new Anime(this.currentUser, "");
   }
   showAnimeDetails(anime: Anime) {
     this.selectedAnime = anime;
@@ -80,12 +82,12 @@ export class HomeComponent {
         const numSuggestions = Math.min(5, animeList.length);
         // Special case is where there is only 1 entry, in which case it is not an array
         if (animeList.hasOwnProperty("title")) {
-          this.linkAnimeSuggestions.push(new Anime(animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"]));
+          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"]));
         }
         for (let i=0; i<numSuggestions; i++) {
           // IDEA: Option in user settings for specifying English vs Japanese title when linked
           // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
-          this.linkAnimeSuggestions.push(new Anime(animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"]))
+          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"]))
         }
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
@@ -186,7 +188,7 @@ export class HomeComponent {
     this.animeService.removeAnimeFromCatalog(this.selectedAnime["mongoID"]).subscribe(res => {
       if (res["success"]) {
         this.refresh();
-        this.selectedAnime = new Anime("");
+        this.selectedAnime = new Anime(this.currentUser, "");
         this.displayToast("Anime successfully removed!");
       } else {
         this.displayToast("There was a problem.")
@@ -235,21 +237,21 @@ export class HomeComponent {
     this.completedList = [];
     this.selectionList = [];
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime("");
+    this.animeToAdd = new Anime(this.currentUser, "");
 
-    this.animeService.fetchAnime().subscribe(res => {
+    this.animeService.fetchAnime(this.currentUser).subscribe(res => {
       if (res["success"]) {
         const wwAnime = res["wwAnime"];
         const cAnime = res["cAnime"];
         const compAnime = res["compAnime"];
         for (let i=0; i<wwAnime.length; i++) {
-          this.wantToWatchList.push(new Anime(wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["category"], wwAnime[i]["_id"]));
+          this.wantToWatchList.push(new Anime(this.currentUser, wwAnime[i]["name"], wwAnime[i]["description"], wwAnime[i]["rating"], wwAnime[i]["thumbnail"], wwAnime[i]["malID"], wwAnime[i]["category"], wwAnime[i]["_id"]));
         }
         for (let i=0; i<cAnime.length; i++) {
-          this.consideringList.push(new Anime(cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["category"], cAnime[i]["_id"]));
+          this.consideringList.push(new Anime(this.currentUser, cAnime[i]["name"], cAnime[i]["description"], cAnime[i]["rating"], cAnime[i]["thumbnail"], cAnime[i]["malID"], cAnime[i]["category"], cAnime[i]["_id"]));
         }
         for (let i=0; i<compAnime.length; i++) {
-          this.completedList.push(new Anime(compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["category"], compAnime[i]["_id"]));
+          this.completedList.push(new Anime(this.currentUser, compAnime[i]["name"], compAnime[i]["description"], compAnime[i]["rating"], compAnime[i]["thumbnail"], compAnime[i]["malID"], compAnime[i]["category"], compAnime[i]["_id"]));
         }
       } else {
         this.displayToast("There was a problem.")
@@ -261,18 +263,39 @@ export class HomeComponent {
 
   constructor(
     private dialog: MdDialog,
-    private animeService: AnimeService
-  ) {}
+    private animeService: AnimeService,
+    private authService: AuthService
+  ) {
+  }
 
   ngOnInit() {
+    this.wantToWatchList = [];
+    this.consideringList = [];
+    this.completedList = [];
+    this.selectionList = [];
+
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
-    this.animeToAdd = new Anime("");
-    this.selectedAnime = new Anime("");
+    this.animeToAdd = new Anime("", "");
+    this.selectedAnime = new Anime("", "");
     this.sortCriteria = "mongoID,ascending"
     this.showToast = false;
     this.toastMessage = "";
-    this.refresh();
+
+    // This also happens in refresh() but we need to do it here
+    // because it takes  a second for auth service to run
+    this.authService.getProfile().subscribe((res) => {
+      if (res["success"]) {
+        this.currentUser = res.user;
+        this.animeToAdd["user"] = this.currentUser;
+        this.selectedAnime["user"] = this.currentUser;
+        this.refresh();
+      } else {
+        // If there was a problem we need to have them log in again
+        this.authService.logout();
+        console.log(res["message"]);
+      }
+    })
   }
 }
 

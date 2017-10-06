@@ -36,16 +36,16 @@ router.post('/changeCategory', (req, res) => {
   })
 })
 
-router.get('/fetchAnime', (req, res) => {
-  Anime.find({ 'category': 'Want to Watch' }, (err, wwAnime) => {
+router.post('/fetchAnime', (req, res) => {
+  Anime.find({ user: req.body.user, 'category': 'Want to Watch' }, (err, wwAnime) => {
     if (err) {
       res.json({ success: false, message: err });
     } else {
-      Anime.find({ 'category': 'Considering' }, (err, cAnime) => {
+      Anime.find({ user: req.body.user, 'category': 'Considering' }, (err, cAnime) => {
         if (err) {
           res.json({ success: false, message: err });
         } else {
-          Anime.find({ 'category': 'Completed' }, (err, compAnime) => {
+          Anime.find({ user: req.body.user, 'category': 'Completed' }, (err, compAnime) => {
             if (err) {
               res.json({ success: false, message: err });
             } else {
@@ -78,6 +78,7 @@ router.post('/addAnimeToCatalog', (req, res) => {
   const anime = req.body.anime;
   const cat = req.body.category;
   let newAnime = new Anime({
+    user: anime['user'],
     name: anime['name'],
     description: anime['description'],
     rating: anime['rating'],

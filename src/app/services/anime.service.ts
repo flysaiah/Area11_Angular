@@ -27,7 +27,7 @@ export class AnimeService {
   changeCategory(animeID, newCategory) {
     return this.http.post(this.domain + '/api/changeCategory', {id: animeID, category: newCategory}).map(res => res.json());
   }
-  fetchAnime() {
-    return this.http.get(this.domain + '/api/fetchAnime').map(res => res.json());
+  fetchAnime(user) {
+    return this.http.post(this.domain + '/api/fetchAnime', { user: user }).map(res => res.json());
   }
 }

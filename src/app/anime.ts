@@ -1,5 +1,6 @@
 export class Anime {
   constructor(
+    public user: string,
     public name: string,
     public description?: string,
     public rating?: number,
@@ -7,7 +8,6 @@ export class Anime {
     public malID?: number,
     public category?: string,
     public mongoID?: number,
-    public user?: string,
     public comments?: string[]
   ) {}
 }
