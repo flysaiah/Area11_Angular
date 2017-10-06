@@ -74,23 +74,41 @@ router.post('/malSearch', (req, res) => {
 });
 
 router.post('/addAnimeToCatalog', (req, res) => {
-  // TODO: Validation to make sure that we don't insert the same anime into our DB twice (probably filter by name)
   const anime = req.body.anime;
   const cat = req.body.category;
-  let newAnime = new Anime({
-    user: anime['user'],
-    name: anime['name'],
-    description: anime['description'],
-    rating: anime['rating'],
-    thumbnail: anime['thumbnail'],
-    malID: anime['malID'],
-    category: cat
-  });
-  newAnime.save((err) => {
+  // First check to make sure they haven't added this anime already
+  Anime.findOne({ user: anime['user'], name: anime['name']}, (err, anime) => {
     if (err) {
-      res.json({ success: false, message: err });
+      res.json({ success: false, message: err })
+    } else if (anime) {
+      res.json({ success: false, message: 'Anime already in catalog'});
     } else {
-      res.json({ success: true, message: 'Anime added to catalog!' });
+      Anime.findOne({ user: anime['user'], malID: anime['malID']}, (err, anime) => {
+        if (err) {
+          res.json({ success: false, message: err })
+          return;
+        } else if (anime) {
+          res.json({ success: false, message: 'Anime already in catalog'});
+          return;
+        } else {
+          let newAnime = new Anime({
+            user: anime['user'],
+            name: anime['name'],
+            description: anime['description'],
+            rating: anime['rating'],
+            thumbnail: anime['thumbnail'],
+            malID: anime['malID'],
+            category: cat
+          });
+          newAnime.save((err) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else {
+              res.json({ success: true, message: 'Anime added to catalog!' });
+            }
+          })
+        }
+      })
     }
   })
 })

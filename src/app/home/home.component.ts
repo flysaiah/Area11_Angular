@@ -117,11 +117,13 @@ export class HomeComponent {
     this.completedList.sort(this.sortByField(c1, c2));
   }
 
-  addAnimeToWW() {
+  addAnimeToCatalog(category: string) {
     // Add anime to database under 'Want to Watch'
-    this.animeService.addAnimeToCatalog(this.animeToAdd, "Want to Watch").subscribe(res => {
+    this.animeService.addAnimeToCatalog(this.animeToAdd, category).subscribe(res => {
       if (res["success"]) {
         this.refresh();
+      } else if (res["message"] == "Anime already in catalog") {
+          this.displayToast(res["message"]);
       } else {
         this.displayToast("There was a problem.")
         console.log(res["message"]);

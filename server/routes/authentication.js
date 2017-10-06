@@ -4,7 +4,6 @@ const config = require('../config/database.js')
 module.exports = (router) => {
 
   router.post('/register', (req, res) => {
-    // TODO: Validation
     if (!req.body.username || !req.body.password) {
       res.json({ success: false, message: "Username/password not provided" });
     } else {
@@ -24,22 +23,25 @@ module.exports = (router) => {
   })
 
   router.post('/login', (req, res) => {
-    // TODO: Validation
-    User.findOne({ username: req.body.username.toLowerCase() }, (err, user) => {
-      if (err) {
-        res.json({ success: false, message: err });
-      } else if (!user) {
-          res.json({ success: false, message: "Username not found" });
-      } else {
-        if (user.comparePassword(req.body.password)) {
-          // Password checks out
-          const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '24h' });
-          res.json({ success: true, message: "Success", token: token, user: { username: user.username }});
+    if (!req.body.username || !req.body.password) {
+      res.json({ success: false, message: "Username/password not provided" });
+    } else {
+      User.findOne({ username: req.body.username.toLowerCase() }, (err, user) => {
+        if (err) {
+          res.json({ success: false, message: err });
+        } else if (!user) {
+            res.json({ success: false, message: "Username not found" });
         } else {
-          res.json({ success: false, message: "Incorrect password" });
+          if (user.comparePassword(req.body.password)) {
+            // Password checks out
+            const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '24h' });
+            res.json({ success: true, message: "Success", token: token, user: { username: user.username }});
+          } else {
+            res.json({ success: false, message: "Incorrect password" });
+          }
         }
-      }
-    })
+      })
+    }
   })
 
   // Any route that requires authentication goes after this middleware

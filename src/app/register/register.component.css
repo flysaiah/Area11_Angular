@@ -25,48 +25,48 @@
   width: 100%;
 }
 .area11-register-toast {
-    display: none;
-    /*TODO: Find a way to just grab these colors from the theme*/
-    background-color: #3d85c6;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    width: 300px;
-    height: 20px !important;
-    margin-top: 10px;
-    z-index: 1;
-    font-size: 14px;
+  display: none;
+  /*TODO: Find a way to just grab these colors from the theme*/
+  background-color: #3d85c6;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 300px;
+  height: 20px !important;
+  margin-top: 10px;
+  z-index: 1;
+  font-size: 14px;
 }
 
 .area11-register-toast.show {
-    display: block;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  display: block;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
 @-webkit-keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
 }
 
 @keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 10px; opacity: 1;}
+  from {top: 0; opacity: 0;}
+  to {top: 10px; opacity: 1;}
 }
 
 @-webkit-keyframes fadeout {
-    from {top: 10px; opacity: 1;}
-    to {top: 0; opacity: 0;}
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
 }
 
 @keyframes fadeout {
-    from {top: 10px; opacity: 1;}
-    to {top: 0; opacity: 0;}
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
 }

@@ -26,8 +26,9 @@
       </md-form-field>
       <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
       <br>
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToConsidering()">Add to Considering</button>
+      <!-- TODO: Need a button to add to completed -->
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
     </form>
   </md-card>
 
