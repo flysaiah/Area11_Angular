@@ -15,7 +15,7 @@ module.exports = (router) => {
       });
       user.save((err) => {
         if (err) {
-          res.json({ success: false, message: "Could not save user. Error: ", err});
+          res.json({ success: false, message: err});
         } else {
           res.json({ success: true, message: "User successfully saved!"});
         }

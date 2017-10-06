@@ -1,4 +1,5 @@
 <h1 class="register-logo">Area 11</h1>
+<div class="area11-register-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 <!-- TODO: Add some vertical banners on either side or something -->
 <div class="registration-container">
     <form #userForm="ngForm" class="register-form" (ngSubmit)="onSubmit()">
@@ -8,7 +9,7 @@
       </md-form-field>
 
       <md-form-field class="register-input">
-        <input mdInput placeholder="Password" [(ngModel)]="model.pass" type="text" id="pass" name="pass" #pass="ngModel" required>
+        <input mdInput placeholder="Password" [(ngModel)]="model.password" type="text" id="pass" name="pass" #pass="ngModel" required>
         <md-error *ngIf="pass.invalid && (pass.dirty || pass.touched)"> Password is required </md-error>
       </md-form-field>
 
