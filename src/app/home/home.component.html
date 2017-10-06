@@ -23,10 +23,10 @@ Hey, this is the home screen!
 <div class="catalog-container">
   <md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
     <form>
-      <md-form-field class="add-anime-name">
+      <md-form-field color="accent" class="add-anime-name">
         <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
       </md-form-field>
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="primary" type=button (click)="malSearch()">Link</button>
+      <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
       <br>
       <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToWW()">Add to Want to Watch</button>
       <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToConsidering()">Add to Considering</button>

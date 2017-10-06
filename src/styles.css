@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* For angular material */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import "./custom-theme";*/
 /* NOTE: If we ever use md-slide-toggle, md-slider, or mdTooltip, we have to install HammerJS as specified
 here: https://material.angular.io/guide/getting-started. In general, if something isn't working,
 check there because there are lots of optional packages that make certain things work */
