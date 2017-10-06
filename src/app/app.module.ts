@@ -15,6 +15,8 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';
 import { AnimeService } from './services/anime.service';
+import { AuthGuard } from './guards/auth.guard';
+import { NotAuthGuard } from './guards/notAuth.guard';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,7 @@ import { AnimeService } from './services/anime.service';
     HttpModule,
     MatFormFieldModule
   ],
-  providers: [AuthService, AnimeService],
+  providers: [AuthService, AnimeService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
 })
