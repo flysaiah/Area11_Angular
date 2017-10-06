@@ -67,10 +67,10 @@ Hey, this is the home screen!
       <p [innerHTML]="selectedAnime['description']"></p>
     </md-card-content>
     <md-card-actions class="details-button-container">
-      <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" md-raised-button color="primary">Add to Want to Watch</button>
-      <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" md-raised-button color="primary">Add to Considering</button>
-      <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" md-raised-button color="primary">Add to Completed</button>
-      <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" md-raised-button color="accent">Select as Finalist</button>
+      <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" md-raised-button color="accent">Add to Want to Watch</button>
+      <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" md-raised-button color="accent">Add to Considering</button>
+      <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" md-raised-button color="accent">Add to Completed</button>
+      <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" md-raised-button color="primary">Select as Finalist</button>
       <button (click)="removeAnimeFromCatalog()" class="details-button" md-raised-button color="warn">Remove from Catalog</button>
     </md-card-actions>
   </div>
