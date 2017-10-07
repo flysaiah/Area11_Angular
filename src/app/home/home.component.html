@@ -8,11 +8,9 @@
       <img [mdMenuTriggerFor]="menu" class="profile-avatar" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
     </button>
   </div>
-  <!-- <button class="open-menu" md-icon-button [mdMenuTriggerFor]="menu">
-  <img src="../../assets/menu.svg">
-</button> -->
+
 <md-menu [overlapTrigger]="false" #menu="mdMenu">
-  <button md-menu-item (click)="logout()">
+  <button class="logout-button" md-menu-item (click)="logout()">
     <span>Logout</span>
   </button>
 </md-menu>
@@ -32,84 +30,89 @@
   </select>
 </div>
 
-<!-- Add anime prompt -->
-<div class="catalog-container">
-  <md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
-    <form>
-      <md-form-field color="accent" class="add-anime-name">
-        <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
-      </md-form-field>
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
-      <br>
-      <!-- TODO: Need a button to add to completed -->
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
-      <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
-    </form>
+<div class="home-container">
+
+  <!-- Add anime prompt -->
+  <div class="flex-item">
+    <md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
+      <form>
+        <md-form-field color="accent" class="add-anime-name">
+          <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
+        </md-form-field>
+        <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
+        <br>
+        <!-- TODO: Need a button to add to completed -->
+        <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
+        <button md-raised-button [disabled]="!animeToAdd['name']" class="add-to-buttons" type=button (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
+      </form>
+    </md-card>
+
+    <!-- Anime catalogue -->
+    <div class="catalog">
+      <md-nav-list dense #animeCatalog>
+        <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
+        <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
+          {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+        </md-list-item>
+        <md-divider></md-divider>
+        <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
+        <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
+          {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+        </md-list-item>
+        <md-divider></md-divider>
+        <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
+        <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
+          {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+        </md-list-item>
+      </md-nav-list>
+    </div>
+  </div>
+
+  <!-- Details View -->
+  <md-card class="details-panel-placeholder" *ngIf="!selectedAnime['name']">
+    Click on anime in any of your lists to see details from MAL here!
+  </md-card>
+  <md-card class="details-panel no-padding-bottom" *ngIf="selectedAnime['name']">
+    <div *ngIf="selectedAnime['name']">
+      <div class="details-panel-content" >
+        <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
+        <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
+        <!-- FIXME: Tags for italics like [i] aren't being recognized -->
+        <p [innerHTML]="selectedAnime['description']"></p>
+      </div>
+      <div class="details-button-container">
+        <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" md-raised-button color="accent">Add to Want to Watch</button>
+        <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" md-raised-button color="accent">Add to Considering</button>
+        <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" md-raised-button color="accent">Add to Completed</button>
+        <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" md-raised-button color="primary">Select as Finalist</button>
+        <button (click)="removeAnimeFromCatalog()" class="details-button" md-raised-button color="warn">Remove from Catalog</button>
+      </div>
+    </div>
   </md-card>
 
-  <!-- Anime catalogue -->
-  <div class="catalog">
-    <md-nav-list dense #animeCatalog>
-      <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
-      <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
-        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-      </md-list-item>
-      <md-divider></md-divider>
-      <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
-      <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
-        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-      </md-list-item>
-      <md-divider></md-divider>
-      <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
-      <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
-        {{ anime.name }} <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-      </md-list-item>
-    </md-nav-list>
-  </div>
-</div>
+  <!-- TODO: Different color based on success vs error -->
+  <div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 
-<!-- Details View -->
-<md-card class="details-panel">
-  <div class="details-panel-placeholder" *ngIf="!selectedAnime['name']">
-    Click on anime in any of your lists to see details from MAL here!
-  </div>
-  <div *ngIf="selectedAnime['name']">
-    <md-card-content class="details-panel-content" >
-      <h2>{{ selectedAnime["name"] }}</h2>
-      <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
-      <!-- FIXME: Tags for italics like [i] aren't being recognized -->
-      <p [innerHTML]="selectedAnime['description']"></p>
-    </md-card-content>
-    <md-card-actions class="details-button-container">
-      <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" md-raised-button color="accent">Add to Want to Watch</button>
-      <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" md-raised-button color="accent">Add to Considering</button>
-      <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" md-raised-button color="accent">Add to Completed</button>
-      <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" md-raised-button color="primary">Select as Finalist</button>
-      <button (click)="removeAnimeFromCatalog()" class="details-button" md-raised-button color="warn">Remove from Catalog</button>
-    </md-card-actions>
-  </div>
-</md-card>
+  <md-card class="chooser-tool-placeholder flex-item" *ngIf="!finalistList.length">
+    Anime you add to your final selection process will appear here!
+  </md-card>
 
-<!-- TODO: Different color based on success vs error -->
-<div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
-
-<md-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
-  Anime you add to your final selection process will appear here!
-</md-card>
-
-<!-- FIXME: These aren't clickable right now -->
-<div *ngIf="finalistList.length" class="chooser-tool">
-  <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
-    <span class="finalist-item-name">{{ anime["name"] }}</span>
-    <div class="comments-chiplist">
-      <md-chip-list>
-        <md-chip *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>
-      </md-chip-list>
+  <!-- FIXME: These aren't clickable right now -->
+  <!-- IDEA: No buttons, but when clicked, buttons for remove & edit appear -->
+  <div *ngIf="finalistList.length" class="chooser-tool flex-item">
+    <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
+      <span class="finalist-item-name">{{ anime["name"] }}</span>
+      <div class="comments-chiplist">
+        <md-chip-list>
+          <md-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>
+        </md-chip-list>
+      </div>
+      <div class="finalist-button-container">
+        <button (click)="viewFinalist(i)" class="finalist-button" md-raised-button color="primary">View</button>
+        <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
+        <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
+      </div>
+      <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
     </div>
-    <div class="finalist-button-container">
-      <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
-      <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
-    </div>
-    <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
   </div>
 </div>

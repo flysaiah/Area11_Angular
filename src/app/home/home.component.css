@@ -28,6 +28,9 @@
   border-radius: 50%;
   margin-top: -10px;
 }
+.logout-button {
+  text-align: center;
+}
 .open-menu {
   float: right;
 }
@@ -122,9 +125,16 @@
   border-radius: 25px;
   color: white;
 }
-.catalog-container {
-  float: left;
-  width: 29%;
+.home-container {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+}
+.flex-item {
+  width: 28%;
+  margin-left: 1%;
+  margin-right: 1%;
 }
 /*TODO: Center the 3 columns*/
 .catalog {
@@ -145,35 +155,45 @@
   top: 15px;
 }
 .details-panel {
-  float: left;
-  width: 29%;
-  margin-left: 1%;
+  width: 34%;
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  margin-top: 10px;
+  padding-top: 0px !important;
+  padding-right: 0px !important;
+}
+.details-title {
+  margin-bottom: 8px;
+}
+.details-panel-placeholder {
+  width: 34%;
   text-align: center;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
   margin-top: 10px;
 }
-.details-panel-placeholder {
-  text-align: left;
-}
 .details-panel-content {
   overflow: scroll;
   max-height: 550px;
+  padding-right: 24px;
+}
+.no-padding-bottom {
+  padding-bottom: 0px !important;
 }
 .details-button-container {
   border-top: 1px solid #c3c3c3;
-  height: 50px;
+  padding-top: 5px;
+  height: 100px;
+  overflow: scroll;
 }
 .details-button {
   margin: 5px !important;
   color: white;
 }
 .chooser-tool {
-  width: 29%;
-  margin-left: 1%;
-  margin-right: 10px;
-  float: left;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
@@ -183,9 +203,6 @@
   margin-top: 10px;
 }
 .chooser-tool-placeholder {
-  width: 29%;
-  margin-left: 1%;
-  float: left;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
@@ -193,7 +210,7 @@
 
 }
 .finalist-item {
-  font-family: Roboto,"Helvetica Neue",sans-serif;
+  font-family: "Roboto";
   list-style-type: none;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -218,6 +235,9 @@
   margin-top: 5px !important;
   margin-bottom: 5px !important;
   margin-left: 20px;
+}
+.comment-chip {
+  height: 4px;
 }
 .finalist-divider {
   display: block;

@@ -207,6 +207,12 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.finalistList[index]["comments"] = result.split(";");
+        const tmp = this.finalistList[index];
+        this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
+          if (!res["success"]) {
+            this.displayToast("There was a problem.");
+          }
+        });
       }
     });
   }
@@ -222,6 +228,10 @@ export class HomeComponent {
     });
   }
 
+  viewFinalist(index: number) {
+    this.showAnimeDetails(this.finalistList[index]);
+  }
+
   private refresh() {
     // Fetch all anime stored in database and update our lists
     this.wantToWatchList = [];
@@ -234,7 +244,6 @@ export class HomeComponent {
     this.animeService.fetchAnime(this.currentUser).subscribe(res => {
       if (res["success"]) {
         const animeList = res["animeList"];
-        console.log(animeList);
         for (let anime of animeList) {
           if (anime["category"] == "Want to Watch") {
             this.wantToWatchList.push(anime);
