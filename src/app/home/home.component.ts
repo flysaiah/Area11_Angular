@@ -119,35 +119,12 @@ export class HomeComponent {
 
   addAnimeToCatalog(category: string) {
     // Add anime to database under 'Want to Watch'
-    this.animeService.addAnimeToCatalog(this.animeToAdd, category).subscribe(res => {
+    this.animeToAdd["category"] = category;
+    this.animeService.addAnimeToCatalog(this.animeToAdd).subscribe(res => {
       if (res["success"]) {
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
           this.displayToast(res["message"]);
-      } else {
-        this.displayToast("There was a problem.")
-        console.log(res["message"]);
-      }
-    });
-  }
-
-  addAnimeToConsidering() {
-    // Add anime to database under 'Considering'
-    this.animeService.addAnimeToCatalog(this.animeToAdd, "Considering").subscribe(res => {
-      if (res["success"]) {
-        this.refresh();
-      } else {
-        this.displayToast("There was a problem.")
-        console.log(res["message"]);
-      }
-    });
-  }
-
-  addAnimeToCompleted() {
-    // Add anime to database under 'Considering'
-    this.animeService.addAnimeToCatalog(this.animeToAdd, "Completed").subscribe(res => {
-      if (res["success"]) {
-        this.refresh();
       } else {
         this.displayToast("There was a problem.")
         console.log(res["message"]);
@@ -166,6 +143,10 @@ export class HomeComponent {
         }
       }
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   selectAsFinalist() {
@@ -253,6 +234,7 @@ export class HomeComponent {
     this.animeService.fetchAnime(this.currentUser).subscribe(res => {
       if (res["success"]) {
         const animeList = res["animeList"];
+        console.log(animeList);
         for (let anime of animeList) {
           if (anime["category"] == "Want to Watch") {
             this.wantToWatchList.push(anime);

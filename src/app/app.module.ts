@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule } from '@angular/material';
+import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -40,7 +40,8 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     MatChipsModule,
     AppRoutingModule,
     HttpModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatMenuModule
   ],
   providers: [AuthService, AnimeService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],

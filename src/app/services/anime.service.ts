@@ -18,8 +18,8 @@ export class AnimeService {
   malSearch(name) {
     return this.http.post(this.domain + '/api/malSearch', { query: name }).map(res => res.json());
   }
-  addAnimeToCatalog(anime, category) {
-    return this.http.post(this.domain + '/api/addAnimeToCatalog', { category: category, anime: anime }).map(res => res.json());
+  addAnimeToCatalog(anime) {
+    return this.http.post(this.domain + '/api/addAnimeToCatalog', { anime: anime }).map(res => res.json());
   }
   removeAnimeFromCatalog(animeID) {
     return this.http.post(this.domain + '/api/removeAnimeFromCatalog', { id: animeID }).map(res => res.json());

@@ -1,12 +1,27 @@
 <!-- TODO: Make logo clickable -->
 <div class="top-wrapper">
   <h1 class="main-logo">Area 11</h1>
+  <div class="profile-container">
+    <span class="profile-username">{{ currentUser }}</span>
+    <button md-icon-button>
+      <!-- TODO: Make profile avatar uploadable -->
+      <img [mdMenuTriggerFor]="menu" class="profile-avatar" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+    </button>
+  </div>
+  <!-- <button class="open-menu" md-icon-button [mdMenuTriggerFor]="menu">
+  <img src="../../assets/menu.svg">
+</button> -->
+<md-menu [overlapTrigger]="false" #menu="mdMenu">
+  <button md-menu-item (click)="logout()">
+    <span>Logout</span>
+  </button>
+</md-menu>
 </div>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
   <button md-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
   <button md-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
-
+  <!-- TODO: Add search bar -->
   <!-- Filtering/sorting -->
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
   <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
@@ -75,6 +90,7 @@
   </div>
 </md-card>
 
+<!-- TODO: Different color based on success vs error -->
 <div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 
 <md-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
