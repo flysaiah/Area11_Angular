@@ -45,11 +45,8 @@
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  width: 28%;
-  height: 20px !important;
-  float: right;
   margin-top: 10px;
-  margin-right: 30px;
+  height: 20px !important;
   z-index: 1;
   font-size: 14px;
 }
@@ -213,7 +210,6 @@
   font-family: "Roboto";
   list-style-type: none;
   padding-top: 10px;
-  padding-bottom: 10px;
   padding-right: 10px;
 }
 .finalist-item-name {

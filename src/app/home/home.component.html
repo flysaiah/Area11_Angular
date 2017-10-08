@@ -91,28 +91,32 @@
   </md-card>
 
   <!-- TODO: Different color based on success vs error -->
-  <div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
+  <div class="flex-item">
+    <div class="area11-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
 
-  <md-card class="chooser-tool-placeholder flex-item" *ngIf="!finalistList.length">
-    Anime you add to your final selection process will appear here!
-  </md-card>
+    <md-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
+      Anime you add to your final selection process will appear here!
+    </md-card>
 
-  <!-- FIXME: These aren't clickable right now -->
-  <!-- IDEA: No buttons, but when clicked, buttons for remove & edit appear -->
-  <div *ngIf="finalistList.length" class="chooser-tool flex-item">
-    <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
-      <span class="finalist-item-name">{{ anime["name"] }}</span>
-      <div class="comments-chiplist">
-        <md-chip-list>
-          <md-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>
-        </md-chip-list>
+  <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
+    <!-- FIXME: These aren't clickable right now -->
+    <!-- IDEA: No buttons, but when clicked, buttons for remove & edit appear -->
+    <!-- IDEA: Maybe even better, just no buttons here in genera;just use details panel buttons -->
+    <div *ngIf="finalistList.length" class="chooser-tool">
+      <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
+        <span class="finalist-item-name">{{ anime["name"] }}</span>
+        <div class="comments-chiplist">
+          <md-chip-list>
+            <md-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>
+          </md-chip-list>
+        </div>
+        <div class="finalist-button-container">
+          <button (click)="viewFinalist(i)" class="finalist-button" md-raised-button color="primary">View</button>
+          <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
+          <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
+        </div>
+        <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
       </div>
-      <div class="finalist-button-container">
-        <button (click)="viewFinalist(i)" class="finalist-button" md-raised-button color="primary">View</button>
-        <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
-        <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
-      </div>
-      <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
     </div>
   </div>
 </div>
