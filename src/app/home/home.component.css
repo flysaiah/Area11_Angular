@@ -35,10 +35,11 @@
   float: right;
 }
 .area11-toast {
-  /*TODO: Add a better border*/
   display: none;
   background-color: #3d85c6;
   color: #fff;
+  border: 1px solid black;
+  border-width: 2px;
   text-align: center;
   border-radius: 2px;
   padding-left: 10px;
@@ -49,6 +50,9 @@
   height: 20px !important;
   z-index: 1;
   font-size: 14px;
+}
+.toast-error {
+  background-color: #ff5722;
 }
 
 .area11-toast.show {
@@ -102,6 +106,7 @@
 .catalog-sort-label {
   margin-left: 50px;
 }
+/*TODO: Dynamically resize this too as page shrinks*/
 .add-anime-prompt {
   margin-top: 5px;
   width: 325px;

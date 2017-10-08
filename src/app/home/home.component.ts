@@ -22,17 +22,22 @@ export class HomeComponent {
   // We do simple toasts without outside packages
   showToast: boolean;
   toastMessage: string;
+  toastError: boolean;
   sortCriteria: string;
 
   currentUser: string;
 
-  private displayToast(message: string) {
+  private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
     this.toastMessage = message;
+    if (error) {
+      this.toastError = true;
+    }
     setTimeout(() => {
       this.showToast = false;
       this.toastMessage = "";
+      this.toastError = false;
     }, 3000);
   }
 
@@ -67,10 +72,10 @@ export class HomeComponent {
       if (!res["success"]) {
         // MAL API is weird because if there are no results it yields a parse error
         if (res["message"] == "Error: Parse Error") {
-          this.displayToast("No results found.")
+          this.displayToast("No results found.", true)
           return;
         } else {
-          this.displayToast("There was a problem.")
+          this.displayToast("There was a problem.", true)
           console.log(res["message"]);
         }
       } else {
@@ -124,9 +129,9 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
-          this.displayToast(res["message"]);
+          this.displayToast(res["message"], true);
       } else {
-        this.displayToast("There was a problem.")
+        this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
     });
@@ -163,7 +168,7 @@ export class HomeComponent {
       }
       this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
         if (!res["success"]) {
-          this.displayToast("There was a problem.");
+          this.displayToast("There was a problem.", true);
         }
       })
       this.refresh();
@@ -178,7 +183,7 @@ export class HomeComponent {
         this.selectedAnime = new Anime(this.currentUser, "");
         this.displayToast("Anime successfully removed!");
       } else {
-        this.displayToast("There was a problem.")
+        this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
     });
@@ -192,7 +197,7 @@ export class HomeComponent {
         this.selectedAnime["category"] = newCategory;
         this.refresh();
       } else {
-        this.displayToast("There was a problem.")
+        this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
     })
@@ -210,7 +215,7 @@ export class HomeComponent {
         const tmp = this.finalistList[index];
         this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
           if (!res["success"]) {
-            this.displayToast("There was a problem.");
+            this.displayToast("There was a problem.", true);
           }
         });
       }
@@ -223,7 +228,7 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh();
       } else {
-        this.displayToast("There was a problem");
+        this.displayToast("There was a problem", true);
       }
     });
   }
@@ -260,7 +265,7 @@ export class HomeComponent {
           this.validateSelectAsFinalistButton();
         }
       } else {
-        this.displayToast("There was a problem.")
+        this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
 
