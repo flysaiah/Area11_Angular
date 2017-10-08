@@ -11,7 +11,8 @@ const animeSchema = new Schema({
   category: String,
   user: String,
   comments: [String],
-  isFinalist: Boolean
+  isFinalist: Boolean,
+  genres: [String]
 })
 
 module.exports = mongoose.model('Anime', animeSchema);

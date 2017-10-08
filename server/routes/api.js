@@ -86,7 +86,8 @@ router.post('/addAnimeToCatalog', (req, res) => {
             thumbnail: anime['thumbnail'],
             malID: anime['malID'],
             category: anime['category'],
-            isFinalist: anime['isFinalist']
+            isFinalist: anime['isFinalist'],
+            genres: anime['genres']
           });
           newAnime.save((err) => {
             if (err) {

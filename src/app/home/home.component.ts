@@ -80,6 +80,7 @@ export class HomeComponent {
         }
       } else {
         const animeList = res["data"];
+        console.log(animeList);
 
         // Display the top 5 suggestions
         // IDEA: In the future, it would be nice to have user preferences for how many
@@ -87,16 +88,16 @@ export class HomeComponent {
         const numSuggestions = Math.min(5, animeList.length);
         // Special case is where there is only 1 entry, in which case it is not an array
         if (animeList.hasOwnProperty("title")) {
-          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"]));
+          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"], animeList["genres"]));
         }
         for (let i=0; i<numSuggestions; i++) {
           // IDEA: Option in user settings for specifying English vs Japanese title when linked
           // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
-          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"]))
+          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"], animeList[i]["genres"]))
         }
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
-          width: '1000px',
+          width: '500px',
           data: {suggestions: this.linkAnimeSuggestions}
         });
 
@@ -223,10 +224,9 @@ export class HomeComponent {
   }
 
   removeFinalist(index: number) {
-    // IDEA: Change title of chooser tool depending on # of anime left
     this.animeService.removeFinalist(this.finalistList[index]["_id"]).subscribe((res) => {
       if (res["success"]) {
-        this.refresh();
+        this.refresh(true);
       } else {
         this.displayToast("There was a problem", true);
       }
@@ -237,7 +237,7 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
-  private refresh() {
+  private refresh(showFinalistMessage?: boolean) {
     // Fetch all anime stored in database and update our lists
     this.wantToWatchList = [];
     this.consideringList = [];
@@ -263,6 +263,23 @@ export class HomeComponent {
         }
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
+          if (showFinalistMessage) {
+            // If this was triggered by removing a finalist, then toast
+            switch (this.finalistList.length) {
+              case 4: {
+                this.displayToast("It's down to the Elite Four!");
+                break;
+              } case 2: {
+                this.displayToast("It's down to the finals!");
+                break;
+              } case 1: {
+                this.displayToast("Congratulations to the victor!");
+                break;
+              } default: {
+                // do nothing
+              }
+            }
+          }
         }
       } else {
         this.displayToast("There was a problem.", true)
@@ -313,6 +330,7 @@ export class HomeComponent {
 @Component({
   selector: 'link-anime',
   templateUrl: './link-anime.html',
+  styleUrls: ['./link-anime.css']
 })
 export class LinkAnimeDialog {
   constructor(

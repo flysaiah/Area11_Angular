@@ -9,6 +9,7 @@ export class Anime {
     public category?: string,
     public _id?: string,
     public comments?: string[],
-    public isFinalist?: boolean
+    public isFinalist?: boolean,
+    public genres?: string[]
   ) {}
 }

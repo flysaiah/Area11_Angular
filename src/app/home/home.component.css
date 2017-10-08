@@ -120,7 +120,6 @@
   margin-right: 10px;
   margin-top: -20px;
 }
-
 .link-button {
   width: 30px;
   margin-right: -10px;
@@ -203,16 +202,15 @@
   overflow: scroll;
   max-height: 600px;
   margin-top: 10px;
+  font-family: "Roboto";
 }
 .chooser-tool-placeholder {
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
   margin-top: 10px;
-
 }
 .finalist-item {
-  font-family: "Roboto";
   list-style-type: none;
   padding-top: 10px;
   padding-right: 10px;
@@ -224,7 +222,27 @@
   float: right;
   margin-top: 5px;
   margin-bottom: 10px;
-  margin-right: 20px;
+  margin-right: 2%;
+  white-space: nowrap;
+}
+.finalist-button-container-smallscreen {
+  display: none;
+}
+@media screen and (max-width: 1000px) {
+    .finalist-button-container {
+      display: none;
+    }
+    .finalist-button-container-smallscreen {
+      display: block;
+      margin-right: 2%;
+      float: right;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+    .finalist-smallscreen-action {
+      height: 30px;
+      line-height: 30px;
+    }
 }
 .finalist-button {
   border-radius: 50px;
