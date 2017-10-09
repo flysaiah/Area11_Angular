@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { SettingsComponent } from './settings/settings.component';
+import { GroupComponent } from './group/group.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 
@@ -11,7 +12,8 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard]},
   { path: 'register', component: RegisterComponent, canActivate: [NotAuthGuard]},
   { path: 'login', component: LoginComponent, canActivate: [NotAuthGuard]},
-  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]}
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
+  { path: 'group', component: GroupComponent, canActivate: [AuthGuard]}
   // TODO: Add a PageNotFoundComponent
   // { path: '**', component: PageNotFoundComponent}
 ]

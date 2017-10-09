@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule } from '@angular/material';
+import { MdButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,9 +16,11 @@ import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';
 import { AnimeService } from './services/anime.service';
 import { UserService } from './services/user.service';
+import { GroupService } from './services/group.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent } from './settings/settings.component';
+import { GroupComponent } from './group/group.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { SettingsComponent } from './settings/settings.component';
     FinalistCommentsDialog,
     RegisterComponent,
     LoginComponent,
-    SettingsComponent
+    SettingsComponent,
+    GroupComponent
   ],
   imports: [
     BrowserModule,
@@ -45,9 +48,10 @@ import { SettingsComponent } from './settings/settings.component';
     HttpModule,
     MatFormFieldModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTabsModule
   ],
-  providers: [AuthService, AnimeService, UserService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, GroupService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
 })

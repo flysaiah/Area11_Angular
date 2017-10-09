@@ -1,0 +1,52 @@
+<!-- TODO: Refactor this into its own component -->
+<div class="top-wrapper">
+  <h1 class="main-logo">Area 11</h1>
+  <div class="profile-container">
+    <span class="profile-username">{{ currentUser }}</span>
+    <button md-icon-button>
+      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage($event.target)">
+    </button>
+  </div>
+<md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
+  <a class="home-menu-button" md-menu-item routerLink="/settings">
+    <span>Settings</span>
+  </a>
+  <button class="home-menu-button" md-menu-item (click)="logout()">
+    <span>Logout</span>
+  </button>
+</md-menu>
+</div>
+
+<div class="search-toolbar">
+</div>
+<div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
+<md-card class="group-container">
+  <md-card-content>
+    <md-tab-group>
+      <md-tab label="My Group">
+        <div *ngIf="currentGroup['name']">
+          You have a group: {{ currentGroup['name'] }}
+          <button md-raised-button (click)="disbandGroup()">Disband Group</button>
+        </div>
+      <div class="no-group" *ngIf="!currentGroup['name']">
+        You're not currently in a group. Find or create one here!
+        <div class="find-group">
+          Find groups here:
+        </div>
+        <div>
+        <p>Or alternatively, create your own group!</p>
+          <md-form-field class="new-group-name" color="accent">
+            <input mdInput [(ngModel)]="newGroupName" placeholder="New Group Name">
+          </md-form-field>
+          <button md-raised-button color="accent" (click)="createGroup()">Create Group</button>
+        </div>
+      </div>
+      </md-tab>
+      <md-tab label="Group Settings">
+        <div class="group-settings">
+          Group settings and features will be available in future updates!
+        </div>
+      </md-tab>
+    </md-tab-group>
+  </md-card-content>
+</md-card>

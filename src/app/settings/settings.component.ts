@@ -33,6 +33,7 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccount() {
+    // TODO: This
     console.log("DELETE ACCOUNT");
   }
 
@@ -73,8 +74,8 @@ export class SettingsComponent implements OnInit {
         this.authService.logout();
         console.log(res["message"]);
       }
-    }
-  )}
+    });
+  }
 
   constructor(
     private authService: AuthService,

@@ -3,6 +3,7 @@ const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
+const Group = require('../models/group.js');
 
 module.exports = (router) => {
 
@@ -94,11 +95,11 @@ module.exports = (router) => {
               } else {
                 res.json({ success: true, message: 'Anime added to catalog!' });
               }
-            })
+            });
           }
-        })
+        });
       }
-    })
+    });
   });
 
   router.post('/changeFinalistStatus', (req, res) => {
@@ -130,6 +131,91 @@ module.exports = (router) => {
       }
     })
   });
+
+  router.post('/createGroup', (req, res) => {
+    let newGroup = new Group({
+      "name": req.body.name,
+      "members": [req.decoded.userId],
+      "membernames": [req.body.username]
+    });
+    newGroup.save((err) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        // Also have to update users
+        User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: req.body.name }}, (err, user) => {
+          if (err || !user) {
+            // Need to remove the group we just created if we couldn't complete the whole function
+            Group.findOne({ "name": req.body.name }).remove().exec();
+            res.json({ success: false, message: err});
+          } else {
+            res.json({ success: true, message: 'New group created!' });
+          }
+        });
+      }
+    });
+  });
+
+  router.post('/getGroupInfo', (req, res) => {
+    Group.findOne({ "name": req.body.name }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else if (!group) {
+        // Group doesn't exist anymore--delete relevant info from user document
+        User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            res.json({ success: false, message: "No group found" });
+          }
+        })
+      } else {
+        // First make sure that user is a part of this group
+        let found = false;
+        for (let member of group.members) {
+          if (member == req.decoded.userId) {
+            found = true;
+          }
+        }
+        if (!found) {
+          res.json({ success: false, message: "Invalid group membership" });
+        } else {
+          res.json({ success: true, group: group })
+        }
+      }
+    })
+  });
+
+  router.post('/disbandGroup', (req, res) => {
+    Group.findOne({ "name": req.body.name }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else if (!group) {
+        // Group doesn't exist anymore--delete relevant info from user document
+        User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            res.json({ success: false, message: "No group found" });
+          }
+        })
+      } else {
+        // First make sure that user is a part of this group
+        let found = false;
+        for (let member of group.members) {
+          if (member == req.decoded.userId) {
+            found = true;
+          }
+        }
+        if (!found) {
+          res.json({ success: false, message: "Invalid group membership" });
+        } else {
+          Group.findOne({ "name": req.body.name }).remove().exec();
+          res.json({ success: true, message: "Group successfully deleted" });
+        }
+      }
+    })
+  })
 
   return router;
 }
