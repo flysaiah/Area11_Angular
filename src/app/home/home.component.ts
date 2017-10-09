@@ -19,6 +19,7 @@ export class HomeComponent {
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
   canSelectAsFinalist: boolean;
+  possibleCategories: string[];
   // We do simple toasts without outside packages
   showToast: boolean;
   toastMessage: string;
@@ -123,9 +124,11 @@ export class HomeComponent {
     this.completedList.sort(this.sortByField(c1, c2));
   }
 
-  addAnimeToCatalog(category: string) {
+  addAnimeToCatalog(category?: string) {
     // Add anime to database under 'Want to Watch'
-    this.animeToAdd["category"] = category;
+    if (category) {
+      this.animeToAdd['category'] = category;
+    }
     this.animeService.addAnimeToCatalog(this.animeToAdd).subscribe(res => {
       if (res["success"]) {
         this.refresh();
@@ -307,6 +310,7 @@ export class HomeComponent {
     this.animeToAdd = new Anime("", "");
     this.selectedAnime = new Anime("", "");
     this.sortCriteria = "_id,ascending"
+    this.possibleCategories = ["Want to Watch", "Considering", "Completed"];
     this.showToast = false;
     this.toastMessage = "";
 
