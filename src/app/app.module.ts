@@ -15,8 +15,10 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';
 import { AnimeService } from './services/anime.service';
+import { UserService } from './services/user.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     LinkAnimeDialog,
     FinalistCommentsDialog,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,7 @@ import { NotAuthGuard } from './guards/notAuth.guard';
     MatMenuModule,
     MatSelectModule
   ],
-  providers: [AuthService, AnimeService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
 })

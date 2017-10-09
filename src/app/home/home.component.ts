@@ -314,8 +314,6 @@ export class HomeComponent {
     this.showToast = false;
     this.toastMessage = "";
 
-    // This also happens in refresh() but we need to do it here
-    // because it takes  a second for auth service to run
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
@@ -327,7 +325,7 @@ export class HomeComponent {
         this.authService.logout();
         console.log(res["message"]);
       }
-    })
+    });
   }
 }
 

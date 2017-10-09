@@ -3,6 +3,7 @@ export class User {
     public username: String,
     public password: String,
     public bestgirl: String,
-    public friends?: String[]
+    public friends?: String[],
+    public avatar?: String
   ) {}
 }

@@ -1,0 +1,132 @@
+.top-wrapper {
+  padding-top: 10px;
+  padding-bottom: 8px;
+  vertical-align: middle;
+}
+.main-logo {
+  color: #800015;
+  font-family: "Syncopate";
+  margin-bottom: 10px;
+  margin-left: 10px;
+  display: inline;
+  font-size: 40px;
+}
+.profile-container {
+  float: right;
+  margin-right: 60px;
+  color: #800015;
+  font-size: 20px;
+}
+.profile-username {
+  position: absolute;
+  top: 17px;
+  right: 120px;
+  font-size: 30px;
+}
+.profile-avatar {
+  height: 50px;
+  border-radius: 50%;
+  margin-top: -10px;
+}
+.home-menu-button {
+  text-align: center;
+}
+.open-menu {
+  float: right;
+}
+.area11-settings-toast {
+  display: none;
+  background-color: #3d85c6;
+  color: #fff;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  border-width: 2px;
+  text-align: center;
+  border-radius: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  height: 20px !important;
+  z-index: 1;
+  font-size: 14px;
+}
+.toast-error {
+  background-color: #ff5722;
+}
+
+.area11-settings-toast.show {
+  display: block;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 10px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+.search-toolbar {
+  width: 100%;
+  color: #f0f0f0;
+  vertical-align: middle;
+  background-color: #800015;
+  border: 1px solid #330000;
+  border-width: 2px;
+  height: 40px;
+  line-height: 40px;
+  text-shadow: 1px 1px 0 #444;
+}
+.settings-container {
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
+  height: 500px;
+}
+.settings-form {
+  width: 50%;
+  float: left;
+}
+.settings-input {
+  width: 80%;
+}
+.save-changes-button {
+  width: 50%;
+  margin-bottom: 20px;
+}
+.delete-account-button {
+  width: 50%;
+}
+.user-profile {
+  width: 50%;
+  color: #800015;
+  font-size: 50px;
+  float: left;
+  text-align: center;
+}
+.settings-avatar-big {
+  width: 90%;
+  border-radius: 50%;
+}
+.settings-avatar-name {
+  margin-top: -10px;
+}

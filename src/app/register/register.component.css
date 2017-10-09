@@ -5,7 +5,7 @@
   text-align: center;
   margin-bottom: 25px;
 }
-
+/*TODO: Toast error*/
 .register-form {
   display: flex;
   flex-direction: column;

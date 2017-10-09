@@ -1,0 +1,40 @@
+<!-- TODO: Refactor this into its own component -->
+<div class="top-wrapper">
+  <h1 class="main-logo">Area 11</h1>
+  <div class="profile-container">
+    <span class="profile-username">{{ currentUser }}</span>
+    <button md-icon-button>
+      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+    </button>
+  </div>
+<md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
+  <a class="home-menu-button" md-menu-item routerLink="/settings">
+    <span>Settings</span>
+  </a>
+  <button class="home-menu-button" md-menu-item (click)="logout()">
+    <span>Logout</span>
+  </button>
+</md-menu>
+</div>
+
+<div class="search-toolbar">
+</div>
+<div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
+<md-card class="settings-container">
+  <md-card-content>
+    <form class="settings-form" #userForm="ngForm">
+      <md-form-field class="settings-input" color="accent">
+        <input mdInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
+      </md-form-field>
+      <md-form-field class="settings-input" color="accent">
+        <input mdInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar" #avatar="ngModel">
+      </md-form-field>
+      <button class="save-changes-button" md-raised-button color="accent" [disabled]="!bestgirl.dirty && !avatar.dirty" (click)="saveChanges()">Save Changes</button>
+      <button class="delete-account-button" md-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
+    </form>
+    <div class="user-profile">
+      <img class="settings-avatar-big" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+      <h3 class="settings-avatar-name">{{ currentUser }}</h3>
+    </div>
+  </md-card-content>
+</md-card>
