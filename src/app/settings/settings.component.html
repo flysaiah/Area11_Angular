@@ -4,7 +4,7 @@
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
     <button md-icon-button>
-      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
     </button>
   </div>
 <md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
@@ -33,7 +33,7 @@
       <button class="delete-account-button" md-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
-      <img class="settings-avatar-big" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+      <img class="settings-avatar-big" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
       <h3 class="settings-avatar-name">{{ currentUser }}</h3>
     </div>
   </md-card-content>

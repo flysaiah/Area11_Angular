@@ -5,7 +5,7 @@
     <span class="profile-username">{{ currentUser }}</span>
     <button md-icon-button>
       <!-- TODO: Make profile avatar uploadable -->
-      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" src="https://68.media.tumblr.com/63796ad925106dd0b1597a22713c1f2f/tumblr_o9lwbjUlOp1vy2tgqo4_400.jpg">
+      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
     </button>
   </div>
 <!-- IDEA: For groups, have 3 tabs. Current group, group settings, group requests -->

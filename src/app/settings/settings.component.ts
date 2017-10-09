@@ -51,6 +51,11 @@ export class SettingsComponent implements OnInit {
     this.authService.logout();
   }
 
+  loadDefaultImage(target) {
+    // if avatar image doesn't load, we load our default
+    target.src = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
+  }
+
   refresh() {
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
