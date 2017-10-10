@@ -30,7 +30,7 @@
         <input mdInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
       </md-form-field>
       <md-form-field class="settings-input" color="accent">
-        <input mdInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar" #avatar="ngModel">
+        <input mdInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar (URL)" #avatar="ngModel">
       </md-form-field>
       <button class="save-changes-button" md-raised-button color="accent" [disabled]="!bestgirl.dirty && !avatar.dirty" (click)="saveChanges()">Save Changes</button>
       <button class="delete-account-button" md-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
