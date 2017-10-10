@@ -10,7 +10,6 @@ import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCar
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent, LinkAnimeDialog, FinalistCommentsDialog} from './home/home.component';
-import { HomeModule } from './home/home.module';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';

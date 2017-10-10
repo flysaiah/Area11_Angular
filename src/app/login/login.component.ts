@@ -13,6 +13,7 @@ export class LoginComponent {
   model: User;
   showToast: boolean;
   toastMessage: string;
+  submitted: boolean;
 
   private displayToast(message: string) {
     // Display toast in application with message and timeout after 3 sec
@@ -26,6 +27,7 @@ export class LoginComponent {
 
   onSubmit() {
     this.authService.login(this.model).subscribe(res => {
+      this.submitted = true;
       if (res["success"]) {
         this.authService.storeUserData(res.token, res.user);
         this.router.navigate(['/'])
@@ -33,6 +35,7 @@ export class LoginComponent {
         this.displayToast(res["message"]);
       } else {
         this.displayToast("There was a problem.");
+        this.submitted = false;
         console.log(res["message"]);
       }
     })
@@ -44,6 +47,7 @@ export class LoginComponent {
   ) { }
 
   ngOnInit() {
+    this.submitted = false;
     this.model = new User("","","");
     this.showToast = false;
     this.toastMessage = "";
