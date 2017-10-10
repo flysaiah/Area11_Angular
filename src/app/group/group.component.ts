@@ -17,7 +17,10 @@ export class GroupComponent implements OnInit {
   avatar: string;
 
   newGroupName: string;
+  joinGroupName: string;
   currentGroup: Group;
+  pendingGroupRequests: {id: string, username: string, isPending: boolean}[];
+  pendingUserRequests: {id: string, username: string, isPending: boolean}[];
 
   currentUser: string;
 
@@ -30,6 +33,35 @@ export class GroupComponent implements OnInit {
         this.refresh();
       }
     })
+  }
+
+  acceptUserRequest(pendingUser: string) {
+    this.groupService.acceptUserRequest(this.currentGroup["name"], pendingUser).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast(pendingUser + " successfully added to group!");
+        this.refresh();
+      } else if (res["message"] == "Already in group") {
+        this.displayToast(pendingUser + "is has already been accepted", true);
+        this.refresh();
+      } else {
+        this.displayToast("There was a problem accepting the request");
+        console.log(res);
+      }
+    });
+  }
+
+  joinGroupRequest() {
+    this.groupService.joinGroupRequest(this.joinGroupName, this.currentUser).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("Your request has been sent!");
+      } else if (res["message"] == "Already requested") {
+        this.displayToast("You have already requested membership to this group.", true);
+      } else if (res["message"] == "No group found") {
+        this.displayToast("That group doesn't exist", true);
+      } else {
+        this.displayToast("There was a problem with sending your request.", true);
+      }
+    });
   }
 
   disbandGroup() {
@@ -60,9 +92,24 @@ export class GroupComponent implements OnInit {
     target.src = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
   }
 
+  logout() {
+    this.authService.logout();
+  }
+
+  generateUserRequests() {
+    for (let member of this.currentGroup["members"]) {
+      if (member["isPending"]) {
+        this.pendingUserRequests.push(member);
+      }
+    }
+  }
+
   refresh() {
     this.newGroupName = "";
-    this.currentGroup = new Group("",[],[]);
+    this.joinGroupName = "";
+    this.currentGroup = new Group("", []);
+    this.pendingGroupRequests = [];
+    this.pendingUserRequests = [];
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
@@ -73,11 +120,12 @@ export class GroupComponent implements OnInit {
               this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
                 if (res["success"]) {
                   this.currentGroup = res["group"];
-                  console.log(this.currentGroup);
+                  this.generateUserRequests();
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);
                   } else {
+                    console.log(res);
                     this.displayToast("There was a problem loading your group information.", true);
                   }
                 }

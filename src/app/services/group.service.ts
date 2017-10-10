@@ -19,7 +19,7 @@ export class GroupService {
 
   createGroup(groupName: string, username: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/createGroup', { name: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/createGroup', { name: groupName, username: username }, this.options).map(res => res.json());
   }
 
   getGroupInfo(groupName: string) {
@@ -30,7 +30,14 @@ export class GroupService {
   disbandGroup(groupName: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/disbandGroup', { name: groupName }, this.options).map(res => res.json());
-
+  }
+  joinGroupRequest(groupName: string, username: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/joinGroupRequest', { groupName: groupName, username: username }, this.options).map(res => res.json());
+  }
+  acceptUserRequest(groupName: string, pendingUser: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/acceptUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
   }
 
   constructor(

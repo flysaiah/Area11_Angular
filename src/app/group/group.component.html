@@ -24,27 +24,56 @@
   <md-card-content>
     <md-tab-group>
       <md-tab label="My Group">
-        <div *ngIf="currentGroup['name']">
+        <div *ngIf="currentGroup['name']" class="group-settings-tab">
           You have a group: {{ currentGroup['name'] }}
-          <button md-raised-button (click)="disbandGroup()">Disband Group</button>
+          <button md-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
         </div>
-      <div class="no-group" *ngIf="!currentGroup['name']">
+      <div class="group-settings-tab" *ngIf="!currentGroup['name']">
         You're not currently in a group. Find or create one here!
         <div class="find-group">
-          Find groups here:
+          If you know a group's name, you can request to join it:
+          <md-form-field color="accent">
+            <input mdInput [(ngModel)]="joinGroupName" placeholder="Group Name">
+          </md-form-field>
+          <button md-raised-button color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
         </div>
         <div>
         <p>Or alternatively, create your own group!</p>
-          <md-form-field class="new-group-name" color="accent">
+          <md-form-field color="accent">
             <input mdInput [(ngModel)]="newGroupName" placeholder="New Group Name">
           </md-form-field>
-          <button md-raised-button color="accent" (click)="createGroup()">Create Group</button>
+          <button md-raised-button color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
         </div>
       </div>
       </md-tab>
+      <md-tab ng label="Pending Requests">
+        <div *ngIf="!currentGroup['name']" class="group-settings-tab">
+          <div *ngIf="pendingGroupRequests.length">
+            These groups have sent you invites to join: (Remember, you can only select one!)
+          </div>
+          <div *ngIf="!pendingGroupRequests.length">
+            No groups have sent you requests to join them.
+          </div>
+        </div>
+        <div *ngIf="currentGroup['name']" class="group-settings-tab">
+          <div *ngIf="pendingUserRequests.length">
+            These people are requesting membership to your group:
+            <span *ngFor="let pendingUser of pendingUserRequests">
+              {{ pendingUser.username }}
+              <button md-raised-button (click)="acceptUserRequest(pendingUser.username)" color="primary">Accept</button>
+            </span>
+          </div>
+          <div *ngIf="!pendingUserRequests.length">
+            No users have requested to join your group.
+          </div>
+        </div>
+      </md-tab>
       <md-tab label="Group Settings">
-        <div class="group-settings">
-          Group settings and features will be available in future updates!
+        <div class="group-settings" *ngIf="currentGroup['name']">
+          Group features and settings will be available in future updates!
+        </div>
+        <div class="group-settings" *ngIf="!currentGroup['name']">
+          Create or join a group to view special group features and settings!
         </div>
       </md-tab>
     </md-tab-group>
