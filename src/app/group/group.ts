@@ -4,7 +4,9 @@ export class Group {
     public members: {
       id: string,
       username: string,
-      isPending: boolean
-    }[]
+      isPending: boolean,
+      avatar: string
+    }[],
+    public avatar?: string
   ) {}
 }

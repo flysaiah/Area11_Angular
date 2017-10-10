@@ -11,6 +11,9 @@
   display: inline;
   font-size: 40px;
 }
+.main-logo:hover {
+  cursor: pointer;
+}
 .profile-container {
   float: right;
   margin-right: 60px;

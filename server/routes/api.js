@@ -5,6 +5,8 @@ const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
 
+// TODO: Redo all of group structure to avoid repetition of data
+
 module.exports = (router) => {
 
 
@@ -127,9 +129,33 @@ module.exports = (router) => {
       if (err) {
         res.json({ success: false, message: err });
       } else {
-        res.json({ success: true, message: "User changes saved!" });
+        // Update profile avatar in groups info as well
+        // TODO: Find a better way to do this please
+        if (user && user["group"]) {
+          Group.findOne({ name: user["group"] }, (err, group) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else if (group) {
+              let newMembers = group.members;
+              for (let member of newMembers) {
+                if (member.id == req.decoded.userId) {
+                  member.avatar = req.body.avatar;
+                }
+              }
+              Group.findOneAndUpdate({ name: user["group"] }, { $set: { members: newMembers } }, (err, group2) => {
+                if (err) {
+                  res.json({ success: false, message: err });
+                } else {
+                  res.json({ success: true, message: "User changes saved!" });
+                }
+              });
+            } else {
+              res.json({ success: true, message: "User changes saved!" });
+            }
+          });
+        }
       }
-    })
+    });
   });
 
   router.post('/createGroup', (req, res) => {
@@ -138,9 +164,12 @@ module.exports = (router) => {
       "members": [{
         id: req.decoded.userId,
         username: req.body.username,
-        isPending: false
-      }]
+        isPending: false,
+        avatar: req.body.userAvatar
+      }],
+      "avatar": req.body.groupAvatar
     });
+    console.log(newGroup);
     newGroup.save((err) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -313,6 +342,50 @@ module.exports = (router) => {
         } else {
           Group.findOne({ "name": req.body.name }).remove().exec();
           res.json({ success: true, message: "Group successfully deleted" });
+        }
+      }
+    });
+  });
+
+  router.post('/importCatalog', (req, res) => {
+    // TODO: Validation to make sure they're in the same group/etc
+    Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        if (!fromUserList) {
+          res.json({ success: false, message: "Nothing to import"});
+        } else {
+          // Import each not-already-existing MAL-linked anime
+          for (let anime of fromUserList) {
+            if (anime["malID"]) {
+              Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
+                if (err) {
+                  res.json({ success: false, message: err });
+                  return;
+                } else if (!existingAnime) {
+                  const newAnime = new Anime({
+                    user: req.body.toUser,
+                    name: anime['name'],
+                    description: anime['description'],
+                    rating: anime['rating'],
+                    thumbnail: anime['thumbnail'],
+                    malID: anime['malID'],
+                    category: 'Considering',
+                    isFinalist: false,
+                    genres: anime['genres']
+                  });
+                  newAnime.save((err) => {
+                    if (err) {
+                      res.json({ success: false, message: err });
+                      return;
+                    }
+                  });
+                }
+              });
+            }
+          }
+          res.json({ success: true, message: "Successful import!" });
         }
       }
     });

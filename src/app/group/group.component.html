@@ -1,6 +1,6 @@
 <!-- TODO: Refactor this into its own component -->
 <div class="top-wrapper">
-  <h1 class="main-logo">Area 11</h1>
+  <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
     <button md-icon-button>
@@ -8,6 +8,9 @@
     </button>
   </div>
 <md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
+  <a class="home-menu-button" md-menu-item routerLink="/group">
+    <span>My Group</span>
+  </a>
   <a class="home-menu-button" md-menu-item routerLink="/settings">
     <span>Settings</span>
   </a>
@@ -25,8 +28,20 @@
     <md-tab-group>
       <md-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
-          You have a group: {{ currentGroup['name'] }}
-          <button md-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
+          <div class="group-profile">
+            <img class="group-avatar" [src]="currentGroup['avatar']" (error)="loadDefaultImage($event.target)">
+            <h3 class="group-name">{{ currentGroup['name'] }}</h3>
+          </div>
+          <div class="member-list-container">
+            <div class="group-member" *ngFor="let groupMember of currentGroupMembers">
+              <img class="group-member-avatar" [src]="groupMember['avatar']" (error)="loadDefaultImage($event.target)">
+              <div class="group-member-name">
+                <h2>{{ groupMember['username'] }}</h2>
+                <button md-raised-button color="accent" class="import-list" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       <div class="group-settings-tab" *ngIf="!currentGroup['name']">
         You're not currently in a group. Find or create one here!
@@ -41,6 +56,9 @@
         <p>Or alternatively, create your own group!</p>
           <md-form-field color="accent">
             <input mdInput [(ngModel)]="newGroupName" placeholder="New Group Name">
+          </md-form-field>
+          <md-form-field color="accent">
+            <input mdInput [(ngModel)]="newGroupAvatar" placeholder="New Group Avatar (optional)">
           </md-form-field>
           <button md-raised-button color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
         </div>
@@ -58,10 +76,13 @@
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div *ngIf="pendingUserRequests.length">
             These people are requesting membership to your group:
-            <span *ngFor="let pendingUser of pendingUserRequests">
-              {{ pendingUser.username }}
-              <button md-raised-button (click)="acceptUserRequest(pendingUser.username)" color="primary">Accept</button>
-            </span>
+            <div class="group-member" *ngFor="let pendingUser of pendingUserRequests">
+              <img class="group-member-avatar" [src]="pendingUser['avatar']" (error)="loadDefaultImage($event.target)">
+              <div class="group-member-name">
+                <h2>{{ pendingUser['username'] }}</h2>
+                <button md-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser.username)">Accept</button>
+              </div>
+            </div>
           </div>
           <div *ngIf="!pendingUserRequests.length">
             No users have requested to join your group.
@@ -69,10 +90,12 @@
         </div>
       </md-tab>
       <md-tab label="Group Settings">
-        <div class="group-settings" *ngIf="currentGroup['name']">
-          Group features and settings will be available in future updates!
+        <div class="group-settings-tab" *ngIf="currentGroup['name']">
+          <button md-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
+          <br><br>
+          More group features and settings will be available in future updates!
         </div>
-        <div class="group-settings" *ngIf="!currentGroup['name']">
+        <div class="group-settings-tab" *ngIf="!currentGroup['name']">
           Create or join a group to view special group features and settings!
         </div>
       </md-tab>

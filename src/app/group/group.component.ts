@@ -17,22 +17,24 @@ export class GroupComponent implements OnInit {
   avatar: string;
 
   newGroupName: string;
+  newGroupAvatar: string;
   joinGroupName: string;
   currentGroup: Group;
+  currentGroupMembers: {id: string, username: string, isPending: boolean}[];
   pendingGroupRequests: {id: string, username: string, isPending: boolean}[];
   pendingUserRequests: {id: string, username: string, isPending: boolean}[];
 
   currentUser: string;
 
   createGroup() {
-    this.groupService.createGroup(this.newGroupName, this.currentUser).subscribe((res) => {
+    this.groupService.createGroup(this.newGroupName, this.newGroupAvatar, this.currentUser, this.avatar).subscribe((res) => {
       if (!res["success"]) {
         this.displayToast("There was a problem creating the group", true);
       } else {
         this.displayToast("Group successfully created!");
         this.refresh();
       }
-    })
+    });
   }
 
   acceptUserRequest(pendingUser: string) {
@@ -51,7 +53,7 @@ export class GroupComponent implements OnInit {
   }
 
   joinGroupRequest() {
-    this.groupService.joinGroupRequest(this.joinGroupName, this.currentUser).subscribe((res) => {
+    this.groupService.joinGroupRequest(this.joinGroupName, this.currentUser, this.avatar).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Your request has been sent!");
       } else if (res["message"] == "Already requested") {
@@ -96,18 +98,35 @@ export class GroupComponent implements OnInit {
     this.authService.logout();
   }
 
+  importCatalog(user: string) {
+    this.groupService.importCatalog(user, this.currentUser).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("You have successfully imported " + user + "'s catalog!'")
+      } else if (res["message"] == "Nothing to import") {
+        this.displayToast("This user has nothing in their catalog.", true);
+      } else {
+        this.displayToast("Something went wrong while importing " + user + "'s catalog.", true);
+        console.log(res);
+      }
+    });
+  }
+
   generateUserRequests() {
     for (let member of this.currentGroup["members"]) {
       if (member["isPending"]) {
         this.pendingUserRequests.push(member);
+      } else {
+        this.currentGroupMembers.push(member);
       }
     }
   }
 
   refresh() {
     this.newGroupName = "";
+    this.newGroupAvatar = "";
     this.joinGroupName = "";
     this.currentGroup = new Group("", []);
+    this.currentGroupMembers = [];
     this.pendingGroupRequests = [];
     this.pendingUserRequests = [];
     this.authService.getProfile().subscribe((res) => {
@@ -121,6 +140,7 @@ export class GroupComponent implements OnInit {
                 if (res["success"]) {
                   this.currentGroup = res["group"];
                   this.generateUserRequests();
+                  // We don't store indivual members' avatars in the database
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);

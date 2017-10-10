@@ -1,6 +1,6 @@
 <!-- TODO: Refactor this into its own component -->
 <div class="top-wrapper">
-  <h1 class="main-logo">Area 11</h1>
+  <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
     <button md-icon-button>
@@ -8,6 +8,9 @@
     </button>
   </div>
 <md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
+  <a class="home-menu-button" md-menu-item routerLink="/group">
+    <span>My Group</span>
+  </a>
   <a class="home-menu-button" md-menu-item routerLink="/settings">
     <span>Settings</span>
   </a>
