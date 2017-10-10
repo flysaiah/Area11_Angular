@@ -3,41 +3,41 @@
   <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
-    <button md-icon-button>
-      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
+    <button mat-icon-button>
+      <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
     </button>
   </div>
-<md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
-  <a class="home-menu-button" md-menu-item routerLink="/group">
+<mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
+  <a class="home-menu-button" mat-menu-item routerLink="/group">
     <span>My Group</span>
   </a>
-  <a class="home-menu-button" md-menu-item routerLink="/settings">
+  <a class="home-menu-button" mat-menu-item routerLink="/settings">
     <span>Settings</span>
   </a>
-  <button class="home-menu-button" md-menu-item (click)="logout()">
+  <button class="home-menu-button" mat-menu-item (click)="logout()">
     <span>Logout</span>
   </button>
-</md-menu>
+</mat-menu>
 </div>
 
 <div class="search-toolbar">
 </div>
 <div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<md-card class="settings-container">
-  <md-card-content>
+<mat-card class="settings-container">
+  <mat-card-content>
     <form class="settings-form" #userForm="ngForm">
-      <md-form-field class="settings-input" color="accent">
-        <input mdInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
-      </md-form-field>
-      <md-form-field class="settings-input" color="accent">
-        <input mdInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar (URL)" #avatar="ngModel">
-      </md-form-field>
-      <button class="save-changes-button" md-raised-button color="accent" [disabled]="!bestgirl.dirty && !avatar.dirty" (click)="saveChanges()">Save Changes</button>
-      <button class="delete-account-button" md-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
+      <mat-form-field class="settings-input" color="accent">
+        <input matInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
+      </mat-form-field>
+      <mat-form-field class="settings-input" color="accent">
+        <input matInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar (URL)" #avatar="ngModel">
+      </mat-form-field>
+      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !avatar.dirty" (click)="saveChanges()">Save Changes</button>
+      <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
       <img class="settings-avatar-big" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
       <h3 class="settings-avatar-name">{{ currentUser }}</h3>
     </div>
-  </md-card-content>
-</md-card>
+  </mat-card-content>
+</mat-card>

@@ -3,28 +3,28 @@
   <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
-    <button md-icon-button>
+    <button mat-icon-button>
       <!-- TODO: Make profile avatar uploadable -->
-      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
+      <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
     </button>
   </div>
 <!-- IDEA: For groups, have 3 tabs. Current group, group settings, group requests -->
-<md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
-  <a class="home-menu-button" md-menu-item routerLink="/group">
+<mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
+  <a class="home-menu-button" mat-menu-item routerLink="/group">
     <span>My Group</span>
   </a>
-  <a class="home-menu-button" md-menu-item routerLink="/settings">
+  <a class="home-menu-button" mat-menu-item routerLink="/settings">
     <span>Settings</span>
   </a>
-  <button class="home-menu-button" md-menu-item (click)="logout()">
+  <button class="home-menu-button" mat-menu-item (click)="logout()">
     <span>Logout</span>
   </button>
-</md-menu>
+</mat-menu>
 </div>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
-  <button md-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
-  <button md-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
+  <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
+  <button mat-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
   <!-- TODO: Add search bar -->
   <!-- Filtering/sorting -->
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
@@ -40,56 +40,56 @@
 
   <!-- Add anime prompt -->
   <div class="flex-item">
-    <md-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
+    <mat-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
       <form>
-        <md-form-field color="accent" class="add-anime-name">
-          <input mdInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
-        </md-form-field>
-        <button md-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
+        <mat-form-field color="accent" class="add-anime-name">
+          <input matInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
+        </mat-form-field>
+        <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
         <div class="add-anime-normal">
-          <md-select placeholder="Add to..." name="addAnimeCat" ngDefaultControl [(ngModel)]="animeToAdd['category']">
-            <md-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</md-option>
-          </md-select>
-          <button md-raised-button color="primary" [disabled]="!animeToAdd['name'] || !animeToAdd['category']" class="add-to-button" type=button (click)="addAnimeToCatalog()">Add to Catalog</button>
+          <mat-select placeholder="Add to..." name="addAnimeCat" ngDefaultControl [(ngModel)]="animeToAdd['category']">
+            <mat-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</mat-option>
+          </mat-select>
+          <button mat-raised-button color="primary" [disabled]="!animeToAdd['name'] || !animeToAdd['category']" class="add-to-button" type=button (click)="addAnimeToCatalog()">Add to Catalog</button>
         </div>
         <div class="add-anime-smallscreen">
-          <button class="add-anime-smallscreen" md-raised-button color="primary" [mdMenuTriggerFor]="addMenu">Add</button>
-          <md-menu #addMenu="mdMenu">
-            <button md-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
-            <button md-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
-            <button md-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Completed')">Add to Completed</button>
-          </md-menu>
+          <button class="add-anime-smallscreen" mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">Add</button>
+          <mat-menu #addMenu="matMenu">
+            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
+            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
+            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Completed')">Add to Completed</button>
+          </mat-menu>
         </div>
       </form>
-    </md-card>
+    </mat-card>
 
     <!-- Anime catalogue -->
     <!-- TODO: Keep track of aired vs. unaired -->
     <div class="catalog">
-      <md-nav-list dense #animeCatalog>
-        <h3 md-subheader>Want to watch ({{ wantToWatchList.length }}):</h3>
-        <md-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
+      <mat-nav-list dense #animeCatalog>
+        <h3 matSubheader>Want to watch ({{ wantToWatchList.length }}):</h3>
+        <mat-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-        </md-list-item>
-        <md-divider></md-divider>
-        <h3 md-subheader>Considering ({{ consideringList.length }}):</h3>
-        <md-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <h3 matSubheader>Considering ({{ consideringList.length }}):</h3>
+        <mat-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-        </md-list-item>
-        <md-divider></md-divider>
-        <h3 md-subheader>Completed ({{ completedList.length }}):</h3>
-        <md-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <h3 matSubheader>Completed ({{ completedList.length }}):</h3>
+        <mat-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
-        </md-list-item>
-      </md-nav-list>
+        </mat-list-item>
+      </mat-nav-list>
     </div>
   </div>
 
   <!-- Details View -->
-  <md-card class="details-panel-placeholder" *ngIf="!selectedAnime['name']">
+  <mat-card class="details-panel-placeholder" *ngIf="!selectedAnime['name']">
     Click on anime in any of your lists to see details from MAL here!
-  </md-card>
-  <md-card class="details-panel no-padding-bottom" *ngIf="selectedAnime['name']">
+  </mat-card>
+  <mat-card class="details-panel no-padding-bottom" *ngIf="selectedAnime['name']">
     <div *ngIf="selectedAnime['name']">
       <div class="details-panel-content" >
         <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
@@ -98,43 +98,43 @@
         <p [innerHTML]="selectedAnime['description']"></p>
       </div>
       <div class="details-button-container">
-        <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" md-raised-button color="accent">Add to Want to Watch</button>
-        <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" md-raised-button color="accent">Add to Considering</button>
-        <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" md-raised-button color="accent">Add to Completed</button>
-        <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" md-raised-button color="primary">Select as Finalist</button>
-        <button (click)="removeAnimeFromCatalog()" class="details-button" md-raised-button color="warn">Remove from Catalog</button>
+        <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" mat-raised-button color="accent">Add to Want to Watch</button>
+        <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" mat-raised-button color="accent">Add to Considering</button>
+        <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" mat-raised-button color="accent">Add to Completed</button>
+        <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
+        <button (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
       </div>
     </div>
-  </md-card>
+  </mat-card>
 
   <div class="flex-item">
     <div class="area11-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
-    <md-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
+    <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
       Anime you add to your final selection process will appear here!
-    </md-card>
+    </mat-card>
 
   <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
     <div *ngIf="finalistList.length" class="chooser-tool">
       <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
         <div class="finalist-item-name">{{ anime["name"] }}</div>
         <div class="comments-chiplist">
-          <md-chip-list>
-            <md-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</md-chip>
-          </md-chip-list>
+          <mat-chip-list>
+            <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
+          </mat-chip-list>
         </div>
         <div class="finalist-button-container">
-          <button (click)="viewFinalist(i)" class="finalist-button" md-raised-button color="primary">View</button>
-          <button (click)="editComments(i)" class="finalist-button" md-raised-button color="accent">Edit Comments</button>
-          <button (click)="removeFinalist(i)" class="finalist-button" md-raised-button color="warn">Remove</button>
+          <button (click)="viewFinalist(i)" class="finalist-button" mat-raised-button color="primary">View</button>
+          <button (click)="editComments(i)" class="finalist-button" mat-raised-button color="accent">Edit Comments</button>
+          <button (click)="removeFinalist(i)" class="finalist-button" mat-raised-button color="warn">Remove</button>
         </div>
         <div class="finalist-button-container-smallscreen">
-          <button class="finalist-smallscreen-action" md-raised-button color="accent" [mdMenuTriggerFor]="finalistMenu">Action</button>
-          <md-menu #finalistMenu="mdMenu">
+          <button class="finalist-smallscreen-action" mat-raised-button color="accent" [matMenuTriggerFor]="finalistMenu">Action</button>
+          <mat-menu #finalistMenu="matMenu">
             <button class="finalist-button-smallscreen" (click)="viewFinalist(i)">View</button>
             <button class="finalist-button-smallscreen" (click)="editComments(i)">Edit Comments</button>
             <button class="finalist-button-smallscreen" (click)="removeFinalist(i)">Remove</button>
-          </md-menu>
+          </mat-menu>
         </div>
         <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
       </div>

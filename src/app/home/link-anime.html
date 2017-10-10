@@ -2,7 +2,7 @@
   Link to the correct MAL entry to get more data:
   <br>
   <br>
-  <md-card class="link-item" *ngFor="let anime of data.suggestions; let i = index">
+  <mat-card class="link-item" *ngFor="let anime of data.suggestions; let i = index">
     <div>
       <img class="link-thumbnail" [src]="anime['thumbnail']">
       <div class="link-info">
@@ -12,17 +12,17 @@
         <!-- NOTE: Keeping this here just in case the MAL API returns genres in the future -->
         <!-- <div>
         Genres:
-        <md-chip-list>
-          <md-chip *ngFor="let genre of anime['genres']">
+        <mat-chip-list>
+          <mat-chip *ngFor="let genre of anime['genres']">
             {{ genre }}
-          </md-chip>
-        </md-chip-list>
+          </mat-chip>
+        </mat-chip-list>
         </div> -->
         <div>
           MAL Rating: {{ anime["rating"] }}
         </div>
-        <button class="link-button" md-raised-button color="accent" [md-dialog-close]="i">Link This Anime</button>
+        <button class="link-button" mat-raised-button color="accent" [matDialogClose]="i">Link This Anime</button>
       </div>
     </div>
-  </md-card>
+  </mat-card>
 </div>

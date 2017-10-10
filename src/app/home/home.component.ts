@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Anime } from '../anime';
-import { MdDialogRef, MdDialog, MD_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
@@ -298,7 +298,7 @@ export class HomeComponent {
   }
 
   constructor(
-    private dialog: MdDialog,
+    private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
     private userService: UserService
@@ -349,8 +349,8 @@ export class HomeComponent {
 })
 export class LinkAnimeDialog {
   constructor(
-    public dialogRef: MdDialogRef<LinkAnimeDialog>,
-    @Inject(MD_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<LinkAnimeDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   onNoClick(): void {
     this.dialogRef.close();
@@ -363,8 +363,8 @@ export class LinkAnimeDialog {
 })
 export class FinalistCommentsDialog {
   constructor(
-    public dialogRef: MdDialogRef<FinalistCommentsDialog>,
-    @Inject(MD_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<FinalistCommentsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   onNoClick(): void {
     this.dialogRef.close();

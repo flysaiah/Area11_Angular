@@ -3,30 +3,30 @@
   <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
-    <button md-icon-button>
-      <img [mdMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage($event.target)">
+    <button mat-icon-button>
+      <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage($event.target)">
     </button>
   </div>
-<md-menu [overlapTrigger]="false" #accountMenu="mdMenu">
-  <a class="home-menu-button" md-menu-item routerLink="/group">
+<mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
+  <a class="home-menu-button" mat-menu-item routerLink="/group">
     <span>My Group</span>
   </a>
-  <a class="home-menu-button" md-menu-item routerLink="/settings">
+  <a class="home-menu-button" mat-menu-item routerLink="/settings">
     <span>Settings</span>
   </a>
-  <button class="home-menu-button" md-menu-item (click)="logout()">
+  <button class="home-menu-button" mat-menu-item (click)="logout()">
     <span>Logout</span>
   </button>
-</md-menu>
+</mat-menu>
 </div>
 
 <div class="search-toolbar">
 </div>
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<md-card class="group-container">
-  <md-card-content>
-    <md-tab-group>
-      <md-tab label="My Group">
+<mat-card class="group-container">
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
             <img class="group-avatar" [src]="currentGroup['avatar']" (error)="loadDefaultImage($event.target)">
@@ -37,7 +37,7 @@
               <img class="group-member-avatar" [src]="groupMember['avatar']" (error)="loadDefaultImage($event.target)">
               <div class="group-member-name">
                 <h2>{{ groupMember['username'] }}</h2>
-                <button md-raised-button color="accent" class="import-list" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button mat-raised-button color="accent" class="import-list" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
               </div>
             </div>
           </div>
@@ -47,24 +47,24 @@
         You're not currently in a group. Find or create one here!
         <div class="find-group">
           If you know a group's name, you can request to join it:
-          <md-form-field color="accent">
-            <input mdInput [(ngModel)]="joinGroupName" placeholder="Group Name">
-          </md-form-field>
-          <button md-raised-button color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
+          <mat-form-field color="accent">
+            <input matInput [(ngModel)]="joinGroupName" placeholder="Group Name">
+          </mat-form-field>
+          <button mat-raised-button color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
         </div>
         <div>
         <p>Or alternatively, create your own group!</p>
-          <md-form-field color="accent">
-            <input mdInput [(ngModel)]="newGroupName" placeholder="New Group Name">
-          </md-form-field>
-          <md-form-field color="accent">
-            <input mdInput [(ngModel)]="newGroupAvatar" placeholder="New Group Avatar (optional)">
-          </md-form-field>
-          <button md-raised-button color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
+          <mat-form-field color="accent">
+            <input matInput [(ngModel)]="newGroupName" placeholder="New Group Name">
+          </mat-form-field>
+          <mat-form-field color="accent">
+            <input matInput [(ngModel)]="newGroupAvatar" placeholder="New Group Avatar (optional)">
+          </mat-form-field>
+          <button mat-raised-button color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
         </div>
       </div>
-      </md-tab>
-      <md-tab ng label="Pending Requests">
+      </mat-tab>
+      <mat-tab ng label="Pending Requests">
         <div *ngIf="!currentGroup['name']" class="group-settings-tab">
           <div *ngIf="pendingGroupRequests.length">
             These groups have sent you invites to join: (Remember, you can only select one!)
@@ -80,7 +80,7 @@
               <img class="group-member-avatar" [src]="pendingUser['avatar']" (error)="loadDefaultImage($event.target)">
               <div class="group-member-name">
                 <h2>{{ pendingUser['username'] }}</h2>
-                <button md-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser.username)">Accept</button>
+                <button mat-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser.username)">Accept</button>
               </div>
             </div>
           </div>
@@ -88,17 +88,17 @@
             No users have requested to join your group.
           </div>
         </div>
-      </md-tab>
-      <md-tab label="Group Settings">
+      </mat-tab>
+      <mat-tab label="Group Settings">
         <div class="group-settings-tab" *ngIf="currentGroup['name']">
-          <button md-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
+          <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
           <br><br>
           More group features and settings will be available in future updates!
         </div>
         <div class="group-settings-tab" *ngIf="!currentGroup['name']">
           Create or join a group to view special group features and settings!
         </div>
-      </md-tab>
-    </md-tab-group>
-  </md-card-content>
-</md-card>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>
