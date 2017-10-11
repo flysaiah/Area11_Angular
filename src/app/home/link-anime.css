@@ -17,7 +17,7 @@
 }
 .link-container {
   height: 600px;
-  overflow: scroll;
+  overflow: auto;
   font-family: "Roboto";
 }
 .link-button {
