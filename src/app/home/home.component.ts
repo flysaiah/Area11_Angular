@@ -83,10 +83,10 @@ export class HomeComponent {
       } else {
         const animeList = res["data"];
 
-        // Display the top 5 suggestions
+        // Display the top 30 suggestions
         // IDEA: In the future, it would be nice to have user preferences for how many
         // anime they would like to have show up during the link step
-        const numSuggestions = Math.min(5, animeList.length);
+        const numSuggestions = Math.min(30, animeList.length);
         // Special case is where there is only 1 entry, in which case it is not an array
         if (animeList.hasOwnProperty("title")) {
           this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"], animeList["genres"]));
