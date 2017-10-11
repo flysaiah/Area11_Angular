@@ -98,7 +98,7 @@ export class HomeComponent {
         }
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
-          width: '500px',
+          width: '515px',
           data: {suggestions: this.linkAnimeSuggestions}
         });
 
