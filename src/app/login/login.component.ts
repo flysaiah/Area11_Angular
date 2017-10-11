@@ -33,6 +33,7 @@ export class LoginComponent {
         this.router.navigate(['/'])
       } else if (res["message"] == "Username not found" || res["message"] == "Incorrect password") {
         this.displayToast(res["message"]);
+        this.submitted = false;
       } else {
         this.displayToast("There was a problem.");
         this.submitted = false;

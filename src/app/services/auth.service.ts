@@ -50,7 +50,7 @@ export class AuthService {
         'Content-type': 'application/json',
         'authorization': this.authToken
       })
-    })
+    });
   }
   getProfile() {
     this.createAuthenticationHeaders();

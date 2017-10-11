@@ -219,6 +219,7 @@ export class HomeComponent {
         const tmp = this.finalistList[index];
         this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
           if (!res["success"]) {
+            console.log(res);
             this.displayToast("There was a problem.", true);
           }
         });
@@ -231,6 +232,7 @@ export class HomeComponent {
       if (res["success"]) {
         this.refresh(true);
       } else {
+        console.log(res);
         this.displayToast("There was a problem", true);
       }
     });

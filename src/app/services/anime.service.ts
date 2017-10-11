@@ -7,8 +7,6 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class AnimeService {
 
-  user;
-  authToken;
   options;
   domain = environment.domain;
 
@@ -53,6 +51,6 @@ export class AnimeService {
   }
   removeFinalist(animeID) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/changeFinalistStatus', { id: animeID, newStatus: false }).map(res => res.json());
+    return this.http.post(this.domain + '/api/changeFinalistStatus', { id: animeID, newStatus: false }, this.options).map(res => res.json());
   }
 }

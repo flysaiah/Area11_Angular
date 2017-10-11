@@ -105,6 +105,9 @@
 .add-to-button {
   margin-left: 5px;
 }
+.add-to-category {
+  width: 140px;
+}
 .catalog-sort-label {
   margin-left: 50px;
 }
@@ -147,7 +150,7 @@
   border-style: double;
   border-width: 5px;
   background-color: white;
-  overflow: scroll;
+  overflow: auto;
   max-height: 600px;
   margin-top: 10px;
 }
@@ -184,7 +187,7 @@
   margin-top: 10px;
 }
 .details-panel-content {
-  overflow: scroll;
+  overflow: auto;
   max-height: 550px;
   padding-right: 24px;
 }
@@ -195,7 +198,7 @@
   border-top: 1px solid #c3c3c3;
   padding-top: 5px;
   height: 100px;
-  overflow: scroll;
+  overflow: auto;
 }
 .details-button {
   margin: 5px !important;
@@ -206,7 +209,7 @@
   border-style: double;
   border-width: 5px;
   background-color: white;
-  overflow: scroll;
+  overflow: auto;
   max-height: 600px;
   margin-top: 10px;
   font-family: "Roboto";

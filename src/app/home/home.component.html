@@ -37,7 +37,6 @@
 </div>
 
 <div class="home-container">
-
   <!-- Add anime prompt -->
   <div class="flex-item">
     <mat-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
@@ -47,9 +46,12 @@
         </mat-form-field>
         <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
         <div class="add-anime-normal">
-          <mat-select placeholder="Add to..." name="addAnimeCat" ngDefaultControl [(ngModel)]="animeToAdd['category']">
-            <mat-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</mat-option>
-          </mat-select>
+          <mat-form-field class="add-to-category">
+            <mat-select placeholder="Add to..." name="addAnimeCat" [(ngModel)]="animeToAdd['category']">
+              <!-- <option value="" disabled selected>Select a Category</option> -->
+              <mat-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</mat-option>
+            </mat-select>
+          </mat-form-field>
           <button mat-raised-button color="primary" [disabled]="!animeToAdd['name'] || !animeToAdd['category']" class="add-to-button" type=button (click)="addAnimeToCatalog()">Add to Catalog</button>
         </div>
         <div class="add-anime-smallscreen">
