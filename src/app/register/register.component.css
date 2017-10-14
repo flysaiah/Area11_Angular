@@ -5,7 +5,6 @@
   text-align: center;
   margin-bottom: 25px;
 }
-/*TODO: Toast error*/
 .register-form {
   display: flex;
   flex-direction: column;
@@ -26,7 +25,6 @@
 }
 .area11-register-toast {
   display: none;
-  /*TODO: Find a way to just grab these colors from the theme*/
   background-color: #3d85c6;
   margin-left: auto;
   margin-right: auto;

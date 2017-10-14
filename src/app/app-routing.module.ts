@@ -14,7 +14,6 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [NotAuthGuard]},
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
   { path: 'group', component: GroupComponent, canActivate: [AuthGuard]}
-  // TODO: Add a PageNotFoundComponent
   // { path: '**', component: PageNotFoundComponent}
 ]
 

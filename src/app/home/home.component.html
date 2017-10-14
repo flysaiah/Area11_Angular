@@ -1,14 +1,11 @@
-<!-- TODO: Make logo clickable -->
 <div class="top-wrapper">
   <h1 class="main-logo" routerLink="">Area 11</h1>
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
     <button mat-icon-button>
-      <!-- TODO: Make profile avatar uploadable -->
       <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
     </button>
   </div>
-<!-- IDEA: For groups, have 3 tabs. Current group, group settings, group requests -->
 <mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
   <a class="home-menu-button" mat-menu-item routerLink="/group">
     <span>My Group</span>
@@ -25,7 +22,6 @@
 <div class="search-toolbar">
   <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
   <button mat-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
-  <!-- TODO: Add search bar -->
   <!-- Filtering/sorting -->
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
   <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
@@ -66,7 +62,6 @@
     </mat-card>
 
     <!-- Anime catalogue -->
-    <!-- TODO: Keep track of aired vs. unaired -->
     <div class="catalog">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader>Want to watch ({{ wantToWatchList.length }}):</h3>
@@ -96,7 +91,6 @@
       <div class="details-panel-content" >
         <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
         <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
-        <!-- FIXME: Tags for italics like [i] aren't being recognized -->
         <p [innerHTML]="selectedAnime['description']"></p>
       </div>
       <div class="details-button-container">

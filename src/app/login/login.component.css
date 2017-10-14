@@ -30,7 +30,6 @@
 }
 .area11-register-toast {
   display: none;
-  /*TODO: Find a way to just grab these colors from the theme*/
   background-color: #3d85c6;
   margin-left: auto;
   margin-right: auto;

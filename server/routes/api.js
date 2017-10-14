@@ -5,8 +5,6 @@ const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
 
-// TODO: Redo all of group structure to avoid repetition of data
-
 module.exports = (router) => {
 
 
@@ -130,7 +128,6 @@ module.exports = (router) => {
         res.json({ success: false, message: err });
       } else {
         // Update profile avatar in groups info as well
-        // TODO: Find a better way to do this please
         if (user && user["group"]) {
           Group.findOne({ name: user["group"] }, (err, group) => {
             if (err) {
@@ -202,7 +199,6 @@ module.exports = (router) => {
             found = true;
           }
         }
-        // TODO: More thorough case-checking here
         if (found) {
           res.json({ success: false, message: "Already requested"});
         } else {
@@ -242,7 +238,6 @@ module.exports = (router) => {
         // First make sure that user is a part of this group
         let found = false;
         for (let member of group.members) {
-          // TODO: Consider standardizing ID variables
           if (member.id == req.decoded.userId) {
             found = true;
           }
@@ -348,7 +343,6 @@ module.exports = (router) => {
   });
 
   router.post('/importCatalog', (req, res) => {
-    // TODO: Validation to make sure they're in the same group/etc
     Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
       if (err) {
         res.json({ success: false, message: err });

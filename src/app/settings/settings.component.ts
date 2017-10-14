@@ -33,7 +33,6 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccount() {
-    // TODO: This
     console.log("DELETE ACCOUNT");
   }
 
