@@ -26,7 +26,6 @@ export class HomeComponent {
   toastMessage: string;
   toastError: boolean;
   sortCriteria: string;
-  avatar: string;
   currentUser: string;
 
   private displayToast(message: string, error?: boolean) {
@@ -242,10 +241,7 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
-  loadDefaultImage() {
-    // if avatar image doesn't load, we load our default
-    this.avatar = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
-  }
+
 
   private refresh(showFinalistMessage?: boolean) {
     // Fetch all anime stored in database and update our lists
@@ -303,9 +299,7 @@ export class HomeComponent {
     private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
-    private userService: UserService
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.wantToWatchList = [];
@@ -327,13 +321,6 @@ export class HomeComponent {
         this.currentUser = res["user"]["username"];
         this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
-        this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
-            this.avatar = res["user"]["avatar"];
-          } else {
-            this.displayToast("There was a problem loading your profile", true);
-          }
-        })
         this.refresh();
       } else {
         // If there was a problem we need to have them log in again

@@ -20,6 +20,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { GroupComponent } from './group/group.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { GroupComponent } from './group/group.component';
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
-    GroupComponent
+    GroupComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

@@ -1,23 +1,4 @@
-<div class="top-wrapper">
-  <h1 class="main-logo" routerLink="">Area 11</h1>
-  <div class="profile-container">
-    <span class="profile-username">{{ currentUser }}</span>
-    <button mat-icon-button>
-      <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
-    </button>
-  </div>
-<mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
-  <a class="home-menu-button" mat-menu-item routerLink="/group">
-    <span>My Group</span>
-  </a>
-  <a class="home-menu-button" mat-menu-item routerLink="/settings">
-    <span>Settings</span>
-  </a>
-  <button class="home-menu-button" mat-menu-item (click)="logout()">
-    <span>Logout</span>
-  </button>
-</mat-menu>
-</div>
+<app-header></app-header>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
   <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>

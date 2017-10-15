@@ -14,7 +14,6 @@ export class GroupComponent implements OnInit {
   showToast: boolean;
   toastMessage: string;
   toastError: boolean;
-  avatar: string;
 
   newGroupName: string;
   newGroupAvatar: string;
@@ -134,7 +133,6 @@ export class GroupComponent implements OnInit {
         this.currentUser = res["user"]["username"];
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
-            this.avatar = res["user"]["avatar"];
             if (res["user"]["group"]) {
               this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
                 if (res["success"]) {
