@@ -127,30 +127,7 @@ module.exports = (router) => {
       if (err) {
         res.json({ success: false, message: err });
       } else {
-        // Update profile avatar in groups info as well
-        if (user && user["group"]) {
-          Group.findOne({ name: user["group"] }, (err, group) => {
-            if (err) {
-              res.json({ success: false, message: err });
-            } else if (group) {
-              let newMembers = group.members;
-              for (let member of newMembers) {
-                if (member.id == req.decoded.userId) {
-                  member.avatar = req.body.avatar;
-                }
-              }
-              Group.findOneAndUpdate({ name: user["group"] }, { $set: { members: newMembers } }, (err, group2) => {
-                if (err) {
-                  res.json({ success: false, message: err });
-                } else {
-                  res.json({ success: true, message: "User changes saved!" });
-                }
-              });
-            } else {
-              res.json({ success: true, message: "User changes saved!" });
-            }
-          });
-        }
+        res.json({ success: true, message: "User changes saved!"})
       }
     });
   });
@@ -160,13 +137,10 @@ module.exports = (router) => {
       "name": req.body.name,
       "members": [{
         id: req.decoded.userId,
-        username: req.body.username,
         isPending: false,
-        avatar: req.body.userAvatar
       }],
       "avatar": req.body.groupAvatar
     });
-    console.log(newGroup);
     newGroup.save((err) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -195,7 +169,7 @@ module.exports = (router) => {
         // We want to let them know if they're already sent a request
         let found = false;
         for (let member of group.members) {
-          if (req.body.username == member.username && member.isPending) {
+          if (req.decoded.userId == member.id && member.isPending) {
             found = true;
           }
         }
@@ -205,7 +179,6 @@ module.exports = (router) => {
           let newMembers = group.members;
           newMembers.push({
             id: req.decoded.userId,
-            username: req.body.username,
             isPending: true
           });
           Group.findOneAndUpdate({ name: req.body.groupName, }, { $set: { members: newMembers }}, (err, group) => {
@@ -248,7 +221,7 @@ module.exports = (router) => {
           // Here's where the user request part takes place
           // First check if user hasn't already been added
           for (let member of group.members) {
-            if (req.body.pendingUser == member.username && !member.isPending) {
+            if (req.body.pendingUser == member.id && !member.isPending) {
               res.json({ success: false, message: "Already in group" });
               return;
             }
@@ -256,7 +229,7 @@ module.exports = (router) => {
           // Remove user from pending, then add
           let newMembers = group.members;
           for (let i=0; i<newMembers.length; i++) {
-            if (newMembers[i].username == req.body.pendingUser) {
+            if (newMembers[i].id == req.body.pendingUser) {
               newMembers[i].isPending = false;
               break;
             }
@@ -266,12 +239,11 @@ module.exports = (router) => {
               res.json({ success: false, message: err });
             } else {
               // Remember to update new user also
-              User.findOneAndUpdate( { "username": req.body.pendingUser }, { $set: { group: req.body.name } }, (err, user) => {
+              User.findOneAndUpdate( { "_id": ObjectID(req.body.pendingUser) }, { $set: { group: req.body.name } }, (err, user) => {
                 if (err) {
-                  // TODO: Undo changes to group
                   res.json({ success: false, message: err });
                 } else {
-                  res.json({ success: true, message: "Group successfully deleted" });
+                  res.json({ success: true, message: "Successfully added to group" });
                 }
               });
             }
@@ -305,10 +277,42 @@ module.exports = (router) => {
         if (!found) {
           res.json({ success: false, message: "Invalid group membership" });
         } else {
-          res.json({ success: true, group: group })
+          // Query for group member data
+          // Use map because later we'll need to remember isPending status
+          let groupMembers = [];
+          let groupMemberMap = new Map();
+          for (let member of group.members) {
+            groupMembers.push(ObjectID(member.id));
+            groupMemberMap.set(member.id, member.isPending);
+          }
+          User.find({ "_id": { $in: groupMembers } }, (err, members) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else if (members) {
+              // Need to modify members so we can remove password and include isPending
+              let newMembers = [];
+              for (let member of members) {
+                newMembers.push({
+                  id: member.id,
+                  username: member.username,
+                  bestgirl: member.bestgirl,
+                  avatar: (member.avatar ? member.avatar : ""),
+                  isPending: groupMemberMap.get(member.id)
+                })
+              }
+              let groupObj = {
+                name: group.name,
+                members: newMembers,
+                avatar: group.avatar
+              }
+              res.json({ success: true, group: groupObj })
+            } else {
+              res.json({ success: false, message: "Unknown error in /getGroupInfo" })
+            }
+          });
         }
       }
-    })
+    });
   });
 
   router.post('/disbandGroup', (req, res) => {

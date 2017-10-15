@@ -8,7 +8,7 @@ const userSchema = new Schema({
   bestgirl: { type: String, required: true, unique: false, lowercase: false},
   avatar: String,
   group: String
-})
+});
 
 // This runs any time the user Schema is activated
 userSchema.pre('save', function(next) {
@@ -23,8 +23,8 @@ userSchema.pre('save', function(next) {
     }
     this.password = hash;
     next();
-  })
-})
+  });
+});
 
 // unencrypt
 userSchema.methods.comparePassword = function(password) {

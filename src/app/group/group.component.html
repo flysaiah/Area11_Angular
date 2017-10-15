@@ -79,7 +79,7 @@
               <img class="group-member-avatar" [src]="pendingUser['avatar']" (error)="loadDefaultImage($event.target)">
               <div class="group-member-name">
                 <h2>{{ pendingUser['username'] }}</h2>
-                <button mat-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser.username)">Accept</button>
+                <button mat-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser)">Accept</button>
               </div>
             </div>
           </div>
