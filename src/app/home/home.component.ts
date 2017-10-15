@@ -213,16 +213,22 @@ export class HomeComponent {
       data: {comments: this.finalistList[index]["comments"].join(";")}
     });
     dialogRef.afterClosed().subscribe(result => {
+      // result = comment string
       if (result) {
         this.finalistList[index]["comments"] = result.split(";");
-        const tmp = this.finalistList[index];
-        this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
-          if (!res["success"]) {
-            console.log(res);
-            this.displayToast("There was a problem.", true);
-          }
-        });
+      } else if (result == "") {
+        this.finalistList[index]["comments"] = [];
+      } else {
+        // No changes were made--they hit the cancel button
+        return;
       }
+      const tmp = this.finalistList[index];
+      this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
+        if (!res["success"]) {
+          console.log(res);
+          this.displayToast("There was a problem.", true);
+        }
+      });
     });
   }
 
@@ -267,6 +273,7 @@ export class HomeComponent {
             this.finalistList.push(anime);
           }
         }
+        // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
           if (showFinalistMessage) {

@@ -4,6 +4,7 @@ const config = require('../config/database.js')
 module.exports = (router) => {
 
   router.post('/register', (req, res) => {
+    // Register user
     if (!req.body.username || !req.body.password) {
       res.json({ success: false, message: "Username/password not provided" });
     } else {
@@ -32,6 +33,7 @@ module.exports = (router) => {
         } else if (!user) {
             res.json({ success: false, message: "Username not found" });
         } else {
+          // Need this because of hashed passwords
           if (user.comparePassword(req.body.password)) {
             // Password checks out
             const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '24h' });

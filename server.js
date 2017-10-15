@@ -16,7 +16,7 @@ mongoose.connect(config.uri, {useMongoClient: true}, (err) => {
   }
 })
 
-// API file for interacting with MongoDB
+// API files for interacting with MongoDB
 const authentication = require('./server/routes/authentication')(router);
 const api = require('./server/routes/api')(router);
 

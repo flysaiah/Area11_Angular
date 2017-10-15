@@ -5,6 +5,7 @@
 <mat-card class="group-container">
   <mat-card-content>
     <mat-tab-group>
+      <!-- Info about current group members -->
       <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
@@ -20,8 +21,8 @@
               </div>
             </div>
           </div>
-
         </div>
+        <!-- "Find/create group" tab -->
       <div class="group-settings-tab" *ngIf="!currentGroup['name']">
         You're not currently in a group. Find or create one here!
         <div class="find-group">
@@ -43,6 +44,7 @@
         </div>
       </div>
       </mat-tab>
+      <!-- Group invites tab -->
       <mat-tab ng label="Pending Requests">
         <div *ngIf="!currentGroup['name']" class="group-settings-tab">
           <div *ngIf="pendingGroupRequests.length">
@@ -52,6 +54,7 @@
             No groups have sent you requests to join them.
           </div>
         </div>
+        <!-- User invites tab -->
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div *ngIf="pendingUserRequests.length">
             These people are requesting membership to your group:
@@ -68,6 +71,7 @@
           </div>
         </div>
       </mat-tab>
+      <!-- Group settings tab -->
       <mat-tab label="Group Settings">
         <div class="group-settings-tab" *ngIf="currentGroup['name']">
           <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>

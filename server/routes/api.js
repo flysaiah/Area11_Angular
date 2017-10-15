@@ -1,3 +1,4 @@
+// Contains all API hooks except those used for authentication
 const express = require('express');
 const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
@@ -6,9 +7,6 @@ const User = require('../models/user.js');
 const Group = require('../models/group.js');
 
 module.exports = (router) => {
-
-
-  // Any route that requires authentication goes after this middleware
 
   router.post('/removeAnimeFromCatalog', (req, res) => {
     Anime.findOne({ '_id': ObjectID(req.body.id)}, (err, anime) => {
@@ -37,6 +35,7 @@ module.exports = (router) => {
   })
 
   router.post('/fetchAnime', (req, res) => {
+    // Fetches all anime in the database associated with the current user
     Anime.find({ user: req.body.user}, (err, animeList) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -47,6 +46,7 @@ module.exports = (router) => {
   })
 
   router.post('/malSearch', (req, res) => {
+    // Query myanimelist API for info based on name of anime
     const query = encodeURIComponent(req["body"]["query"]);
     const parser = require('xml2json');
     const request = require('request');
@@ -78,6 +78,7 @@ module.exports = (router) => {
             res.json({ success: false, message: 'Anime already in catalog'});
             return;
           } else {
+            // Now we can add anime
             let newAnime = new Anime({
               user: anime['user'],
               name: anime['name'],
@@ -103,6 +104,7 @@ module.exports = (router) => {
   });
 
   router.post('/changeFinalistStatus', (req, res) => {
+    // Either add as finalist or remove finalist depending on newStatus
     Anime.findOneAndUpdate({ "_id": ObjectID(req.body.id) }, { $set: { isFinalist: req.body.newStatus, comments: (req.body.comments ? req.body.comments : []) } }, (err, anime) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -123,6 +125,7 @@ module.exports = (router) => {
   });
 
   router.post('/saveUserChanges', (req, res) => {
+    // For user settings page
     User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { bestgirl: req.body.bestgirl, avatar: req.body.avatar } }, (err, user) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -133,6 +136,7 @@ module.exports = (router) => {
   });
 
   router.post('/createGroup', (req, res) => {
+    // Create group with current user as sole member
     let newGroup = new Group({
       "name": req.body.name,
       "members": [{
@@ -160,6 +164,7 @@ module.exports = (router) => {
   });
 
   router.post('/joinGroupRequest', (req, res) => {
+    // Send a request to join a group; adds user as a group member with isPending = true
     Group.findOne({ name: req.body.groupName }, (err, group) => {
       if (err) {
         res.json({ success: false, message: err });
@@ -226,7 +231,7 @@ module.exports = (router) => {
               return;
             }
           }
-          // Remove user from pending, then add
+          // Change isPending status to officially "add" user
           let newMembers = group.members;
           for (let i=0; i<newMembers.length; i++) {
             if (newMembers[i].id == req.body.pendingUser) {
@@ -347,6 +352,7 @@ module.exports = (router) => {
   });
 
   router.post('/importCatalog', (req, res) => {
+    // Adds all not-already-existing anime from one group member's catalog to another's 'Considering' category
     Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
       if (err) {
         res.json({ success: false, message: err });

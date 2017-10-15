@@ -7,7 +7,7 @@ const userSchema = new Schema({
   password: { type: String, required: true, unique: false, lowercase: false},
   bestgirl: { type: String, required: true, unique: false, lowercase: false},
   avatar: String,
-  group: String
+  group: String   // name of the group
 });
 
 // This runs any time the user Schema is activated

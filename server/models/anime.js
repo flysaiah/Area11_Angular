@@ -7,9 +7,9 @@ const animeSchema = new Schema({
   description: String,
   rating: Number,
   thumbnail: String,
-  malID: String,
+  malID: String,   // myanimelist ID
   category: String,
-  user: String,
+  user: String,   // username, not ID
   comments: [String],
   isFinalist: Boolean,
   genres: [String]

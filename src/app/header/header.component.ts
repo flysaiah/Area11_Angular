@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.avatar = "";
     this.currentUser = "";
+    // Load avatar & username
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
