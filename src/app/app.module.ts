@@ -18,7 +18,7 @@ import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
-import { SettingsComponent } from './settings/settings.component';
+import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
 import { GroupComponent } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 
@@ -28,6 +28,7 @@ import { HeaderComponent } from './header/header.component';
     HomeComponent,
     LinkAnimeDialog,
     FinalistCommentsDialog,
+    DeleteAccountDialog,
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
@@ -54,6 +55,6 @@ import { HeaderComponent } from './header/header.component';
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog]
 })
 export class AppModule { }

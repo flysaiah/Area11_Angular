@@ -153,10 +153,6 @@ export class HomeComponent {
     }
   }
 
-  logout() {
-    this.authService.logout();
-  }
-
   selectAsFinalist() {
     // Add selected anime to chooser panel
     // First bring up a dialog to allow them to enter any comments

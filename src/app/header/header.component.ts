@@ -16,6 +16,10 @@ export class HeaderComponent implements OnInit {
     this.avatar = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
   }
 
+  logout() {
+    this.authService.logout();
+  }
+
   constructor(
     private userService: UserService,
     private authService: AuthService,

@@ -124,6 +124,45 @@ module.exports = (router) => {
     })
   });
 
+  router.post('/deleteAccount', (req, res) => {
+    // First check if user is in a group; if so, we need to remove them from group too
+    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        if (!user.group) {
+          User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+          res.json({ success: true, message: "User successfully deleted!" });
+        } else {
+          Group.findOne({ "name": user.group }, (err, group) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else if (!group) {
+              User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+              res.json({ success: true, message: "User successfully deleted!" });
+            } else {
+              // Group exists
+              let newMembers = [];
+              for (let member of group.members) {
+                if (member.id != req.decoded.userId) {
+                  newMembers.push(member);
+                }
+              }
+              Group.findOneAndUpdate({ "name": group.name}, { $set: { members: newMembers } }, (err, group) => {
+                if (err) {
+                  res.json({ success: false, message: err });
+                } else {
+                  User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+                  res.json({ success: true, message: "User successfully deleted!" });
+                }
+              });
+            }
+          })
+        }
+      }
+    })
+  });
+
   router.post('/saveUserChanges', (req, res) => {
     // For user settings page
     User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { bestgirl: req.body.bestgirl, avatar: req.body.avatar } }, (err, user) => {
