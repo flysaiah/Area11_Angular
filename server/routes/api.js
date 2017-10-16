@@ -32,7 +32,7 @@ module.exports = (router) => {
         res.json({ success: true, message: "Category updated!" });
       }
     })
-  })
+  });
 
   router.post('/fetchAnime', (req, res) => {
     // Fetches all anime in the database associated with the current user
@@ -43,7 +43,7 @@ module.exports = (router) => {
         res.json({ success: true, animeList: animeList})
       }
     })
-  })
+  });
 
   router.post('/malSearch', (req, res) => {
     // Query myanimelist API for info based on name of anime
