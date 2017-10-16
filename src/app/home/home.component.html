@@ -71,8 +71,22 @@
     <div *ngIf="selectedAnime['name']">
       <div class="details-panel-content" >
         <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
-        <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
-        <p [innerHTML]="selectedAnime['description']"></p>
+        <div class="details-flex-container">
+          <div class="details-thumbnail-container">
+            <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
+          </div>
+          <div class="details-misc">
+            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}<br><br>
+            <strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}<br><br>
+            <strong>MAL rating:</strong> {{ selectedAnime["rating"] }}<br><br>
+            <strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}<br><br>
+            <strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}<br><br>
+            <strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+          </div>
+        </div>
+        <div class="details-description">
+          <p [innerHTML]="selectedAnime['description']"></p>
+        </div>
       </div>
       <div class="details-button-container">
         <button *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')" class="details-button" mat-raised-button color="accent">Add to Want to Watch</button>

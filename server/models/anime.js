@@ -12,7 +12,12 @@ const animeSchema = new Schema({
   user: String,   // username, not ID
   comments: [String],
   isFinalist: Boolean,
-  genres: [String]
+  genres: [String],
+  startDate: String,
+  endDate: String,
+  type: String,
+  englishTitle: String,
+  status: String
 })
 
 module.exports = mongoose.model('Anime', animeSchema);

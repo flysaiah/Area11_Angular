@@ -5,11 +5,16 @@ export class Anime {
     public description?: string,
     public rating?: number,
     public thumbnail?: string,
-    public malID?: number,
+    public malID?: string,
     public category?: string,
     public _id?: string,
     public comments?: string[],
     public isFinalist?: boolean,
-    public genres?: string[]
+    public genres?: string[],
+    public startDate?: string,
+    public endDate?: string,
+    public type?: string,
+    public englishTitle?: string,
+    public status?: string
   ) {}
 }

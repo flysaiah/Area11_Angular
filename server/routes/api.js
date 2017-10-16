@@ -88,7 +88,12 @@ module.exports = (router) => {
               malID: anime['malID'],
               category: anime['category'],
               isFinalist: anime['isFinalist'],
-              genres: anime['genres']
+              genres: anime['genres'],
+              startDate: anime['startDate'],
+              endDate: anime['endDate'],
+              type: anime['type'],
+              englishTitle: anime['englishTitle'],
+              status: anime['status']
             });
             newAnime.save((err) => {
               if (err) {
@@ -416,7 +421,12 @@ module.exports = (router) => {
                     malID: anime['malID'],
                     category: 'Considering',
                     isFinalist: false,
-                    genres: anime['genres']
+                    genres: anime['genres'],
+                    startDate: anime['startDate'],
+                    endDate: anime['endDate'],
+                    type: anime['type'],
+                    englishTitle: anime['englishTitle'],
+                    status: anime['status']
                   });
                   newAnime.save((err) => {
                     if (err) {

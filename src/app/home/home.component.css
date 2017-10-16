@@ -139,6 +139,29 @@
 .details-title {
   margin-bottom: 8px;
 }
+.details-flex-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+@media screen and (max-width: 1260px) {
+  .details-flex-container {
+    justify-content: space-between;
+  }
+}
+.details-thumbnail-container {
+  display: inline-block;
+  width: 48%;
+  text-align: center;
+}
+.details-description {
+  clear: both;
+}
+.details-misc {
+  display: inline-block;
+  width: 35%;
+  text-align: left;
+}
 .details-panel-placeholder {
   width: 34%;
   text-align: center;
@@ -199,7 +222,7 @@
 .finalist-button-container-smallscreen {
   display: none;
 }
-@media screen and (max-width: 1075px) {
+@media screen and (max-width: 1130px) {
     .finalist-button-container {
       display: none;
     }
@@ -219,6 +242,17 @@
     }
     .add-anime-normal {
       display: none;
+    }
+    .details-thumbnail-container {
+      width: auto;
+    }
+    .details-flex-container {
+      display: block;
+    }
+    .details-misc {
+      display: block;
+      width: 100%;
+      text-align: center;
     }
 
 }

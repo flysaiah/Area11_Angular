@@ -88,12 +88,39 @@ export class HomeComponent {
         const numSuggestions = Math.min(30, animeList.length);
         // Special case is where there is only 1 entry, in which case it is not an array
         if (animeList.hasOwnProperty("title")) {
-          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList["title"], animeList["synopsis"], animeList["score"], animeList["image"], animeList["id"], animeList["genres"]));
+          let newAnime:Anime = {
+            user: this.currentUser,
+            name: (typeof animeList["title"] == "string" ? animeList["title"] : "Unknown").toString(),
+            description: (typeof animeList["synopsis"] == "string" ? animeList["synopsis"] : "").toString(),
+            rating: (typeof animeList["score"] == "string" ? animeList["score"] : "").toString(),
+            thumbnail: (typeof animeList["image"] == "string" ? animeList["image"] : "").toString(),
+            malID: (typeof animeList["id"] == "string" ? animeList["id"] : -1).toString(),
+            startDate: (new Date(animeList["start_date"])).toLocaleDateString(),
+            endDate: (new Date(animeList["end_date"])).toLocaleDateString(),
+            type: (typeof animeList["type"] == "string" ? animeList["type"] : "").toString(),
+            englishTitle: (typeof animeList["english"] == "string" ? animeList["english"] : "").toString(),
+            status: (typeof animeList["status"] == "string" ? animeList["status"] : "").toString()
+          }
+          this.linkAnimeSuggestions.push(newAnime);
         }
         for (let i=0; i<numSuggestions; i++) {
           // IDEA: Option in user settings for specifying English vs Japanese title when linked
           // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
-          this.linkAnimeSuggestions.push(new Anime(this.currentUser, animeList[i]["title"], animeList[i]["synopsis"], animeList[i]["score"], animeList[i]["image"], animeList[i]["id"], animeList[i]["genres"]))
+          // We use all these conditionals because the MAL API is really weird and sometimes returns weird non-string results
+          let newAnime:Anime = {
+            user: this.currentUser,
+            name: (typeof animeList[i]["title"] == "string" ? animeList[i]["title"] : "Unknown").toString(),
+            description: (typeof animeList[i]["synopsis"] == "string" ? animeList[i]["synopsis"] : "").toString(),
+            rating: (typeof animeList[i]["score"] == "string" ? animeList[i]["score"] : "").toString(),
+            thumbnail: (typeof animeList[i]["image"] == "string" ? animeList[i]["image"] : "").toString(),
+            malID: (typeof animeList[i]["id"] == "string" ? animeList[i]["id"] : -1).toString(),
+            startDate: (new Date(animeList[i]["start_date"])).toLocaleDateString(),
+            endDate: (new Date(animeList[i]["end_date"])).toLocaleDateString(),
+            type: (typeof animeList[i]["type"] == "string" ? animeList[i]["type"] : "").toString(),
+            englishTitle: (typeof animeList[i]["english"] == "string" ? animeList[i]["english"] : "").toString(),
+            status: (typeof animeList[i]["status"] == "string" ? animeList[i]["status"] : "").toString()
+          }
+          this.linkAnimeSuggestions.push(newAnime);
         }
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
