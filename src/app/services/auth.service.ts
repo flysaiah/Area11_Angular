@@ -57,8 +57,4 @@ export class AuthService {
     return this.http.get(this.domain + '/authentication/profile', this.options).map(res => res.json());
   }
 
-  // this.authService.getProfile().subscribe(profile => {
-  //   this.user = profile.user;
-  // })
-
 }

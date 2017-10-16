@@ -17,9 +17,9 @@ export class GroupService {
     });
   }
 
-  createGroup(groupName: string, groupAvatar: string, username: string, userAvatar: string) {
+  createGroup(groupName: string, groupAvatar: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/createGroup', { name: groupName, groupAvatar: groupAvatar, username: username, userAvatar: userAvatar }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/createGroup', { name: groupName, groupAvatar: groupAvatar}, this.options).map(res => res.json());
   }
 
   getGroupInfo(groupName: string) {
@@ -31,9 +31,9 @@ export class GroupService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/disbandGroup', { name: groupName }, this.options).map(res => res.json());
   }
-  joinGroupRequest(groupName: string, username: string, userAvatar: string) {
+  joinGroupRequest(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/joinGroupRequest', { groupName: groupName, username: username, userAvatar: userAvatar }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/joinGroupRequest', { groupName: groupName }, this.options).map(res => res.json());
   }
   acceptUserRequest(groupName: string, pendingUser: string) {
     this.createAuthenticationHeaders();

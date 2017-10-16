@@ -26,6 +26,10 @@ export class UserService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/saveUserChanges', user, this.options).map(res => res.json());
   }
+  deleteAccount() {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/deleteAccount', {}, this.options).map(res => res.json());
+  }
 
   constructor(
     private authService: AuthService,

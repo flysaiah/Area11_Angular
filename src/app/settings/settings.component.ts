@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { User } from '../register/user';
 
 @Component({
@@ -33,7 +34,28 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccount() {
-    console.log("DELETE ACCOUNT");
+    // Open dialog
+    let dialogRef = this.dialog.open(DeleteAccountDialog, {
+      width: '515px',
+      data: {confirm: true}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // If result is defined then they confirmed the deletion
+      if (result) {
+        this.userService.deleteAccount().subscribe((res) => {
+          if (res["success"]) {
+            this.displayToast("Account successfully deleted.");
+            setTimeout(() => {
+              this.authService.logout();
+            }, 1500);
+          } else {
+            this.displayToast("There was a problem deleting your account.", true);
+            console.log(res);
+          }
+        })
+      }
+    });
   }
 
   saveChanges() {
@@ -78,10 +100,24 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.refresh();
   };
+}
+@Component({
+  selector: 'delete-account',
+  templateUrl: './delete-account.html'
+})
+export class DeleteAccountDialog {
+  constructor(
+    public dialogRef: MatDialogRef<DeleteAccountDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

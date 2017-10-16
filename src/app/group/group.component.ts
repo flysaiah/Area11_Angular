@@ -14,20 +14,20 @@ export class GroupComponent implements OnInit {
   showToast: boolean;
   toastMessage: string;
   toastError: boolean;
-  avatar: string;
 
   newGroupName: string;
   newGroupAvatar: string;
   joinGroupName: string;
   currentGroup: Group;
-  currentGroupMembers: {id: string, username: string, isPending: boolean}[];
-  pendingGroupRequests: {id: string, username: string, isPending: boolean}[];
-  pendingUserRequests: {id: string, username: string, isPending: boolean}[];
+  // Use these arrays so we can iterate through isPending=true vs isPending=false easier in the HTML
+  currentGroupMembers: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  pendingGroupRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  pendingUserRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
 
   currentUser: string;
 
   createGroup() {
-    this.groupService.createGroup(this.newGroupName, this.newGroupAvatar, this.currentUser, this.avatar).subscribe((res) => {
+    this.groupService.createGroup(this.newGroupName, this.newGroupAvatar).subscribe((res) => {
       if (!res["success"]) {
         this.displayToast("There was a problem creating the group", true);
       } else {
@@ -37,13 +37,14 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  acceptUserRequest(pendingUser: string) {
-    this.groupService.acceptUserRequest(this.currentGroup["name"], pendingUser).subscribe((res) => {
+  acceptUserRequest(pendingUser: {id: string, username: string}) {
+    // Change isPending status of user
+    this.groupService.acceptUserRequest(this.currentGroup["name"], pendingUser.id).subscribe((res) => {
       if (res["success"]) {
-        this.displayToast(pendingUser + " successfully added to group!");
+        this.displayToast(pendingUser.username + " successfully added to group!");
         this.refresh();
       } else if (res["message"] == "Already in group") {
-        this.displayToast(pendingUser + "is has already been accepted", true);
+        this.displayToast(pendingUser.username + "is has already been accepted", true);
         this.refresh();
       } else {
         this.displayToast("There was a problem accepting the request");
@@ -53,7 +54,8 @@ export class GroupComponent implements OnInit {
   }
 
   joinGroupRequest() {
-    this.groupService.joinGroupRequest(this.joinGroupName, this.currentUser, this.avatar).subscribe((res) => {
+    // Send a request to join group; adds user as a member with isPending=true
+    this.groupService.joinGroupRequest(this.joinGroupName).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Your request has been sent!");
       } else if (res["message"] == "Already requested") {
@@ -99,6 +101,7 @@ export class GroupComponent implements OnInit {
   }
 
   importCatalog(user: string) {
+    // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
     this.groupService.importCatalog(user, this.currentUser).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("You have successfully imported " + user + "'s catalog!'")
@@ -112,6 +115,7 @@ export class GroupComponent implements OnInit {
   }
 
   generateUserRequests() {
+    // Filters members by whether they're actually members or are pending (have requested membership)
     for (let member of this.currentGroup["members"]) {
       if (member["isPending"]) {
         this.pendingUserRequests.push(member);
@@ -134,13 +138,11 @@ export class GroupComponent implements OnInit {
         this.currentUser = res["user"]["username"];
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
-            this.avatar = res["user"]["avatar"];
             if (res["user"]["group"]) {
               this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
                 if (res["success"]) {
                   this.currentGroup = res["group"];
                   this.generateUserRequests();
-                  // We don't store indivual members' avatars in the database
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);
@@ -149,7 +151,7 @@ export class GroupComponent implements OnInit {
                     this.displayToast("There was a problem loading your group information.", true);
                   }
                 }
-              })
+              });
             }
           } else {
             this.displayToast("There was a problem loading your profile.", true)
