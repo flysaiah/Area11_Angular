@@ -115,6 +115,13 @@
   margin-left: 1%;
   margin-right: 1%;
 }
+@media screen and (min-width: 1400px) {
+  .flex-item {
+    width: 26%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
 .catalog {
   border: 1px solid #c3c3c3;
   border-style: double;
