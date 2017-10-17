@@ -64,7 +64,7 @@
   margin-right: auto;
   margin-left: auto;
   margin-top: 20px;
-  height: 500px;
+  min-height: 500px;
 }
 .settings-form {
   width: 50%;
@@ -75,6 +75,7 @@
 }
 .save-changes-button {
   width: 50%;
+  min-width: 40px !important;;
   margin-bottom: 20px;
 }
 .delete-account-button {
@@ -88,9 +89,22 @@
   text-align: center;
 }
 .settings-avatar-big {
-  width: 90%;
+  width: 85%;
+  height: 0;
+  padding-bottom: 85%;
+  background: no-repeat center/cover;
   border-radius: 50%;
+  border: 1px solid black;
+  /*object-fit: cover;*/
 }
 .settings-avatar-name {
   margin-top: -10px;
+  margin-bottom: 0px;
+}
+.change-avatar {
+  margin-top: -10px;
+  text-align: center;
+}
+.upload-input {
+  width: 50% !important;
 }

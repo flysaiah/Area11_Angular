@@ -95,9 +95,12 @@
 }
 .group-member-avatar {
   height: 100px;
+  width: 100px;
+  background: no-repeat center/cover;
   border-radius: 50%;
   float: left;
   display: block;
+  border: 1px solid black;
 }
 .group-member-name {
   float: left;

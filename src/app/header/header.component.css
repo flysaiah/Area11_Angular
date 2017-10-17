@@ -27,9 +27,12 @@
   font-size: 30px;
 }
 .profile-avatar {
+  width: 50px;
   height: 50px;
-  border-radius: 50%;
   margin-top: -10px;
+  background: no-repeat center/cover;
+  border-radius: 50%;
+  border: 1px solid black;
 }
 .home-menu-button {
   text-align: center;
