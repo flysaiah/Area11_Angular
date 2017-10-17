@@ -6,7 +6,7 @@
   <!-- Filtering/sorting -->
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
   <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
-    <option value="_id,ascending">Default (Date added)</option>
+    <option value="_id,ascending">Default</option>
     <option value="name,ascending">Alphabetical</option>
     <option value="rating,descending">Rating (High to Low)</option>
     <option value="rating,ascending">Rating (Low to High)</option>

@@ -208,7 +208,8 @@ export class HomeComponent {
           this.displayToast("There was a problem.", true);
         }
       })
-      this.refresh();
+      this.finalistList.push(this.selectedAnime);
+      this.validateSelectAsFinalistButton();
     });
   }
 
@@ -269,7 +270,22 @@ export class HomeComponent {
   removeFinalist(index: number) {
     this.animeService.removeFinalist(this.finalistList[index]["_id"]).subscribe((res) => {
       if (res["success"]) {
-        this.refresh(true);
+        this.finalistList.splice(index, 1);
+        this.validateSelectAsFinalistButton();
+        switch (this.finalistList.length) {
+          case 4: {
+            this.displayToast("It's down to the Elite Four!");
+            break;
+          } case 2: {
+            this.displayToast("It's down to the finals!");
+            break;
+          } case 1: {
+            this.displayToast("Congratulations to the victor!");
+            break;
+          } default: {
+            // do nothing
+          }
+        }
       } else {
         console.log(res);
         this.displayToast("There was a problem", true);
@@ -281,13 +297,8 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
-
-
-  private refresh(showFinalistMessage?: boolean) {
+  private refresh() {
     // Fetch all anime stored in database and update our lists
-    this.wantToWatchList = [];
-    this.consideringList = [];
-    this.completedList = [];
     this.finalistList = [];
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
@@ -295,14 +306,20 @@ export class HomeComponent {
     this.animeService.fetchAnime(this.currentUser).subscribe(res => {
       if (res["success"]) {
         const animeList = res["animeList"];
+        const newWantToWatch = [];
+        const newConsidering = [];
+        const newCompleted = [];
         for (let anime of animeList) {
           if (anime["category"] == "Want to Watch") {
-            this.wantToWatchList.push(anime);
+            newWantToWatch.push(anime);
           } else if (anime["category"] == "Considering") {
-            this.consideringList.push(anime);
+            newConsidering.push(anime);
           } else if (anime["category"] == "Completed") {
-            this.completedList.push(anime);
+            newCompleted.push(anime);
           }
+          this.wantToWatchList = newWantToWatch;
+          this.consideringList = newConsidering;
+          this.completedList = newCompleted;
           if (anime["isFinalist"]) {
             this.finalistList.push(anime);
           }
@@ -310,24 +327,8 @@ export class HomeComponent {
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
-          if (showFinalistMessage) {
-            // If this was triggered by removing a finalist, then toast
-            switch (this.finalistList.length) {
-              case 4: {
-                this.displayToast("It's down to the Elite Four!");
-                break;
-              } case 2: {
-                this.displayToast("It's down to the finals!");
-                break;
-              } case 1: {
-                this.displayToast("Congratulations to the victor!");
-                break;
-              } default: {
-                // do nothing
-              }
-            }
-          }
         }
+        this.sortAnime(this.sortCriteria);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
