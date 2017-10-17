@@ -18,11 +18,11 @@
   <!-- Add anime prompt -->
   <div class="flex-item">
     <mat-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
-      <form>
+      <div>
         <mat-form-field color="accent" class="add-anime-name">
           <input matInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
         </mat-form-field>
-        <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">Link</button>
+        <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">{{ (animeToAdd['malID'] ? 'Relink' : 'Link') }}</button>
         <div class="add-anime-normal">
           <mat-form-field class="add-to-category">
             <mat-select placeholder="Add to..." name="addAnimeCat" [(ngModel)]="animeToAdd['category']">
@@ -40,7 +40,7 @@
             <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Completed')">Add to Completed</button>
           </mat-menu>
         </div>
-      </form>
+      </div>
     </mat-card>
 
     <!-- Anime catalogue -->
@@ -86,7 +86,7 @@
           </div>
         </div>
         <div class="details-description">
-          <p [innerHTML]="selectedAnime['description'].replace('/i/g', 'o')"></p>
+          <p [innerHTML]="selectedAnime['description']"></p>
         </div>
       </div>
       <div class="details-button-container">

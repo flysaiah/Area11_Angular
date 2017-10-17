@@ -52,7 +52,9 @@ export class HomeComponent {
   showAnimeDetails(anime: Anime) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
-    this.selectedAnime["description"] = this.selectedAnime["description"].replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
+    if (this.selectedAnime["description"]) {
+      this.selectedAnime["description"] = this.selectedAnime["description"].replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
+    }
     this.validateSelectAsFinalistButton();
   }
 
