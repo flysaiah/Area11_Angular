@@ -26,6 +26,7 @@ export class HomeComponent {
   toastMessage: string;
   toastError: boolean;
   sortCriteria: string;
+  showCategory: string;
   currentUser: string;
 
   private displayToast(message: string, error?: boolean) {
@@ -297,9 +298,8 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
-  private refresh() {
+  refresh() {
     // Fetch all anime stored in database and update our lists
-    this.finalistList = [];
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
 
@@ -309,21 +309,23 @@ export class HomeComponent {
         const newWantToWatch = [];
         const newConsidering = [];
         const newCompleted = [];
+        const newFinalistList = [];
         for (let anime of animeList) {
-          if (anime["category"] == "Want to Watch") {
+          if (anime["category"] == "Want to Watch" && (this.showCategory == "All Categories" || this.showCategory == "Want to Watch")) {
             newWantToWatch.push(anime);
-          } else if (anime["category"] == "Considering") {
+          } else if (anime["category"] == "Considering" && (this.showCategory == "All Categories" || this.showCategory == "Considering")) {
             newConsidering.push(anime);
-          } else if (anime["category"] == "Completed") {
+          } else if (anime["category"] == "Completed" && (this.showCategory == "All Categories" || this.showCategory == "Completed")) {
             newCompleted.push(anime);
           }
-          this.wantToWatchList = newWantToWatch;
-          this.consideringList = newConsidering;
-          this.completedList = newCompleted;
           if (anime["isFinalist"]) {
-            this.finalistList.push(anime);
+            newFinalistList.push(anime);
           }
         }
+        this.wantToWatchList = newWantToWatch;
+        this.consideringList = newConsidering;
+        this.completedList = newCompleted;
+        this.finalistList = newFinalistList;
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
@@ -354,6 +356,7 @@ export class HomeComponent {
     this.animeToAdd = new Anime("", "");
     this.selectedAnime = new Anime("", "");
     this.sortCriteria = "_id,ascending"
+    this.showCategory = "All Categories";
     this.possibleCategories = ["Want to Watch", "Considering", "Completed"];
     this.showToast = false;
     this.toastMessage = "";

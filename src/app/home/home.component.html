@@ -4,6 +4,13 @@
   <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
   <button mat-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
   <!-- Filtering/sorting -->
+  <label for="catalogCategoryFilter" class="catalog-sort-label">Filter by Category: </label>
+  <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh()" class="catalog-sort">
+    <option value="All Categories">All Categories</option>
+    <option value="Want to Watch">Want to Watch</option>
+    <option value="Considering">Considering</option>
+    <option value="Completed">Completed</option>
+  </select>
   <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
   <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
     <option value="_id,ascending">Default</option>
@@ -46,17 +53,17 @@
     <!-- Anime catalogue -->
     <div class="catalog">
       <mat-nav-list dense #animeCatalog>
-        <h3 matSubheader>Want to watch ({{ wantToWatchList.length }}):</h3>
+        <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
-        <mat-divider></mat-divider>
-        <h3 matSubheader>Considering ({{ consideringList.length }}):</h3>
+        <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'"></mat-divider>
+        <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'">Considering ({{ consideringList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
-        <mat-divider></mat-divider>
-        <h3 matSubheader>Completed ({{ completedList.length }}):</h3>
+        <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'"></mat-divider>
+        <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Completed'">Completed ({{ completedList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
