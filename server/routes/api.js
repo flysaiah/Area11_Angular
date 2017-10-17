@@ -5,6 +5,19 @@ const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
+const path = require('path');
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public')
+  },
+  filename: function (req, file, cb) {
+    cb(null, req.decoded.userId);
+  }
+})
+
+const upload = multer({ storage: storage });
 
 module.exports = (router) => {
 
@@ -32,6 +45,11 @@ module.exports = (router) => {
         res.json({ success: true, message: "Category updated!" });
       }
     })
+  });
+
+  router.post("/upload", upload.single('uploadAvatar'), function(req, res) {
+    // TODO: There must be a way to check if this failed somehow; right now we're just assuming it worked
+    res.json( {"success": true} );
   });
 
   router.post('/fetchAnime', (req, res) => {

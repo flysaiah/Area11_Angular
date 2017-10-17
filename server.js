@@ -6,6 +6,9 @@ const app = express();
 const router = express.Router();
 const config = require('./server/config/database.js')
 const mongoose = require('mongoose');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 mongoose.Promise = global.Promise;
 
 mongoose.connect(config.uri, {useMongoClient: true}, (err) => {
@@ -32,8 +35,6 @@ app.use('/authentication', authentication);
 
 // API location
 app.use('/api', api);
-
-
 
 // Send all other requests to the Angular app
 app.get('*', (req, res) => {

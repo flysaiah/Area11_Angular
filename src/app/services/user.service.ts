@@ -30,6 +30,16 @@ export class UserService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/deleteAccount', {}, this.options).map(res => res.json());
   }
+  uploadUserAvatar(formData: FormData) {
+    // Need different headers here because of different content-type
+    this.authService.loadToken();
+    this.options = new RequestOptions({
+      headers: new Headers({
+        'authorization': this.authService.authToken
+      })
+    });
+    return this.http.post(this.domain + '/api/upload', formData, this.options).map(res => res.json());
+  }
 
   constructor(
     private authService: AuthService,

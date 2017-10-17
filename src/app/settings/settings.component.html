@@ -8,15 +8,18 @@
       <mat-form-field class="settings-input" color="accent">
         <input matInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
       </mat-form-field>
-      <mat-form-field class="settings-input" color="accent">
-        <input matInput name="avatar" [(ngModel)]="model.avatar" placeholder="Profile Avatar (URL)" #avatar="ngModel">
-      </mat-form-field>
-      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !avatar.dirty" (click)="saveChanges()">Save Changes</button>
+      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty" (click)="saveChanges()">Save Changes</button>
       <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
-      <img class="settings-avatar-big" [src]="model['avatar']" (error)="loadDefaultImage($event.target)">
+      <img class="settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + userAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}">
       <h3 class="settings-avatar-name">{{ currentUser }}</h3>
+      <div class="change-avatar">
+        <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
+        <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)"/>
+        <button *ngIf="showUploadOptions" [disabled]="!this.avatarUpload.length" type="button" (click)="upload()">Upload</button>
+        <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>

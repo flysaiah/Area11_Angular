@@ -12,12 +12,39 @@ import { User } from '../register/user';
 export class SettingsComponent implements OnInit {
 
   model: User = new User("","","");
+  showUploadOptions: boolean;
 
   showToast: boolean;
   toastMessage: string;
   toastError: boolean;
 
   currentUser: string;
+  userAvatar: string
+
+  avatarUpload: Array<File> = [];
+
+  upload() {
+    let formData : any = new FormData();
+    for(var i = 0; i < this.avatarUpload.length; i++) {
+      formData.append("uploadAvatar", this.avatarUpload[i], this.avatarUpload[i].name);
+    }
+    this.userService.uploadUserAvatar(formData).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("Profile avatar changed successfully!");
+        this.refresh();
+      } else {
+        this.displayToast("There was a problem changing you profile image.", true);
+      }
+    });
+  }
+
+  fileChangeEvent(fileInput: any){
+    this.avatarUpload = <Array<File>> fileInput.target.files;
+  }
+
+  toggleUploadOptions() {
+    this.showUploadOptions = !this.showUploadOptions;
+  }
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -79,21 +106,25 @@ export class SettingsComponent implements OnInit {
   }
 
   refresh() {
+
+    this.showUploadOptions = false;
+    this.userAvatar = "";   // Reset this so we force HTML to refresh avatar
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
+        // Use random number to force refresh of image after new upload
+        this.userAvatar = "/" + res["user"]["_id"] + "?xxx=" + Math.random();
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
             this.model["bestgirl"] = res["user"]["bestgirl"];
-            this.model["avatar"] = res["user"]["avatar"];
           } else {
             this.displayToast("There was a problem loading your settings.", true)
           }
         })
       } else {
         // If there was a problem we need to have them log in again
-        this.authService.logout();
         console.log(res["message"]);
+        this.authService.logout();
       }
     });
   }
@@ -101,7 +132,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {

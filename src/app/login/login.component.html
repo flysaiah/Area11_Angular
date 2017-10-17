@@ -9,7 +9,7 @@
       </mat-form-field>
 
       <mat-form-field class="register-input">
-        <input matInput placeholder="Password" [(ngModel)]="model.password" type="text" id="pass" name="pass" #pass="ngModel" required>
+        <input matInput placeholder="Password" [(ngModel)]="model.password" type="password" id="pass" name="pass" #pass="ngModel" required>
         <mat-error *ngIf="pass.invalid && (pass.dirty || pass.touched)"> Password is required </mat-error>
       </mat-form-field>
 

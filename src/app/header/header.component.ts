@@ -8,13 +8,8 @@ import { UserService } from '../services/user.service';
 })
 export class HeaderComponent implements OnInit {
 
-  avatar: string;
+  userAvatar: string;
   currentUser: string;
-
-  loadDefaultImage() {
-    // if avatar image doesn't load, we load our default
-    this.avatar = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
-  }
 
   logout() {
     this.authService.logout();
@@ -26,19 +21,13 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.avatar = "";
+    this.userAvatar = "";
     this.currentUser = "";
     // Load avatar & username
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
-        this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
-            this.avatar = res["user"]["avatar"];
-          } else {
-            console.log(res);
-          }
-        })
+        this.userAvatar = "/" + res["user"]["_id"];
       } else {
         // If there was a problem we need to have them log in again
         this.authService.logout();

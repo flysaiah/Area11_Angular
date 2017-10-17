@@ -14,7 +14,7 @@
           </div>
           <div class="member-list-container">
             <div class="group-member" *ngFor="let groupMember of currentGroupMembers">
-              <img class="group-member-avatar" [src]="groupMember['avatar']" (error)="loadDefaultImage($event.target)">
+              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name">
                 <h2>{{ groupMember['username'] }}</h2>
                 <button mat-raised-button color="accent" class="import-list" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
@@ -59,7 +59,7 @@
           <div *ngIf="pendingUserRequests.length">
             These people are requesting membership to your group:
             <div class="group-member" *ngFor="let pendingUser of pendingUserRequests">
-              <img class="group-member-avatar" [src]="pendingUser['avatar']" (error)="loadDefaultImage($event.target)">
+              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name">
                 <h2>{{ pendingUser['username'] }}</h2>
                 <button mat-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser)">Accept</button>

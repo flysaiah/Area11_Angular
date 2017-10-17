@@ -3,7 +3,7 @@
   <div class="profile-container">
     <span class="profile-username">{{ currentUser }}</span>
     <button mat-icon-button>
-      <img [matMenuTriggerFor]="accountMenu" class="profile-avatar" [src]="avatar" (error)="loadDefaultImage()">
+      <div [matMenuTriggerFor]="accountMenu" class="profile-avatar" [ngStyle]="{ 'background-image': 'url(' + userAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
     </button>
   </div>
   <mat-menu [overlapTrigger]="false" #accountMenu="matMenu">
