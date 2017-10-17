@@ -61,7 +61,7 @@
   height: 20px;
   color: black;
   line-height: 20px;
-  margin-left: 20px;
+  margin-left: 60px;
 }
 .add-to-button {
   margin-left: 5px;
@@ -71,6 +71,15 @@
 }
 .catalog-sort-label {
   margin-left: 50px;
+}
+.open-op-button {
+  float: right;
+  margin-right: 60px;
+  margin-top: 10px;
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
 }
 .add-anime-prompt {
   margin-top: 5px;

@@ -68,6 +68,13 @@ export class HomeComponent {
 
   }
 
+  watchOPs() {
+    // Open youtube searches of each finalist in new tabs
+    for (let anime of this.finalistList) {
+      window.open("http://www.youtube.com/results?search_query=" + encodeURI(anime["name"] + " OP"), "_blank")
+    }
+  }
+
   malSearch() {
     this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
       if (!res["success"]) {

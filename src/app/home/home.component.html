@@ -11,6 +11,7 @@
     <option value="rating,descending">Rating (High to Low)</option>
     <option value="rating,ascending">Rating (Low to High)</option>
   </select>
+  <button mat-raised-button class="open-op-button" [disabled]="!finalistList.length" (click)="watchOPs()">Watch Finalist OPs</button>
 </div>
 
 <div class="home-container">
