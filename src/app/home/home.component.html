@@ -86,7 +86,7 @@
           </div>
         </div>
         <div class="details-description">
-          <p [innerHTML]="selectedAnime['description']"></p>
+          <p [innerHTML]="selectedAnime['description'].replace('/i/g', 'o')"></p>
         </div>
       </div>
       <div class="details-button-container">
