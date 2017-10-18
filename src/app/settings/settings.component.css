@@ -59,6 +59,13 @@
   line-height: 40px;
   text-shadow: 1px 1px 0 #444;
 }
+.home-button {
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-left: 60px;
+}
 .settings-container {
   width: 50%;
   margin-right: auto;
