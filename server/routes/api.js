@@ -13,9 +13,14 @@ const storage = multer.diskStorage({
     cb(null, 'public')
   },
   filename: function (req, file, cb) {
-    cb(null, req.decoded.userId);
+    // Distinguish between group & user uploads
+    if (file.originalname == "area11-user-avatar") {
+      cb(null, req.decoded.userId);
+    } else {
+      cb(null, file.originalname);
+    }
   }
-})
+});
 
 const upload = multer({ storage: storage });
 
@@ -204,8 +209,7 @@ module.exports = (router) => {
       "members": [{
         id: req.decoded.userId,
         isPending: false,
-      }],
-      "avatar": req.body.groupAvatar
+      }]
     });
     newGroup.save((err) => {
       if (err) {

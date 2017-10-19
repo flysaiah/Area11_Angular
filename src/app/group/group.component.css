@@ -86,9 +86,12 @@
   text-align: center;
 }
 .group-avatar {
-  width: 25%;
+  width: 40%;
+  height: 0;
+  padding-bottom: 40%;
+  background: no-repeat center/cover;
   border-radius: 50%;
-}
+  border: 1px solid black;}
 .group-name {
   margin-top: -10px;
 }
@@ -118,4 +121,33 @@
   border-radius: 50%;
   height: 30px;
   line-height: 30px;
+}
+.group-settings-left {
+  width: 50%;
+  float: left;
+}
+.group-settings-right {
+  width: 50%;
+  float: left;
+  text-align: center;
+}
+.group-settings-avatar-big {
+  width: 60%;
+  height: 0;
+  padding-bottom: 60%;
+  background: no-repeat center/cover;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+.group-settings-avatar-name {
+  font-size: 40px;
+  margin-top: 0px;
+  color: #800015;
+}
+.change-avatar {
+  margin-top: -10px;
+  text-align: center;
+}
+.upload-input {
+  width: 50% !important;
 }

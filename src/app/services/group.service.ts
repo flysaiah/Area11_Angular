@@ -17,9 +17,9 @@ export class GroupService {
     });
   }
 
-  createGroup(groupName: string, groupAvatar: string) {
+  createGroup(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/createGroup', { name: groupName, groupAvatar: groupAvatar}, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/createGroup', { name: groupName }, this.options).map(res => res.json());
   }
 
   getGroupInfo(groupName: string) {

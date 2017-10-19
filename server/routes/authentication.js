@@ -51,11 +51,9 @@ module.exports = (router) => {
     const token = req.headers['authorization'];
     if (!token) {
       // res.json({ success: false, message: "No token provided"})
-      req.decoded = "Look i really don't care"
     } else {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
-          req.decoded = "i really don't care rn"
           res.json({ success: false, message: "Token invalid: " + err});
         } else {
           // can access this anywhere

@@ -26,14 +26,15 @@ export class SettingsComponent implements OnInit {
   upload() {
     let formData : any = new FormData();
     for(var i = 0; i < this.avatarUpload.length; i++) {
-      formData.append("uploadAvatar", this.avatarUpload[i], this.avatarUpload[i].name);
+      formData.append("uploadAvatar", this.avatarUpload[i], "area11-user-avatar");
     }
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Profile avatar changed successfully!");
+        this.avatarUpload = [];
         this.refresh();
       } else {
-        this.displayToast("There was a problem changing you profile image.", true);
+        this.displayToast("There was a problem changing your profile avatar.", true);
       }
     });
   }

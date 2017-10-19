@@ -10,7 +10,7 @@
       <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
-            <img class="group-avatar" [src]="currentGroup['avatar']" (error)="loadDefaultImage($event.target)">
+            <img class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroup['name'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}" (error)="loadDefaultImage($event.target)">
             <h3 class="group-name">{{ currentGroup['name'] }}</h3>
           </div>
           <div class="member-list-container">
@@ -75,9 +75,21 @@
       <!-- Group settings tab -->
       <mat-tab label="Group Settings">
         <div class="group-settings-tab" *ngIf="currentGroup['name']">
-          <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
-          <br><br>
-          More group features and settings will be available in future updates!
+          <div class="group-settings-left">
+            More group features and settings will be available in future updates!
+            <br><br>
+            <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
+          </div>
+          <div class="group-settings-right">
+            <img class="group-settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + currentGroup['name'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}">
+            <h3 class="group-settings-avatar-name">{{ currentGroup['name'] }}</h3>
+            <div class="change-avatar">
+              <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
+              <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)"/>
+              <button *ngIf="showUploadOptions" [disabled]="!this.groupAvatarUpload.length" type="button" (click)="upload()">Upload</button>
+              <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
+            </div>
+          </div>
         </div>
         <div class="group-settings-tab" *ngIf="!currentGroup['name']">
           Create or join a group to view special group features and settings!

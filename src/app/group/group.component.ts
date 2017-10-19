@@ -16,7 +16,8 @@ export class GroupComponent implements OnInit {
   toastError: boolean;
 
   newGroupName: string;
-  newGroupAvatar: string;
+  groupAvatarUpload: Array<File> = [];
+  showUploadOptions: boolean;
   joinGroupName: string;
   currentGroup: Group;
   // Use these arrays so we can iterate through isPending=true vs isPending=false easier in the HTML
@@ -27,12 +28,33 @@ export class GroupComponent implements OnInit {
   currentUser: string;
 
   createGroup() {
-    this.groupService.createGroup(this.newGroupName, this.newGroupAvatar).subscribe((res) => {
+    this.groupService.createGroup(this.newGroupName).subscribe((res) => {
       if (!res["success"]) {
         this.displayToast("There was a problem creating the group", true);
       } else {
         this.displayToast("Group successfully created!");
         this.refresh();
+      }
+    });
+  }
+
+  fileChangeEvent(fileInput: any){
+    this.groupAvatarUpload = <Array<File>> fileInput.target.files;
+  }
+
+  upload() {
+    // For group avatar
+    let formData : any = new FormData();
+    for(var i = 0; i < this.groupAvatarUpload.length; i++) {
+      formData.append("uploadAvatar", this.groupAvatarUpload[i], this.currentGroup["name"]);
+    }
+    this.userService.uploadUserAvatar(formData).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("Group avatar changed successfully!");
+        this.groupAvatarUpload = [];
+        this.refresh();
+      } else {
+        this.displayToast("There was a problem changing your group avatar.", true);
       }
     });
   }
@@ -126,10 +148,14 @@ export class GroupComponent implements OnInit {
     }
   }
 
+  toggleUploadOptions() {
+    this.showUploadOptions = !this.showUploadOptions;
+  }
+
   refresh() {
     this.newGroupName = "";
-    this.newGroupAvatar = "";
     this.joinGroupName = "";
+    this.showUploadOptions = false;
     this.currentGroup = new Group("", []);
     this.currentGroupMembers = [];
     this.pendingGroupRequests = [];
