@@ -84,12 +84,20 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div class="details-misc">
-            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}<br><br>
-            <strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}<br><br>
-            <strong>MAL rating:</strong> {{ selectedAnime["rating"] }}<br><br>
-            <strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}<br><br>
-            <strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}<br><br>
-            <strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+            <p>
+              <strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}<br><br>
+              <strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}<br><br>
+              <strong>MAL rating:</strong> {{ selectedAnime["rating"] }}<br><br>
+              <strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}<br><br>
+              <strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}<br><br>
+              <strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}<br><br>
+              <strong>Genres:</strong>
+              <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
+                <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
+              </span>
+              <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
+            </p>
+
           </div>
         </div>
         <div class="details-description">

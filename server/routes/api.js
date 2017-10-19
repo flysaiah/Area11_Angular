@@ -47,7 +47,7 @@ module.exports = (router) => {
     })
   });
 
-  router.post("/upload", upload.single('uploadAvatar'), function(req, res) {
+  router.post('/upload', upload.single('uploadAvatar'), function(req, res) {
     // TODO: There must be a way to check if this failed somehow; right now we're just assuming it worked
     res.json( {"success": true} );
   });
