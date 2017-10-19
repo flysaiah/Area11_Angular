@@ -134,6 +134,7 @@ export class HomeComponent {
           }
           this.linkAnimeSuggestions.push(newAnime);
         }
+        console.log(this.linkAnimeSuggestions);
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
           width: '515px',

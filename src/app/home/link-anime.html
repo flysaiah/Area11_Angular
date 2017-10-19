@@ -9,15 +9,12 @@
         <div>
           <h3>{{ anime["name"] }}</h3>
         </div>
-        <!-- NOTE: Keeping this here just in case the MAL API returns genres in the future -->
-        <!-- <div>
-        Genres:
-        <mat-chip-list>
-          <mat-chip *ngFor="let genre of anime['genres']">
-            {{ genre }}
-          </mat-chip>
-        </mat-chip-list>
-        </div> -->
+        <div>
+          Air date: {{  anime["startDate"] ? (anime["startDate"] == "Invalid Date" ? "Unknown" : anime["startDate"]) : "Unknown"  }}
+        </div>
+        <div>
+          Type: {{ anime["type"] }}
+        </div>
         <div>
           MAL Rating: {{ anime["rating"] }}
         </div>
