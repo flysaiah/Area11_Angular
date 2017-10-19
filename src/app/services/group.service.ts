@@ -26,7 +26,10 @@ export class GroupService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/getGroupInfo', { name: groupName }, this.options).map(res => res.json());
   }
-
+  leaveGroup(groupName: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/leaveGroup', {groupName: groupName}, this.options).map(res => res.json());
+  }
   disbandGroup(groupName: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/disbandGroup', { name: groupName }, this.options).map(res => res.json());
@@ -38,6 +41,10 @@ export class GroupService {
   acceptUserRequest(groupName: string, pendingUser: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/acceptUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
+  }
+  rejectUserRequest(groupName: string, pendingUser: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/rejectUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
   }
   importCatalog(fromUser: string, toUser: string) {
     this.createAuthenticationHeaders();

@@ -95,32 +95,43 @@
 .group-name {
   margin-top: -10px;
 }
-.member-list-container {
+.member-list-container-left {
   margin-bottom: 20px;
+  width: 50%;
+  float: left;
+}
+.member-list-container-right {
+  margin-bottom: 20px;
+  width: 50%;
+  float: left;
 }
 .group-member {
-  width: 100%;
-  height: 100px;
+  width: 90%;
+  height: 120px;
   margin: 20px;
+  border-bottom: solid 1px gray;
+  padding-bottom: 10px;
 }
 .group-member-avatar {
-  height: 100px;
-  width: 100px;
+  height: 110px;
+  width: 110px;
   background: no-repeat center/cover;
   border-radius: 50%;
   float: left;
   display: block;
   border: 1px solid black;
 }
-.group-member-name {
+.group-member-name-container {
   float: left;
   margin-left: 10px;
   margin-bottom: 10px;
 }
-.import-list {
-  border-radius: 50%;
-  height: 30px;
-  line-height: 30px;
+.group-member-name {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+.group-member-bestgirl {
+  margin-top: 5px;
 }
 .group-settings-left {
   width: 50%;
@@ -138,6 +149,8 @@
   background: no-repeat center/cover;
   border-radius: 50%;
   border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
 }
 .group-settings-avatar-name {
   font-size: 40px;
@@ -150,4 +163,25 @@
 }
 .upload-input {
   width: 50% !important;
+}
+.accept-reject-button {
+  margin-right: 5px;
+}
+.find-or-create-group {
+  margin-top: 30px;
+}
+.find-or-create-button {
+  width: 120px;
+}
+.import-or-leave-button {
+  width: 125px;
+  height: 30px;
+  line-height: 30px;
+}
+.find-or-create-input {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.create-group-input {
+  margin-left: 8px;
 }

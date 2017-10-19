@@ -20,10 +20,13 @@ export class GroupComponent implements OnInit {
   showUploadOptions: boolean;
   joinGroupName: string;
   currentGroup: Group;
+  currentGroupAvatar: string;
   // Use these arrays so we can iterate through isPending=true vs isPending=false easier in the HTML
-  currentGroupMembers: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  currentGroupMembersCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  currentGroupMembersCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
   pendingGroupRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
-  pendingUserRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  pendingUserRequestsCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  pendingUserRequestsCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
 
   currentUser: string;
 
@@ -31,10 +34,22 @@ export class GroupComponent implements OnInit {
     this.groupService.createGroup(this.newGroupName).subscribe((res) => {
       if (!res["success"]) {
         this.displayToast("There was a problem creating the group", true);
+        console.log(res);
       } else {
         this.displayToast("Group successfully created!");
         this.refresh();
       }
+    });
+  }
+
+  leaveGroup() {
+    this.groupService.leaveGroup(this.currentGroup["name"]).subscribe((res) => {
+      if (!res["success"]) {
+        this.displayToast("There was a problem removing you from the group.", true);
+        console.log(res);
+      }
+      this.displayToast("You have successfully left the group!");
+      this.refresh();
     });
   }
 
@@ -46,7 +61,7 @@ export class GroupComponent implements OnInit {
     // For group avatar
     let formData : any = new FormData();
     for(var i = 0; i < this.groupAvatarUpload.length; i++) {
-      formData.append("uploadAvatar", this.groupAvatarUpload[i], this.currentGroup["name"]);
+      formData.append("uploadAvatar", this.groupAvatarUpload[i], this.currentGroup["name"].split(" ").join("-"));
     }
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
       if (res["success"]) {
@@ -66,10 +81,25 @@ export class GroupComponent implements OnInit {
         this.displayToast(pendingUser.username + " successfully added to group!");
         this.refresh();
       } else if (res["message"] == "Already in group") {
-        this.displayToast(pendingUser.username + "is has already been accepted", true);
+        this.displayToast(pendingUser.username + "has already been accepted", true);
         this.refresh();
       } else {
         this.displayToast("There was a problem accepting the request");
+        console.log(res);
+      }
+    });
+  }
+  rejectUserRequest(pendingUser: {id: string, username: string}) {
+    // Change isPending status of user
+    this.groupService.rejectUserRequest(this.currentGroup["name"], pendingUser.id).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("You have rejected " + pendingUser.username + " from your group.");
+        this.refresh();
+      } else if (res["message"] == "Already in group") {
+        this.displayToast(pendingUser.username + "has already been accepted", true);
+        this.refresh();
+      } else {
+        this.displayToast("There was a problem accepting the request", true);
         console.log(res);
       }
     });
@@ -141,10 +171,27 @@ export class GroupComponent implements OnInit {
     // Filters members by whether they're actually members or are pending (have requested membership)
     for (let member of this.currentGroup["members"]) {
       if (member["isPending"]) {
-        this.pendingUserRequests.push(member);
+        this.pendingUserRequestsCol1.push(member);
       } else {
-        this.currentGroupMembers.push(member);
+        this.currentGroupMembersCol1.push(member);
       }
+    }
+    // Split into two arrays so we can have 2 columns
+    if (this.pendingUserRequestsCol1.length > 1) {
+      let midIndex = this.pendingUserRequestsCol1.length / 2;
+      if (this.pendingUserRequestsCol1.length % 2 == 1) {
+        midIndex = Math.floor(midIndex) + 1;
+      }
+      this.pendingUserRequestsCol2 = this.pendingUserRequestsCol1;
+      this.pendingUserRequestsCol1 = this.pendingUserRequestsCol2.splice(0, midIndex);
+    }
+    if (this.currentGroupMembersCol1.length > 1) {
+      let midIndex = this.currentGroupMembersCol1.length / 2;
+      if (this.currentGroupMembersCol1.length % 2 == 1) {
+        midIndex = Math.floor(midIndex) + 1;
+      }
+      this.currentGroupMembersCol2 = this.currentGroupMembersCol1;
+      this.currentGroupMembersCol1 = this.currentGroupMembersCol2.splice(0, midIndex);
     }
   }
 
@@ -157,9 +204,12 @@ export class GroupComponent implements OnInit {
     this.joinGroupName = "";
     this.showUploadOptions = false;
     this.currentGroup = new Group("", []);
-    this.currentGroupMembers = [];
+    this.currentGroupAvatar = "";
+    this.currentGroupMembersCol1 = [];
+    this.currentGroupMembersCol2 = [];
     this.pendingGroupRequests = [];
-    this.pendingUserRequests = [];
+    this.pendingUserRequestsCol1 = [];
+    this.pendingUserRequestsCol2 = [];
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
@@ -169,10 +219,14 @@ export class GroupComponent implements OnInit {
               this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
                 if (res["success"]) {
                   this.currentGroup = res["group"];
+                  // Force refresh of image
+                  this.currentGroupAvatar = "/" + res["group"]["name"].split(" ").join("-") + "?xxx=" + Math.random();
                   this.generateUserRequests();
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);
+                  } else if (res["message"] == "Invalid group membership") {
+                    this.displayToast("Your group membership is no longer valid.", true)
                   } else {
                     console.log(res);
                     this.displayToast("There was a problem loading your group information.", true);
