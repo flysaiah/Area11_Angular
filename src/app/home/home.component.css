@@ -98,6 +98,9 @@
   color: black;
   line-height: 20px;
 }
+.open-op-button:disabled {
+  background-color: #d1d1d1
+}
 .add-anime-prompt {
   margin-top: 5px;
   padding-right: 0px;
