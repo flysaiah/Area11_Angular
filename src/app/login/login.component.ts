@@ -30,7 +30,7 @@ export class LoginComponent {
       this.submitted = true;
       if (res["success"]) {
         this.authService.storeUserData(res.token, res.user);
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
       } else if (res["message"] == "Username not found" || res["message"] == "Incorrect password") {
         this.displayToast(res["message"]);
         this.submitted = false;

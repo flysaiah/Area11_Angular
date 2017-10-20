@@ -22,10 +22,21 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
     this.authService.registerUser({ username: this.model.username, password: this.model.password, bestgirl: this.model.bestgirl }).subscribe(res => {
       if (res["success"]) {
-        this.displayToast("Successfully registered!")
+        this.displayToast("Successfully registered! Logging in...")
         setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+          this.authService.login(this.model).subscribe(res => {
+            if (res["success"]) {
+              this.authService.storeUserData(res.token, res.user);
+              this.router.navigate(['/'])
+            } else {
+              console.log(res);
+              this.displayToast("There was a problem logging you in.", true);
+              setTimeout(() => {
+                this.router.navigate(['/login'])
+              }, 1000)
+            }
+          })
+        }, 1500);
       } else if (res["message"]["code"] && res["message"]["code"] == 11000) {
         this.displayToast("That username already exists", true);
         this.submitted = false;
