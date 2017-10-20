@@ -71,7 +71,7 @@ export class SettingsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       // If result is defined then they confirmed the deletion
       if (result) {
-        this.userService.deleteAccount().subscribe((res) => {
+        this.userService.deleteAccount(this.currentUser).subscribe((res) => {
           if (res["success"]) {
             this.displayToast("Account successfully deleted.");
             setTimeout(() => {

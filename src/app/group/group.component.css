@@ -72,7 +72,7 @@
   margin-left: auto;
   margin-top: 20px;
   min-height: 400px;
-  max-height: 625px;
+  max-height: 630px;
   overflow: auto;
 }
 .group-settings-tab {
@@ -98,12 +98,10 @@
   margin-top: -10px;
 }
 .member-list-container-left {
-  margin-bottom: 20px;
   width: 50%;
   float: left;
 }
 .member-list-container-right {
-  margin-bottom: 20px;
   width: 50%;
   float: left;
 }

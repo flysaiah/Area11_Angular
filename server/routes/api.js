@@ -154,15 +154,21 @@ module.exports = (router) => {
   });
 
   router.post('/deleteAccount', (req, res) => {
-    // First check if user is in a group; if so, we need to remove them from group too
+    // First check if username matches logged in user
     User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
       if (err) {
         res.json({ success: false, message: err });
+      } else if (!user) {
+        res.json({ success: false, message: "User doesn't exist" })
       } else {
-        if (!user.group) {
+        if (user.username != req.body.username) {
+          res.json({ success: false, message: "Invalid username" })
+        } else if (!user.group) {
           User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+          Anime.find({ user: user.username }).remove().exec();
           res.json({ success: true, message: "User successfully deleted!" });
         } else {
+          // If use is in group we need to remove them from group too
           Group.findOne({ "name": user.group }, (err, group) => {
             if (err) {
               res.json({ success: false, message: err });
@@ -190,6 +196,7 @@ module.exports = (router) => {
                     res.json({ success: false, message: err });
                   } else {
                     User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+                    Anime.find({ user: user.username }).remove().exec();
                     res.json({ success: true, message: "User successfully deleted!" });
                   }
                 });
