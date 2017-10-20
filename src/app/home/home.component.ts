@@ -204,6 +204,9 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.selectedAnime["comments"] = result.split(";");
+        if (this.selectedAnime["comments"][this.selectedAnime["comments"].length - 1] == "") {
+          this.selectedAnime["comments"].splice(-1,1);
+        }
       }
       this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
         if (!res["success"]) {
@@ -253,6 +256,9 @@ export class HomeComponent {
       // result = comment string
       if (result) {
         this.finalistList[index]["comments"] = result.split(";");
+        if (this.finalistList[index]["comments"][this.finalistList[index]["comments"].length - 1] == "") {
+          this.finalistList[index]["comments"].splice(-1,1);
+        }
       } else if (result == "") {
         this.finalistList[index]["comments"] = [];
       } else {
