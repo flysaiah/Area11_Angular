@@ -46,9 +46,9 @@ export class GroupService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/rejectUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
   }
-  importCatalog(fromUser: string, toUser: string) {
+  importCatalog(fromUserID: string, fromUser: string, toUser: string, groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/importCatalog', { fromUser: fromUser, toUser: toUser }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/importCatalog', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());
   }
 
   constructor(

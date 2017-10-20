@@ -153,19 +153,19 @@ export class GroupComponent implements OnInit {
     this.authService.logout();
   }
 
-  importCatalog(user: string) {
+  importCatalog(username:string, userID:string) {
     // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
-    this.groupService.importCatalog(user, this.currentUser).subscribe((res) => {
+    this.groupService.importCatalog(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
       if (res["success"]) {
         if (res["message"] != 0) {
-          this.displayToast("You have successfully imported " + res["message"] + " anime from " + user + "'s catalog!'")
+          this.displayToast("You have successfully imported " + res["message"] + " anime from " + username + "'s catalog!'")
         } else {
-          this.displayToast(user + " doesn't have any anime you can import!", true)
+          this.displayToast(username + " doesn't have any anime you can import!", true)
         }
       } else if (res["message"] == "Nothing to import") {
         this.displayToast("This user has nothing in their catalog.", true);
       } else {
-        this.displayToast("Something went wrong while importing " + user + "'s catalog.", true);
+        this.displayToast("Something went wrong while importing " + username + "'s catalog.", true);
         console.log(res);
       }
     });

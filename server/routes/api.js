@@ -548,57 +548,77 @@ module.exports = (router) => {
 
   router.post('/importCatalog', (req, res) => {
     // Adds all not-already-existing anime from one group member's catalog to another's 'Considering' category
-    Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
+    // First check to make sure current user is in the same group as fromUser
+    Group.findOne({ "name": req.body.groupName }, (err, group) => {
       if (err) {
         res.json({ success: false, message: err });
       } else {
-        if (!fromUserList) {
-          res.json({ success: false, message: "Nothing to import"});
+        let found1 = false;
+        let found2 = false;
+        for (let member of group.members) {
+          if (!member.isPending && member.id == req.decoded.userId) {
+            found1 = true;
+          } else if (!member.isPending && member.id == req.body.fromUserID) {
+            found2 = true;
+          }
+        }
+        if (!found1 || !found2) {
+          res.json({ success: false, message: "Users not in same group" });
         } else {
-          // Import each not-already-existing MAL-linked anime
-          let numOfImports = 0;
-          async.each(fromUserList, function updateAnime (anime, done) {
-            if (anime["malID"]) {
-              Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
-                done();
-                if (err) {
-                  res.json({ success: false, message: err });
-                  return;
-                } else if (!existingAnime) {
-                  numOfImports += 1;
-                  const newAnime = new Anime({
-                    user: req.body.toUser,
-                    name: anime['name'],
-                    description: anime['description'],
-                    rating: anime['rating'],
-                    thumbnail: anime['thumbnail'],
-                    malID: anime['malID'],
-                    category: 'Considering',
-                    isFinalist: false,
-                    genres: anime['genres'],
-                    startDate: anime['startDate'],
-                    endDate: anime['endDate'],
-                    type: anime['type'],
-                    englishTitle: anime['englishTitle'],
-                    status: anime['status']
-                  });
-                  newAnime.save((err) => {
-                    if (err) {
-                      res.json({ success: false, message: err });
-                      return;
-                    }
-                  });
-                }
-              });
-            }
-          }, function allDone (err) {
+          Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
             if (err) {
               res.json({ success: false, message: err });
             } else {
-              // If there are a higher number of anime the count can be a litte off, so we wait for .5 sec
-              setTimeout(() => {
-                res.json({ success: true, message: numOfImports });
-              }, 500)
+              if (!fromUserList) {
+                res.json({ success: false, message: "Nothing to import"});
+              } else {
+                // Import each not-already-existing MAL-linked anime
+                let numOfImports = 0;
+                async.each(fromUserList, function updateAnime (anime, done) {
+                  if (anime["malID"]) {
+                    Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
+                      done();
+                      if (err) {
+                        res.json({ success: false, message: err });
+                        return;
+                      } else if (!existingAnime) {
+                        numOfImports += 1;
+                        const newAnime = new Anime({
+                          user: req.body.toUser,
+                          name: anime['name'],
+                          description: anime['description'],
+                          rating: anime['rating'],
+                          thumbnail: anime['thumbnail'],
+                          malID: anime['malID'],
+                          category: 'Considering',
+                          isFinalist: false,
+                          genres: anime['genres'],
+                          startDate: anime['startDate'],
+                          endDate: anime['endDate'],
+                          type: anime['type'],
+                          englishTitle: anime['englishTitle'],
+                          status: anime['status']
+                        });
+                        newAnime.save((err) => {
+                          if (err) {
+                            res.json({ success: false, message: err });
+                            return;
+                          }
+                        });
+                      }
+                    });
+                  }
+                }, function allDone (err) {
+                  if (err) {
+                    res.json({ success: false, message: err });
+                  } else {
+                    // If there are a higher number of anime the count can be a litte off, so we wait for .5 sec
+                    setTimeout(() => {
+                      res.json({ success: true, message: numOfImports });
+                    }, 500)
+                  }
+                });
+              }
             }
           });
         }

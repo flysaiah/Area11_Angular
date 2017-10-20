@@ -19,7 +19,7 @@
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'], groupMember['id'])">Import Catalog</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
@@ -30,7 +30,7 @@
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'], groupMember['id'])">Import Catalog</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
