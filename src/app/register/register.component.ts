@@ -15,6 +15,7 @@ export class RegisterComponent implements OnInit {
   model: User;
   submitted: boolean
   showToast: boolean;
+  toastError: boolean;
   toastMessage: string;
 
   onSubmit() {
@@ -25,21 +26,30 @@ export class RegisterComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000);
+      } else if (res["message"]["code"] && res["message"]["code"] == 11000) {
+        this.displayToast("That username already exists", true);
+        this.submitted = false;
+      } else if (res["message"] == "spaces"){
+        this.displayToast("Username cannot contain spaces", true);
+        this.submitted = false;
       } else {
-        if (res["message"]["code"] == 11000) {
-          this.displayToast("That username already exists");
-        }
+        console.log(res);
+        this.displayToast("There was a problem with your registration.", true);
         this.submitted = false;
       }
     })
   }
-  private displayToast(message: string) {
+  private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
     this.toastMessage = message;
+    if (error) {
+      this.toastError = true;
+    }
     setTimeout(() => {
       this.showToast = false;
       this.toastMessage = "";
+      this.toastError = false;
     }, 3000);
   }
 
@@ -53,6 +63,7 @@ export class RegisterComponent implements OnInit {
     this.model = new User("","","");
     this.submitted = false;
     this.showToast = false;
+    this.toastError = false;
     this.toastMessage = "";
   }
 

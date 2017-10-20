@@ -7,6 +7,8 @@ module.exports = (router) => {
     // Register user
     if (!req.body.username || !req.body.password) {
       res.json({ success: false, message: "Username/password not provided" });
+    } else if (req.body.username.split(" ").length > 1) {
+      res.json({ success: false, message: "spaces" });
     } else {
       let user = new User({
         username: req.body.username.toLowerCase(),
