@@ -157,7 +157,11 @@ export class GroupComponent implements OnInit {
     // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
     this.groupService.importCatalog(user, this.currentUser).subscribe((res) => {
       if (res["success"]) {
-        this.displayToast("You have successfully imported " + user + "'s catalog!'")
+        if (res["message"] != 0) {
+          this.displayToast("You have successfully imported " + res["message"] + " anime from " + user + "'s catalog!'")
+        } else {
+          this.displayToast(user + " doesn't have any anime you can import!", true)
+        }
       } else if (res["message"] == "Nothing to import") {
         this.displayToast("This user has nothing in their catalog.", true);
       } else {

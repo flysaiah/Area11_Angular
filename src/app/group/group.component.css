@@ -72,6 +72,8 @@
   margin-left: auto;
   margin-top: 20px;
   min-height: 400px;
+  max-height: 625px;
+  overflow: auto;
 }
 .group-settings-tab {
   margin-top: 20px;
@@ -164,8 +166,8 @@
 .upload-input {
   width: 50% !important;
 }
-.accept-reject-button {
-  margin-right: 5px;
+.reject-button {
+  margin-left: 5px;
 }
 .find-or-create-group {
   margin-top: 30px;
@@ -182,6 +184,6 @@
   margin-left: 5px;
   margin-right: 5px;
 }
-.create-group-input {
-  margin-left: 8px;
+.create-group-input-label {
+  margin-left: 3px;
 }

@@ -6,7 +6,8 @@ const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
 const path = require('path');
-const multer = require("multer");
+const multer = require('multer');
+const async = require('async')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -193,19 +194,11 @@ module.exports = (router) => {
                   }
                 });
               }
-              Group.findOneAndUpdate({ "name": group.name}, { $set: { members: newMembers } }, (err, group) => {
-                if (err) {
-                  res.json({ success: false, message: err });
-                } else {
-                  User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                  res.json({ success: true, message: "User successfully deleted!" });
-                }
-              });
             }
-          })
+          });
         }
       }
-    })
+    });
   });
 
   router.post('/saveUserChanges', (req, res) => {
@@ -556,13 +549,16 @@ module.exports = (router) => {
           res.json({ success: false, message: "Nothing to import"});
         } else {
           // Import each not-already-existing MAL-linked anime
-          for (let anime of fromUserList) {
+          let numOfImports = 0;
+          async.each(fromUserList, function updateAnime (anime, done) {
             if (anime["malID"]) {
               Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
+                done();
                 if (err) {
                   res.json({ success: false, message: err });
                   return;
                 } else if (!existingAnime) {
+                  numOfImports += 1;
                   const newAnime = new Anime({
                     user: req.body.toUser,
                     name: anime['name'],
@@ -588,8 +584,16 @@ module.exports = (router) => {
                 }
               });
             }
-          }
-          res.json({ success: true, message: "Successful import!" });
+          }, function allDone (err) {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else {
+              // If there are a higher number of anime the count can be a litte off, so we wait for .5 sec
+              setTimeout(() => {
+                res.json({ success: true, message: numOfImports });
+              }, 500)
+            }
+          });
         }
       }
     });

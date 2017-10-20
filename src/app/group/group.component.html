@@ -47,8 +47,8 @@
           <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
         </div>
         <div class="find-or-create-group">
-        Create your own group:
-          <mat-form-field class="find-or-create-input create-group-input" color="accent">
+        <span class="create-group-input-label"> Create your own group:</span>
+          <mat-form-field class="find-or-create-input" color="accent">
             <input matInput [(ngModel)]="newGroupName" placeholder="New Group Name">
           </mat-form-field>
           <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
@@ -72,20 +72,22 @@
             <div class="member-list-container-left">
               <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol1">
                 <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
-                <div class="group-member-name">
-                  <h2>{{ pendingUser['username'] }}</h2>
-                  <button mat-raised-button color="accent" class="accept-reject-button" (click)="acceptUserRequest(pendingUser)">Accept</button>
-                  <button mat-raised-button color="warn" class="accept-reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
+                <div class="group-member-name-container">
+                  <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
+                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
+                  <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
                 </div>
               </div>
             </div>
             <div class="member-list-container-right">
               <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol2">
                 <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
-                <div class="group-member-name">
-                  <h2>{{ pendingUser['username'] }}</h2>
-                  <button mat-raised-button color="accent" class="accept-reject-button" (click)="acceptUserRequest(pendingUser)">Accept</button>
-                  <button mat-raised-button color="warn" class="accept-reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
+                <div class="group-member-name-container">
+                  <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
+                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
+                  <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
                 </div>
               </div>
             </div>
