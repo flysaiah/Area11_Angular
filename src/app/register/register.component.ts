@@ -38,10 +38,10 @@ export class RegisterComponent implements OnInit {
           })
         }, 1500);
       } else if (res["message"]["code"] && res["message"]["code"] == 11000) {
-        this.displayToast("That username already exists", true);
+        this.displayToast("That username already exists.", true);
         this.submitted = false;
       } else if (res["message"] == "spaces"){
-        this.displayToast("Username cannot contain spaces", true);
+        this.displayToast("Username cannot contain spaces.", true);
         this.submitted = false;
       } else {
         console.log(res);
