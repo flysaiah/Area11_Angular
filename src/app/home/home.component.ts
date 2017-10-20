@@ -5,6 +5,11 @@ import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/map';
+
 @Component({
   selector: 'home-page',
   templateUrl: './home.component.html',
@@ -28,6 +33,10 @@ export class HomeComponent {
   sortCriteria: string;
   showCategory: string;
   currentUser: string;
+
+  searchAnimeCtl: FormControl;
+  searchAnime: Anime[];
+  filteredSearchAnime: Observable<any[]>;
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -305,6 +314,11 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
+  filterAnime(name: string) {
+    return this.searchAnime.filter(anime =>
+      anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    }
+
   refresh() {
     // Fetch all anime stored in database and update our lists
     this.showAddAnimePrompt = false;
@@ -317,13 +331,17 @@ export class HomeComponent {
         const newConsidering = [];
         const newCompleted = [];
         const newFinalistList = [];
+        const newSearchAnimeList = [];
         for (let anime of animeList) {
           if (anime["category"] == "Want to Watch" && (this.showCategory == "All Categories" || this.showCategory == "Want to Watch")) {
             newWantToWatch.push(anime);
+            newSearchAnimeList.push(anime);
           } else if (anime["category"] == "Considering" && (this.showCategory == "All Categories" || this.showCategory == "Considering")) {
             newConsidering.push(anime);
+            newSearchAnimeList.push(anime);
           } else if (anime["category"] == "Completed" && (this.showCategory == "All Categories" || this.showCategory == "Completed")) {
             newCompleted.push(anime);
+            newSearchAnimeList.push(anime);
           }
           if (anime["isFinalist"]) {
             newFinalistList.push(anime);
@@ -333,6 +351,7 @@ export class HomeComponent {
         this.consideringList = newConsidering;
         this.completedList = newCompleted;
         this.finalistList = newFinalistList;
+        this.searchAnime = newSearchAnimeList;
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
@@ -357,6 +376,12 @@ export class HomeComponent {
     this.consideringList = [];
     this.completedList = [];
     this.finalistList = [];
+
+    this.searchAnimeCtl = new FormControl();
+    this.filteredSearchAnime = this.searchAnimeCtl.valueChanges
+      .startWith(null)
+      .map(anime => anime ? this.filterAnime(anime) : this.searchAnime.slice());
+    this.searchAnime = [];
 
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];

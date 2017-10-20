@@ -18,6 +18,16 @@
     <option value="rating,descending">Rating (High to Low)</option>
     <option value="rating,ascending">Rating (Low to High)</option>
   </select>
+  <div class="search-anime">
+    <label for="animeSearch" class="catalog-sort-label">Search for anime: </label>
+    <input id="animeSearch" class="search-anime-input" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime)">
+        <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
+        <span class="search-anime-name">{{ anime["name"] }}</span>
+      </mat-option>
+    </mat-autocomplete>
+  </div>
   <button mat-raised-button class="open-op-button" [disabled]="!finalistList.length" (click)="watchOPs()">Watch Finalist OPs</button>
 </div>
 
@@ -54,17 +64,17 @@
     <div class="catalog">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
-        <mat-list-item (click)="showAnimeDetails(anime, 'Want to Watch')" class="catalog-item" *ngFor="let anime of wantToWatchList">
+        <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'">Considering ({{ consideringList.length }}):</h3>
-        <mat-list-item (click)="showAnimeDetails(anime, 'Considering')" class="catalog-item" *ngFor="let anime of consideringList">
+        <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of consideringList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Completed'">Completed ({{ completedList.length }}):</h3>
-        <mat-list-item (click)="showAnimeDetails(anime, 'Completed')" class="catalog-item" *ngFor="let anime of completedList">
+        <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of completedList">
           <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
         </mat-list-item>
       </mat-nav-list>
