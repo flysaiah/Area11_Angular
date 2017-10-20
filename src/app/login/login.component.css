@@ -49,6 +49,9 @@
   z-index: 1;
   font-size: 14px;
 }
+.toast-error {
+  background-color: #ff5722;
+}
 
 .area11-register-toast.show {
   display: block;

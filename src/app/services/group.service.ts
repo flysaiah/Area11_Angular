@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { AuthService } from './auth.service';
+import { Group } from '../group/group';
 @Injectable()
 export class GroupService {
 
@@ -45,6 +46,10 @@ export class GroupService {
   rejectUserRequest(groupName: string, pendingUser: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/rejectUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
+  }
+  saveChanges(groupName: string, groupChangesModel: Group) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/saveGroupChanges', { groupName: groupName, groupChangesModel: groupChangesModel }, this.options).map(res => res.json());
   }
   importCatalog(fromUserID: string, fromUser: string, toUser: string, groupName: string) {
     this.createAuthenticationHeaders();

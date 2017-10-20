@@ -546,6 +546,57 @@ module.exports = (router) => {
     });
   });
 
+  router.post('/saveGroupChanges', (req, res) => {
+    Group.findOne({ "name": req.body.groupName }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else if (!group) {
+        // Group doesn't exist anymore--delete relevant info from user document
+        User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            res.json({ success: false, message: "No group found" });
+          }
+        })
+      } else {
+        // First make sure that user is a part of this group
+        let found = false;
+        for (let member of group.members) {
+          if (!member.isPending && member.id == req.decoded.userId) {
+            found = true;
+          }
+        }
+        if (!found) {
+          res.json({ success: false, message: "Invalid group membership" });
+        } else {
+          Group.findOneAndUpdate({ name: req.body.groupName }, { $set: { name: req.body.groupChangesModel.name } }, (err, group) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else if (req.body.groupName != req.body.groupChangesModel.name) {
+              // If they changed the group name we have additional steps to take
+              User.update({ group: req.body.groupName }, { $set: { group: req.body.groupChangesModel.name } }, {multi: true}, (err) => {
+                if (err) {
+                  res.json({ success: false, message: err });
+                } else {
+                  fs.rename('./public/' + req.body.groupName, './public/' + req.body.groupChangesModel.name, (err) => {
+                    if (err) {
+                      // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                      console.log(err)
+                    }
+                    res.json({ success: true, message: "Group changes saved successfully!" });
+                  });
+                }
+              });
+            } else {
+              res.json({ success: true, message: "Group changes saved successfully!" });
+            }
+          });
+
+        }
+      }
+    });  });
+
   router.post('/disbandGroup', (req, res) => {
     Group.findOne({ "name": req.body.name }, (err, group) => {
       if (err) {

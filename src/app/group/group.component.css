@@ -90,6 +90,8 @@
 .group-avatar {
   width: 40%;
   height: 0;
+  margin-left: auto;
+  margin-right: auto;
   padding-bottom: 40%;
   background: no-repeat center/cover;
   border-radius: 50%;
@@ -136,6 +138,9 @@
 .group-settings-left {
   width: 50%;
   float: left;
+}
+.group-settings-name {
+  width: 75%;
 }
 .group-settings-right {
   width: 50%;
