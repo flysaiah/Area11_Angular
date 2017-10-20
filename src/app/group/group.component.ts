@@ -32,12 +32,14 @@ export class GroupComponent implements OnInit {
 
   createGroup() {
     this.groupService.createGroup(this.newGroupName).subscribe((res) => {
-      if (!res["success"]) {
-        this.displayToast("There was a problem creating the group", true);
-        console.log(res);
-      } else {
+      if (res["success"]) {
         this.displayToast("Group successfully created!");
         this.refresh();
+      } else if (res["message"]["code"] == 11000) {
+        this.displayToast("A group with that name already exists.", true)
+      } else {
+        this.displayToast("There was a problem creating the group", true);
+        console.log(res);
       }
     });
   }

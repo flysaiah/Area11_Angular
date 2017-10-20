@@ -7,7 +7,8 @@ const User = require('../models/user.js');
 const Group = require('../models/group.js');
 const path = require('path');
 const multer = require('multer');
-const async = require('async')
+const async = require('async');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -165,6 +166,12 @@ module.exports = (router) => {
           res.json({ success: false, message: "Invalid username" })
         } else if (!user.group) {
           User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+          fs.unlink('./public/' + req.decoded.userId, (err) => {
+            if (err) {
+              // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+              console.log(err);
+            }
+          });
           Anime.find({ user: user.username }).remove().exec();
           res.json({ success: true, message: "User successfully deleted!" });
         } else {
@@ -174,6 +181,12 @@ module.exports = (router) => {
               res.json({ success: false, message: err });
             } else if (!group) {
               User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+              fs.unlink('./public/' + req.decoded.userId, (err) => {
+                if (err) {
+                  // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                  console.log(err);
+                }
+              });
               res.json({ success: true, message: "User successfully deleted!" });
             } else {
               // Group exists
@@ -190,12 +203,24 @@ module.exports = (router) => {
               // If last member of group, delete group
               if (count == 1) {
                 Group.findOne({ "name": group.name }).remove().exec();
+                fs.unlink('./public/' + group.name, (err) => {
+                  if (err) {
+                    // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                    console.log(err);
+                  }
+                });
               } else {
                 Group.findOneAndUpdate({ "name": group.name}, { $set: { members: newMembers } }, (err, group) => {
                   if (err) {
                     res.json({ success: false, message: err });
                   } else {
                     User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+                    fs.unlink('./public/' + req.decoded.userId, (err) => {
+                      if (err) {
+                        // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                        console.log(err);
+                      }
+                    });
                     Anime.find({ user: user.username }).remove().exec();
                     res.json({ success: true, message: "User successfully deleted!" });
                   }
@@ -274,6 +299,12 @@ module.exports = (router) => {
             // If this was the only member, then remove group
             if (count == 1) {
               Group.findOne({ "name": req.body.groupName }).remove().exec();
+              fs.unlink('./public/' + req.body.groupName, (err) => {
+                if (err) {
+                  // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                  console.log(err);
+                }
+              });
               User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
                 if (err) {
                   res.json({ success: false, message: err });
@@ -540,7 +571,14 @@ module.exports = (router) => {
           res.json({ success: false, message: "Invalid group membership" });
         } else {
           Group.findOne({ "name": req.body.name }).remove().exec();
+          fs.unlink('./public/' + req.body.name, (err) => {
+            if (err) {
+              // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+              console.log(err);
+            }
+          });
           res.json({ success: true, message: "Group successfully deleted" });
+
         }
       }
     });
