@@ -1,5 +1,6 @@
 <app-header></app-header>
 <div class="search-toolbar">
+  <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
 </div>
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <mat-card class="group-container">
@@ -9,15 +10,28 @@
       <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
-            <img class="group-avatar" [src]="currentGroup['avatar']" (error)="loadDefaultImage($event.target)">
+            <img class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}" (error)="loadDefaultImage($event.target)">
             <h3 class="group-name">{{ currentGroup['name'] }}</h3>
           </div>
-          <div class="member-list-container">
-            <div class="group-member" *ngFor="let groupMember of currentGroupMembers">
+          <div class="member-list-container-left">
+            <div class="group-member" *ngFor="let groupMember of currentGroupMembersCol1">
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
-              <div class="group-member-name">
-                <h2>{{ groupMember['username'] }}</h2>
-                <button mat-raised-button color="accent" class="import-list" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+              <div class="group-member-name-container">
+                <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
+                <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
+              </div>
+            </div>
+          </div>
+          <div class="member-list-container-right">
+            <div class="group-member" *ngFor="let groupMember of currentGroupMembersCol2">
+              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+              <div class="group-member-name-container">
+                <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
+                <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
           </div>
@@ -25,22 +39,19 @@
         <!-- "Find/create group" tab -->
       <div class="group-settings-tab" *ngIf="!currentGroup['name']">
         You're not currently in a group. Find or create one here!
-        <div class="find-group">
-          If you know a group's name, you can request to join it:
-          <mat-form-field color="accent">
+        <div class="find-or-create-group">
+          Request to join a group:
+          <mat-form-field class="find-or-create-input" color="accent">
             <input matInput [(ngModel)]="joinGroupName" placeholder="Group Name">
           </mat-form-field>
-          <button mat-raised-button color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
+          <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
         </div>
-        <div>
-        <p>Or alternatively, create your own group!</p>
-          <mat-form-field color="accent">
+        <div class="find-or-create-group">
+        <span class="create-group-input-label"> Create your own group:</span>
+          <mat-form-field class="find-or-create-input" color="accent">
             <input matInput [(ngModel)]="newGroupName" placeholder="New Group Name">
           </mat-form-field>
-          <mat-form-field color="accent">
-            <input matInput [(ngModel)]="newGroupAvatar" placeholder="New Group Avatar (optional)">
-          </mat-form-field>
-          <button mat-raised-button color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
+          <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
         </div>
       </div>
       </mat-tab>
@@ -56,17 +67,32 @@
         </div>
         <!-- User invites tab -->
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
-          <div *ngIf="pendingUserRequests.length">
-            These people are requesting membership to your group:
-            <div class="group-member" *ngFor="let pendingUser of pendingUserRequests">
-              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
-              <div class="group-member-name">
-                <h2>{{ pendingUser['username'] }}</h2>
-                <button mat-raised-button color="accent" class="import-list" (click)="acceptUserRequest(pendingUser)">Accept</button>
+          <div *ngIf="pendingUserRequestsCol1.length">
+            <div>These people are requesting membership to your group:</div>
+            <div class="member-list-container-left">
+              <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol1">
+                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+                <div class="group-member-name-container">
+                  <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
+                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
+                  <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
+                </div>
+              </div>
+            </div>
+            <div class="member-list-container-right">
+              <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol2">
+                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+                <div class="group-member-name-container">
+                  <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
+                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
+                  <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
+                </div>
               </div>
             </div>
           </div>
-          <div *ngIf="!pendingUserRequests.length">
+          <div *ngIf="!pendingUserRequestsCol1.length">
             No users have requested to join your group.
           </div>
         </div>
@@ -74,9 +100,21 @@
       <!-- Group settings tab -->
       <mat-tab label="Group Settings">
         <div class="group-settings-tab" *ngIf="currentGroup['name']">
-          <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
-          <br><br>
-          More group features and settings will be available in future updates!
+          <div class="group-settings-left">
+            More group features and settings will be available in future updates!
+            <br><br>
+            <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
+          </div>
+          <div class="group-settings-right">
+            <div class="group-settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+            <h3 class="group-settings-avatar-name">{{ currentGroup['name'] }}</h3>
+            <div class="change-avatar">
+              <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
+              <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)"/>
+              <button *ngIf="showUploadOptions" [disabled]="!this.groupAvatarUpload.length" type="button" (click)="upload()">Upload</button>
+              <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
+            </div>
+          </div>
         </div>
         <div class="group-settings-tab" *ngIf="!currentGroup['name']">
           Create or join a group to view special group features and settings!

@@ -7,6 +7,8 @@ module.exports = (router) => {
     // Register user
     if (!req.body.username || !req.body.password) {
       res.json({ success: false, message: "Username/password not provided" });
+    } else if (req.body.username.split(" ").length > 1) {
+      res.json({ success: false, message: "spaces" });
     } else {
       let user = new User({
         username: req.body.username.toLowerCase(),
@@ -51,11 +53,9 @@ module.exports = (router) => {
     const token = req.headers['authorization'];
     if (!token) {
       // res.json({ success: false, message: "No token provided"})
-      req.decoded = "Look i really don't care"
     } else {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
-          req.decoded = "i really don't care rn"
           res.json({ success: false, message: "Token invalid: " + err});
         } else {
           // can access this anywhere

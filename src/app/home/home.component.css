@@ -72,6 +72,23 @@
 .catalog-sort-label {
   margin-left: 50px;
 }
+.search-anime {
+  display: inline;
+}
+.search-anime-input {
+  width: 200px;
+}
+.search-option {
+  font-size: 10px;
+  border-bottom: 1px solid gray;
+}
+.search-anime-thumbnail {
+  vertical-align: middle;
+  height: 40px;
+}
+.search-anime-name {
+  display: inline !important;
+}
 .open-op-button {
   float: right;
   margin-right: 60px;
@@ -80,6 +97,9 @@
   height: 20px;
   color: black;
   line-height: 20px;
+}
+.open-op-button:disabled {
+  background-color: #d1d1d1
 }
 .add-anime-prompt {
   margin-top: 5px;

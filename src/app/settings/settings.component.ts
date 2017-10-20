@@ -26,14 +26,15 @@ export class SettingsComponent implements OnInit {
   upload() {
     let formData : any = new FormData();
     for(var i = 0; i < this.avatarUpload.length; i++) {
-      formData.append("uploadAvatar", this.avatarUpload[i], this.avatarUpload[i].name);
+      formData.append("uploadAvatar", this.avatarUpload[i], "area11-user-avatar");
     }
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Profile avatar changed successfully!");
+        this.avatarUpload = [];
         this.refresh();
       } else {
-        this.displayToast("There was a problem changing you profile image.", true);
+        this.displayToast("There was a problem changing your profile avatar.", true);
       }
     });
   }
@@ -70,7 +71,7 @@ export class SettingsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       // If result is defined then they confirmed the deletion
       if (result) {
-        this.userService.deleteAccount().subscribe((res) => {
+        this.userService.deleteAccount(this.currentUser).subscribe((res) => {
           if (res["success"]) {
             this.displayToast("Account successfully deleted.");
             setTimeout(() => {
@@ -98,11 +99,6 @@ export class SettingsComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-  }
-
-  loadDefaultImage(target) {
-    // if avatar image doesn't load, we load our default
-    target.src = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
   }
 
   refresh() {

@@ -15,7 +15,7 @@
 
       <mat-form-field class="register-input">
         <input matInput placeholder="Best Girl" [(ngModel)]="model.bestgirl" type="text" id="bestgirl" name="bestgirl" #bestgirl="ngModel" required>
-        <mat-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Password is required </mat-error>
+        <mat-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Best girl is required </mat-error>
       </mat-form-field>
 
       <button mat-raised-button color="primary" [disabled]="name.invalid || pass.invalid || submitted" type="submit">Register</button>

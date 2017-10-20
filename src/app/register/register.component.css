@@ -43,6 +43,10 @@
   font-size: 14px;
 }
 
+.toast-error {
+  background-color: #ff5722;
+}
+
 .area11-register-toast.show {
   display: block;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;

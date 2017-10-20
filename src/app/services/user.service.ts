@@ -26,9 +26,9 @@ export class UserService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/saveUserChanges', user, this.options).map(res => res.json());
   }
-  deleteAccount() {
+  deleteAccount(username: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/deleteAccount', {}, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/deleteAccount', {username: username}, this.options).map(res => res.json());
   }
   uploadUserAvatar(formData: FormData) {
     // Need different headers here because of different content-type
