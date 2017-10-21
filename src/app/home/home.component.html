@@ -18,6 +18,11 @@
     <option value="rating,descending">Rating (High to Low)</option>
     <option value="rating,ascending">Rating (Low to High)</option>
   </select>
+  <label for="catalogGenreFilter" class="catalog-sort-label">View by Genre: </label>
+  <select id="catalogGenreFilter" [(ngModel)]="selectedGenre" (ngModelChange)="filterAnimeByGenre($event)" class="catalog-sort">
+    <option value="All Genres">All Genres</option>
+    <option *ngFor="let genre of allGenres" [value]="genre">{{ genre }}</option>
+  </select>
   <div class="search-anime">
     <label for="animeSearch" class="catalog-sort-label">Search for anime: </label>
     <input id="animeSearch" class="search-anime-input" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">

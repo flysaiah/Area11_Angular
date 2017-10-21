@@ -19,6 +19,10 @@ export class HomeComponent {
   wantToWatchList: Anime[];
   consideringList: Anime[];
   completedList: Anime[];
+  // We keep 2 copies of everything so that when we filter by genre we don't have to re-fetch data
+  newWantToWatch: Anime[];
+  newConsidering: Anime[];
+  newCompleted: Anime[];
   finalistList: Anime[];
   showAddAnimePrompt: boolean;   // If true, "Add anime" prompt is visible
   linkAnimeSuggestions: Anime[];
@@ -33,6 +37,9 @@ export class HomeComponent {
   sortCriteria: string;
   showCategory: string;
   currentUser: string;
+
+  allGenres: string[];
+  selectedGenre: string;
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
@@ -170,6 +177,40 @@ export class HomeComponent {
     this.wantToWatchList.sort(this.sortByField(c1, c2));
     this.consideringList.sort(this.sortByField(c1, c2));
     this.completedList.sort(this.sortByField(c1, c2));
+  }
+
+  private genreFilter(anime) {
+    for (let genre of anime["genres"]) {
+      if (genre == this.selectedGenre) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  filterAnimeByGenre(criteria) {
+    if (criteria == "All Genres") {
+      this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
+      this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
+      this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
+    } else {
+      this.wantToWatchList = this.newWantToWatch.filter(this.genreFilter.bind(this));
+      this.consideringList = this.newConsidering.filter(this.genreFilter.bind(this));
+      this.completedList = this.newCompleted.filter(this.genreFilter.bind(this));
+    }
+  }
+
+  private getGenres() {
+    let allGenres = new Set<string>();
+    // NOTE: This could be a little costly eventually, so make sure to minimize when we call refresh()
+    for (let anime of this.searchAnime) {
+      for (let genre of anime["genres"]) {
+        if (!allGenres.has(genre)) {
+          allGenres.add(genre)
+        }
+      }
+    }
+    this.allGenres = Array.from(allGenres);
   }
 
   addAnimeToCatalog(category?: string) {
@@ -317,7 +358,7 @@ export class HomeComponent {
   filterAnime(name: string) {
     return this.searchAnime.filter(anime =>
       anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
-    }
+  }
 
   refresh() {
     // Fetch all anime stored in database and update our lists
@@ -327,31 +368,32 @@ export class HomeComponent {
     this.animeService.fetchAnime(this.currentUser).subscribe(res => {
       if (res["success"]) {
         const animeList = res["animeList"];
-        const newWantToWatch = [];
-        const newConsidering = [];
-        const newCompleted = [];
+        this.newWantToWatch = [];
+        this.newConsidering = [];
+        this.newCompleted = [];
         const newFinalistList = [];
         const newSearchAnimeList = [];
         for (let anime of animeList) {
           if (anime["category"] == "Want to Watch" && (this.showCategory == "All Categories" || this.showCategory == "Want to Watch")) {
-            newWantToWatch.push(anime);
+            this.newWantToWatch.push(anime);
             newSearchAnimeList.push(anime);
           } else if (anime["category"] == "Considering" && (this.showCategory == "All Categories" || this.showCategory == "Considering")) {
-            newConsidering.push(anime);
+            this.newConsidering.push(anime);
             newSearchAnimeList.push(anime);
           } else if (anime["category"] == "Completed" && (this.showCategory == "All Categories" || this.showCategory == "Completed")) {
-            newCompleted.push(anime);
+            this.newCompleted.push(anime);
             newSearchAnimeList.push(anime);
           }
           if (anime["isFinalist"]) {
             newFinalistList.push(anime);
           }
         }
-        this.wantToWatchList = newWantToWatch;
-        this.consideringList = newConsidering;
-        this.completedList = newCompleted;
+        this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
+        this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
+        this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
         this.finalistList = newFinalistList;
         this.searchAnime = newSearchAnimeList;
+        this.getGenres();
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
@@ -382,6 +424,9 @@ export class HomeComponent {
       .startWith(null)
       .map(anime => anime ? this.filterAnime(anime) : this.searchAnime.slice());
     this.searchAnime = [];
+
+    this.selectedGenre = "All Genres";
+    this.allGenres = [];
 
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
