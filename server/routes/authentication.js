@@ -33,7 +33,7 @@ module.exports = (router) => {
         if (err) {
           res.json({ success: false, message: err });
         } else if (!user) {
-            res.json({ success: false, message: "Username not found" });
+            res.json({ success: false, message: "Username not found." });
         } else {
           // Need this because of hashed passwords
           if (user.comparePassword(req.body.password)) {
@@ -41,7 +41,7 @@ module.exports = (router) => {
             const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '24h' });
             res.json({ success: true, message: "Success", token: token, user: { username: user.username }});
           } else {
-            res.json({ success: false, message: "Incorrect password" });
+            res.json({ success: false, message: "Incorrect password." });
           }
         }
       })

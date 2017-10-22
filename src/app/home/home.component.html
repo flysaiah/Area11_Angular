@@ -4,23 +4,35 @@
   <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
   <button mat-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
   <!-- Filtering/sorting -->
-  <label for="catalogCategoryFilter" class="catalog-sort-label">Filter by Category: </label>
-  <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh()" class="catalog-sort">
-    <option value="All Categories">All Categories</option>
-    <option value="Want to Watch">Want to Watch</option>
-    <option value="Considering">Considering</option>
-    <option value="Completed">Completed</option>
-  </select>
-  <label for="catalogSort" class="catalog-sort-label">Sort by: </label>
-  <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
-    <option value="_id,ascending">Default</option>
-    <option value="name,ascending">Alphabetical</option>
-    <option value="rating,descending">Rating (High to Low)</option>
-    <option value="rating,ascending">Rating (Low to High)</option>
-  </select>
-  <div class="search-anime">
-    <label for="animeSearch" class="catalog-sort-label">Search for anime: </label>
-    <input id="animeSearch" class="search-anime-input" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+  <div class="search-toolbar-minicontainer">
+    <label class="filter-label" for="catalogCategoryFilter">Filter by Category: </label>
+    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh()" class="catalog-sort">
+      <option value="All Categories">All Categories</option>
+      <option value="Want to Watch">Want to Watch</option>
+      <option value="Considering">Considering</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+  <div class="search-toolbar-minicontainer">
+    <label class="filter-label" for="catalogSort">Sort by: </label>
+    <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
+      <option value="_id,ascending">Default Sorting</option>
+      <option value="name,ascending">Alphabetical</option>
+      <option value="rating,descending">Rating (High to Low)</option>
+      <option value="rating,ascending">Rating (Low to High)</option>
+    </select>
+  </div>
+  <div class="search-toolbar-minicontainer">
+    <label class="filter-label" for="catalogGenreFilter">View by Genre: </label>
+    <select id="catalogGenreFilter" [(ngModel)]="selectedGenre" (ngModelChange)="filterAnimeByGenre($event)" class="catalog-sort">
+      <option value="All Genres">All Genres</option>
+      <option *ngFor="let genre of allGenres" [value]="genre">{{ genre }}</option>
+    </select>
+  </div>
+  <div class="search-toolbar-minicontainer">
+    <label class="filter-label" for="animeSearch-no-placeholder">Search for anime: </label>
+    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime)">
         <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
@@ -65,17 +77,17 @@
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'">Considering ({{ consideringList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of consideringList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Completed'">Completed ({{ completedList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of completedList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
       </mat-nav-list>
     </div>
@@ -94,20 +106,24 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div class="details-misc">
-            <p>
-              <strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}<br><br>
-              <strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}<br><br>
-              <strong>MAL rating:</strong> {{ selectedAnime["rating"] }}<br><br>
-              <strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}<br><br>
-              <strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}<br><br>
-              <strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}<br><br>
-              <strong>Genres:</strong>
+            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}</p>
+            <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}</p>
+            <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] }}</p>
+            <p><strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
+            <p><strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
+            <p><strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+            <p><strong>Genres:</strong>
               <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
                 <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
               </span>
               <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
             </p>
-
+            <p><strong>Recommenders:</strong>
+              <span *ngIf="selectedAnime['recommenders'] && selectedAnime['recommenders'].length">
+                <span *ngFor="let recommender of selectedAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == selectedAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+              </span>
+              <span *ngIf="!selectedAnime['recommenders'] || !selectedAnime['recommenders'].length">None</span>
+            </p>
           </div>
         </div>
         <div class="details-description">
@@ -119,6 +135,8 @@
         <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" mat-raised-button color="accent">Add to Considering</button>
         <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" mat-raised-button color="accent">Add to Completed</button>
         <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
+        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['ownerIsRecommender']" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
+        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['ownerIsRecommender']" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
         <button (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
       </div>
     </div>

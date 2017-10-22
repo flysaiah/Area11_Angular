@@ -31,6 +31,8 @@
 .area11-register-toast {
   display: none;
   background-color: #3d85c6;
+  border: 1px solid black;
+  border-width: 2px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
@@ -46,6 +48,9 @@
   margin-top: 10px;
   z-index: 1;
   font-size: 14px;
+}
+.toast-error {
+  background-color: #ff5722;
 }
 
 .area11-register-toast.show {

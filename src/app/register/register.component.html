@@ -1,5 +1,5 @@
 <h1 class="register-logo">Area 11</h1>
-<div class="area11-register-toast" [ngClass]="{show: showToast}">{{ toastMessage }}</div>
+<div class="area11-register-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <!-- IDEA: Add some vertical banners on either side or something -->
 <div class="registration-container">
     <form #userForm="ngForm" class="register-form" (ngSubmit)="onSubmit()">
@@ -18,7 +18,8 @@
         <mat-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Best girl is required </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" [disabled]="name.invalid || pass.invalid || submitted" type="submit">Register</button>
+      <button mat-raised-button color="primary" [disabled]="name.invalid || pass.invalid || bestgirl.invalid || submitted" type="submit">Register</button>
 
     </form>
+    <p class="back-to-login">Remember your username/password? <a routerLink="/login">Log in</a></p>
 </div>

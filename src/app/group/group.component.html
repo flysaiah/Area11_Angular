@@ -10,7 +10,7 @@
       <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
-            <img class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}" (error)="loadDefaultImage($event.target)">
+            <div class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
             <h3 class="group-name">{{ currentGroup['name'] }}</h3>
           </div>
           <div class="member-list-container-left">
@@ -19,7 +19,7 @@
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'], groupMember['id'])">Import Catalog</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
@@ -30,7 +30,7 @@
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'])">Import Catalog</button>
+                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importCatalog(groupMember['username'], groupMember['id'])">Import Catalog</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
@@ -101,6 +101,14 @@
       <mat-tab label="Group Settings">
         <div class="group-settings-tab" *ngIf="currentGroup['name']">
           <div class="group-settings-left">
+            <form #groupForm="ngForm">
+              <mat-form-field class="group-settings-name" color="accent">
+                <input matInput name="name" placeholder="Group Name" [(ngModel)]="changesModel.name"  #name="ngModel">
+              </mat-form-field>
+              <br>
+              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty" (click)="saveChanges()">Save Changes</button>
+            </form>
+            <br><br>
             More group features and settings will be available in future updates!
             <br><br>
             <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
