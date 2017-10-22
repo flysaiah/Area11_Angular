@@ -150,7 +150,6 @@ export class HomeComponent {
           }
           this.linkAnimeSuggestions.push(newAnime);
         }
-        console.log(this.linkAnimeSuggestions);
         // Open dialog
         let dialogRef = this.dialog.open(LinkAnimeDialog, {
           width: '515px',
@@ -214,7 +213,7 @@ export class HomeComponent {
   }
 
   addAnimeToCatalog(category?: string) {
-    // Add anime to database under 'Want to Watch'
+    // category parameter is for when we're changin categories
     if (category) {
       this.animeToAdd['category'] = category;
     }
@@ -360,12 +359,51 @@ export class HomeComponent {
       anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
+  recommendAnime() {
+    this.animeService.recommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
+      console.log(res);
+      if (res["success"]) {
+        this.displayToast("Anime recommended!");
+        if (!this.selectedAnime["recommenders"]) {
+          this.selectedAnime["recommenders"] = [{ name: this.currentUser }];
+        } else {
+          this.selectedAnime["recommenders"].push({ name: this.currentUser });
+        }
+        this.selectedAnime["ownerIsRecommender"] = true;
+        this.refresh();
+      } else {
+        this.displayToast("There was a problem.", true);
+      }
+    });
+  }
+  undoRecommendAnime() {
+    this.animeService.undoRecommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
+      if (res["success"]) {
+        this.displayToast("You have taken back your recommendation!");
+        if (this.selectedAnime["recommenders"] && this.selectedAnime["recommenders"].length == 1) {
+          this.selectedAnime["recommenders"] = [];
+        } else if (this.selectedAnime["recommenders"] && this.selectedAnime["recommenders"].length > 1) {
+          for (let i=0; i<this.selectedAnime["recommenders"].length; i++) {
+            if (this.selectedAnime["recommenders"][i]["name"] == this.currentUser) {
+              this.selectedAnime["recommenders"].splice(i,1);
+            }
+          }
+        }
+        this.selectedAnime["ownerIsRecommender"] = false;
+      } else {
+        this.displayToast("There was a problem.", true);
+        console.log(res);
+      }
+      this.refresh();
+    });
+  }
+
   refresh() {
     // Fetch all anime stored in database and update our lists
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
 
-    this.animeService.fetchAnime(this.currentUser).subscribe(res => {
+    this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
       if (res["success"]) {
         const animeList = res["animeList"];
         this.newWantToWatch = [];

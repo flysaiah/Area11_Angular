@@ -77,17 +77,17 @@
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'">Considering ({{ consideringList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of consideringList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Completed'">Completed ({{ completedList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of completedList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ anime["rating"] }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
         </mat-list-item>
       </mat-nav-list>
     </div>
@@ -106,20 +106,24 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div class="details-misc">
-            <p>
-              <strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}<br><br>
-              <strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}<br><br>
-              <strong>MAL rating:</strong> {{ selectedAnime["rating"] }}<br><br>
-              <strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}<br><br>
-              <strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}<br><br>
-              <strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}<br><br>
-              <strong>Genres:</strong>
+            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}</p>
+            <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}</p>
+            <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] }}</p>
+            <p><strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
+            <p><strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
+            <p><strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+            <p><strong>Genres:</strong>
               <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
                 <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
               </span>
               <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
             </p>
-
+            <p><strong>Recommenders:</strong>
+              <span *ngIf="selectedAnime['recommenders'] && selectedAnime['recommenders'].length">
+                <span *ngFor="let recommender of selectedAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == selectedAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+              </span>
+              <span *ngIf="!selectedAnime['recommenders'] || !selectedAnime['recommenders'].length">None</span>
+            </p>
           </div>
         </div>
         <div class="details-description">
@@ -131,6 +135,8 @@
         <button *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')" class="details-button" mat-raised-button color="accent">Add to Considering</button>
         <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')" class="details-button" mat-raised-button color="accent">Add to Completed</button>
         <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed'" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
+        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['ownerIsRecommender']" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
+        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['ownerIsRecommender']" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
         <button (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
       </div>
     </div>

@@ -15,6 +15,8 @@ export class Anime {
     public endDate?: string,
     public type?: string,
     public englishTitle?: string,
-    public status?: string
+    public status?: string,
+    public recommenders?: Object[],
+    public ownerIsRecommender?: boolean
   ) {}
 }

@@ -168,9 +168,15 @@
   margin-top: 10px;
 }
 .catalog-item-name {
-  width: 89%;
+  width: 71%;
+}
+.recommended-icon {
+  height: 18px;
+  position: absolute;
+  right: 50px;
 }
 .catalog-rating {
+  display: inline-block;
   position: absolute;
   right: 10px;
   top: 15px;
@@ -210,6 +216,7 @@
   display: inline-block;
   width: 35%;
   text-align: left;
+  font-size: 14px;
 }
 .details-panel-placeholder {
   width: 34%;
