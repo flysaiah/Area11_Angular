@@ -41,6 +41,8 @@ export class HomeComponent {
   allGenres: string[];
   selectedGenre: string;
 
+  refreshHeader: number;
+
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
   filteredSearchAnime: Observable<any[]>;
@@ -361,7 +363,6 @@ export class HomeComponent {
 
   recommendAnime() {
     this.animeService.recommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
-      console.log(res);
       if (res["success"]) {
         this.displayToast("Anime recommended!");
         if (!this.selectedAnime["recommenders"]) {
@@ -452,6 +453,9 @@ export class HomeComponent {
   ) { }
 
   ngOnInit() {
+    // Use refreshHeader to force header to refresh
+    this.refreshHeader = Math.random();
+    
     this.wantToWatchList = [];
     this.consideringList = [];
     this.completedList = [];

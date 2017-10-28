@@ -15,6 +15,8 @@ export class GroupComponent implements OnInit {
   toastMessage: string;
   toastError: boolean;
 
+  refreshHeader: number;
+
   newGroupName: string;
   groupAvatarUpload: Array<File> = [];
   showUploadOptions: boolean;
@@ -212,6 +214,8 @@ export class GroupComponent implements OnInit {
   }
 
   refresh() {
+    this.refreshHeader = Math.random();
+
     this.newGroupName = "";
     this.changesModel = new Group("", []);
     this.joinGroupName = "";
