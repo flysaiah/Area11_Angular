@@ -92,7 +92,7 @@ module.exports = (router) => {
                       if (!member.isPending) {
                         User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                           if (err) {
-                            res.json({ success: false, message: err });
+                            done();
                           } else if (!memberUser) {
                             done();
                           } else {
@@ -281,7 +281,7 @@ module.exports = (router) => {
                             if (!member.isPending && member.id != req.decoded.userId) {
                               User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                                 if (err) {
-                                  res.json({ success: false, message: err });
+                                  done();
                                 } else if (!memberUser) {
                                   done();
                                 } else {
@@ -407,7 +407,7 @@ module.exports = (router) => {
                   if (!member.isPending) {
                     User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                       if (err) {
-                        res.json({ success: false, message: err });
+                        done();
                       } else if (!memberUser) {
                         done();
                       } else {
@@ -513,7 +513,7 @@ module.exports = (router) => {
                   if (!member.isPending) {
                     User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                       if (err) {
-                        res.json({ success: false, message: err });
+                        done();
                       } else if (!memberUser) {
                         done();
                       } else {
@@ -627,7 +627,7 @@ module.exports = (router) => {
                       if (!member.isPending && member.id != req.decoded.userId) {
                         User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                           if (err) {
-                            res.json({ success: false, message: err });
+                            done();
                           } else if (!memberUser) {
                             done();
                           } else {
@@ -768,7 +768,7 @@ module.exports = (router) => {
                             if (!member.isPending && member.id != req.decoded.userId) {
                               User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                                 if (err) {
-                                  res.json({ success: false, message: err });
+                                  done();
                                 } else if (!memberUser) {
                                   done();
                                 } else {
@@ -948,7 +948,7 @@ module.exports = (router) => {
                     if (!member.isPending || member.id == req.body.pendingUser) {
                       User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                         if (err) {
-                          res.json({ success: false, message: err });
+                          done();
                         } else if (!memberUser) {
                           done();
                         } else {
@@ -1172,7 +1172,7 @@ module.exports = (router) => {
             if (!member.isPending) {
               User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
                 if (err) {
-                  res.json({ success: false, message: err });
+                  done();
                 } else if (!memberUser) {
                   done();
                 } else {
@@ -1192,13 +1192,7 @@ module.exports = (router) => {
                   res.json({ success: false, message: err });
                 } else {
                   async.each(memberNames, function updateMemberRecommendations (memberName, done) {
-                    Anime.update({ user: memberName, ownerIsRecommender: true }, { $set: { recommenders: [{ name: memberName }] } }, { multi: true }, (err) => {
-                      if (err) {
-                        res.json({ success: false, message: err })
-                      } else {
-                        done();
-                      }
-                    })
+                    Anime.update({ user: memberName, ownerIsRecommender: true }, { $set: { recommenders: [{ name: memberName }] } }, { multi: true }, done);
                   }, function allDone (err) {
                     if (err) {
                       res.json({ success: false, message: err });
@@ -1248,7 +1242,7 @@ module.exports = (router) => {
                     Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
                       done();
                       if (err) {
-                        res.json({ success: false, message: err });
+                        done();
                         return;
                       } else if (!existingAnime) {
                         numOfImports += 1;
