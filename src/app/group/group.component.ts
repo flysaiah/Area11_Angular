@@ -86,10 +86,13 @@ export class GroupComponent implements OnInit {
         this.displayToast(pendingUser.username + " successfully added to group!");
         this.refresh();
       } else if (res["message"] == "Already in group") {
-        this.displayToast(pendingUser.username + " has already been accepted", true);
+        this.displayToast(pendingUser.username + " has already been accepted.", true);
+        this.refresh();
+      } else if (res["message"] == "In different group") {
+        this.displayToast(pendingUser.username + " is a member of a different group.", true);
         this.refresh();
       } else {
-        this.displayToast("There was a problem accepting the request");
+        this.displayToast("There was a problem accepting the request.s");
         console.log(res);
       }
     });

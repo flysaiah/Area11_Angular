@@ -269,98 +269,124 @@ module.exports = (router) => {
           res.json({ success: false, message: "Invalid group membership" });
         } else {
           // Here's where the user request part takes place
-          // First check if user hasn't already been added
-          for (let member of group.members) {
-            if (req.body.pendingUser == member.id && !member.isPending) {
-              res.json({ success: false, message: "Already in group" });
-              return;
-            }
-          }
-          // Change isPending status to officially "add" user
-          let newMembers = group.members;
-          for (let i=0; i<newMembers.length; i++) {
-            if (newMembers[i].id == req.body.pendingUser) {
-              newMembers[i].isPending = false;
-              break;
-            }
-          }
-          Group.findOneAndUpdate( { "name": req.body.name }, { $set: { members: newMembers } }, (err, group) => {
+          // First check if user hasn't joined another group
+          User.findOne({"_id": ObjectID(req.body.pendingUser) }, (err, pUser) => {
             if (err) {
               res.json({ success: false, message: err });
+            } else if (!pUser) {
+              res.json({ success: false, message: "User to add doesn't exist" });
             } else {
-              // Remember to update new user also
-              User.findOneAndUpdate( { "_id": ObjectID(req.body.pendingUser) }, { $set: { group: req.body.name } }, (err, user) => {
-                if (err) {
-                  res.json({ success: false, message: err });
-                } else {
-                  // Now add recommendations from group anime' anime to new member
-                  let memberNames = [];
-                  let newMemberName = "";
-                  async.each(group.members, function getMemberName (member, done) {
-                    if (!member.isPending || member.id == req.body.pendingUser) {
-                      User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
-                        if (err) {
-                          done();
-                        } else if (!memberUser) {
-                          done();
-                        } else {
-                          if (member.id != req.body.pendingUser) {
-                            memberNames.push(memberUser.username);
+              if (pUser.group) {
+                // Delete request
+                let newMembers = [];
+                for (memb of group.members) {
+                  if (memb.id != req.body.pendingUser) {
+                    newMembers.push(memb)
+                  }
+                }
+                Group.findOneAndUpdate({ "name": req.body.name }, { $set: { members: newMembers } }, (err, group) => {
+                  if (err) {
+                    res.json({ success: false, message: err });
+                  } else {
+                    res.json({ success: false, message: "In different group" });
+                  }
+                });
+              } else {
+                // Now check if user hasn't already been added to this group
+                for (let member of group.members) {
+                  if (req.body.pendingUser == member.id && !member.isPending) {
+                    res.json({ success: false, message: "Already in group" });
+                    return;
+                  }
+                }
+                // Change isPending status to officially "add" user
+                let newMembers = group.members;
+                for (let i=0; i<newMembers.length; i++) {
+                  if (newMembers[i].id == req.body.pendingUser) {
+                    newMembers[i].isPending = false;
+                    break;
+                  }
+                }
+                Group.findOneAndUpdate({ "name": req.body.name }, { $set: { members: newMembers } }, (err, group) => {
+                  if (err) {
+                    res.json({ success: false, message: err });
+                  } else {
+                    // Remember to update new user also
+                    User.findOneAndUpdate( { "_id": ObjectID(req.body.pendingUser) }, { $set: { group: req.body.name } }, (err, user) => {
+                      if (err) {
+                        res.json({ success: false, message: err });
+                      } else {
+                        // Now add recommendations from group anime' anime to new member
+                        let memberNames = [];
+                        let newMemberName = "";
+                        async.each(group.members, function getMemberName (member, done) {
+                          if (!member.isPending || member.id == req.body.pendingUser) {
+                            User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
+                              if (err) {
+                                done();
+                              } else if (!memberUser) {
+                                done();
+                              } else {
+                                if (member.id != req.body.pendingUser) {
+                                  memberNames.push(memberUser.username);
+                                } else {
+                                  newMemberName = memberUser.username;
+                                }
+                                done();
+                              }
+                            });
                           } else {
-                            newMemberName = memberUser.username;
+                            done();
                           }
-                          done();
-                        }
-                      });
-                    } else {
-                      done();
-                    }
-                  }, function allDone (err) {
-                    if (err) {
-                      res.json({ success: false, message: err });
-                    } else {
-                      Anime.find({ user: { $in: memberNames } }, (err, groupAnimeList) => {
-                        let malIDs = new Set();
-                        async.eachSeries(groupAnimeList, function updateNewMemberRecommendations (groupMembAnime, done3) {
-                          if (!groupMembAnime.malID || malIDs.has(groupMembAnime.malID) || !groupMembAnime.recommenders) {
-                            done3()
-                          } else {
-                            malIDs.add(groupMembAnime.malID);
-                            Anime.update({ malID: groupMembAnime.malID, user: newMemberName }, { $push: { recommenders: { $each: groupMembAnime.recommenders } } }, done3)
-                          }
-                        }, function allDone3 (err) {
+                        }, function allDone (err) {
                           if (err) {
                             res.json({ success: false, message: err });
                           } else {
-                            // NOW do the converse, and add new group member's recommendations to all the existing group members' anime
-                            Anime.find({ user: newMemberName }, (err, animeList) => {
-                              if (err) {
-                                res.json({ success: false, message: err });
-                              } else if (!animeList) {
-                                res.json({ success: true, message: "Successfully added to group" });
-                              } else {
-                                async.each(animeList, function updateRecommendations (membAnime, done2) {
-                                  if (!membAnime.ownerIsRecommender || !membAnime.malID) {
-                                    done2();
-                                  } else {
-                                    Anime.update({ malID: membAnime.malID, user: { $in: memberNames } }, { $push: { recommenders: { name: newMemberName } } }, { multi: true }, done2);
-                                  }
-                                }, function allDone2 (err) {
-                                  if (err) {
-                                    res.json({ success: false, message: err });
-                                  } else {
-                                    res.json({ success: true, message: "Successfully added to group" });
-                                  }
-                                });
-                              }
+                            Anime.find({ user: { $in: memberNames } }, (err, groupAnimeList) => {
+                              let malIDs = new Set();
+                              async.eachSeries(groupAnimeList, function updateNewMemberRecommendations (groupMembAnime, done3) {
+                                if (!groupMembAnime.malID || malIDs.has(groupMembAnime.malID) || !groupMembAnime.recommenders) {
+                                  done3()
+                                } else {
+                                  malIDs.add(groupMembAnime.malID);
+                                  Anime.update({ malID: groupMembAnime.malID, user: newMemberName }, { $push: { recommenders: { $each: groupMembAnime.recommenders } } }, done3)
+                                }
+                              }, function allDone3 (err) {
+                                if (err) {
+                                  res.json({ success: false, message: err });
+                                } else {
+                                  // NOW do the converse, and add new group member's recommendations to all the existing group members' anime
+                                  Anime.find({ user: newMemberName }, (err, animeList) => {
+                                    if (err) {
+                                      res.json({ success: false, message: err });
+                                    } else if (!animeList) {
+                                      res.json({ success: true, message: "Successfully added to group" });
+                                    } else {
+                                      async.each(animeList, function updateRecommendations (membAnime, done2) {
+                                        if (!membAnime.ownerIsRecommender || !membAnime.malID) {
+                                          done2();
+                                        } else {
+                                          Anime.update({ malID: membAnime.malID, user: { $in: memberNames } }, { $push: { recommenders: { name: newMemberName } } }, { multi: true }, done2);
+                                        }
+                                      }, function allDone2 (err) {
+                                        if (err) {
+                                          res.json({ success: false, message: err });
+                                        } else {
+                                          res.json({ success: true, message: "Successfully added to group" });
+                                        }
+                                      });
+                                    }
+                                  });
+                                }
+                              });
                             });
                           }
                         });
-                      });
-                    }
-                  });
-                }
-              });
+                      }
+                    });
+                  }
+                });
+              }
             }
           });
         }
