@@ -32,17 +32,16 @@ module.exports = (router) => {
     Anime.findOne({ '_id': ObjectID(req.body.id)}, (err, anime) => {
       if (err) {
         res.json({ success: false, message: err })
-      } else {
+      } else if (!anime.ownerIsRecommender || !anime.malID) {
         // if user has recommended this anime, we have to remove recommendation from group members' versions of anime
-        if (!anime.ownerIsRecommender || !anime.malID) {
-          anime.remove((err) => {
-            if (err) {
-              res.json({ success: false, message: err });
-            } else {
-              res.json({ success: true, message: 'Anime deleted!' });
-            }
-          });
-        }
+        anime.remove((err) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            res.json({ success: true, message: 'Anime deleted!' });
+          }
+        });
+      } else {
         User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
           if (err) {
             res.json({ success: false, message: err });
