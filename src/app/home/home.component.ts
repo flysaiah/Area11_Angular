@@ -47,6 +47,7 @@ export class HomeComponent {
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
+  searchText: string;
   filteredSearchAnime: Observable<any[]>;
 
   private displayToast(message: string, error?: boolean) {
@@ -70,13 +71,16 @@ export class HomeComponent {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
   }
-  showAnimeDetails(anime: Anime) {
+  showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
     if (this.selectedAnime["description"]) {
       this.selectedAnime["description"] = this.selectedAnime["description"].replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
     }
     this.validateSelectAsFinalistButton();
+    if (clearSearchBar) {
+      this.searchText = "";
+    }
   }
 
   private sortByField(fieldName, direction) {
@@ -528,6 +532,7 @@ export class HomeComponent {
     this.finalistGenreDict = new Map<string, number>();
 
     this.searchAnimeCtl = new FormControl();
+    this.searchText = "";
     this.filteredSearchAnime = this.searchAnimeCtl.valueChanges
       .startWith(null)
       .map(anime => anime ? this.filterAnime(anime) : this.searchAnime.slice());

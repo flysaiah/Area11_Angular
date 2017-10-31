@@ -31,10 +31,10 @@
   </div>
   <div class="search-toolbar-minicontainer">
     <label class="filter-label" for="animeSearch-no-placeholder">Search for anime: </label>
-    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
-    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime)">
+      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
         <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
         <span class="search-anime-name">{{ anime["name"] }}</span>
       </mat-option>
