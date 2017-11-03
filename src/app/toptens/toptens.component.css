@@ -1,0 +1,119 @@
+.area11-group-toast {
+  display: none;
+  background-color: #3d85c6;
+  color: #fff;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  border-width: 2px;
+  text-align: center;
+  border-radius: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  height: 20px !important;
+  z-index: 1;
+  font-size: 14px;
+}
+.toast-error {
+  background-color: #ff5722;
+}
+
+.area11-group-toast.show {
+  display: block;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 10px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 10px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+.search-toolbar {
+  width: 100%;
+  color: #f0f0f0;
+  vertical-align: middle;
+  background-color: #800015;
+  border: 1px solid #330000;
+  border-width: 2px;
+  height: 40px;
+  line-height: 40px;
+  text-shadow: 1px 1px 0 #444;
+}
+.home-button {
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-left: 60px;
+}
+.back-to-group-button {
+  float: right;
+  margin-top: 10px;
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-right: 60px;
+}
+.toptens-top-controls {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.new-category-button {
+  margin-left: 5px;
+  height: 32px;
+  line-height: 32px;
+  min-width: 0px;
+  width: 70px;
+}
+.toptens-card {
+  margin-top: 10px;
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.category-header {
+  text-align: center;
+}
+.category-controls {
+  display: flex;
+  justify-content: center;
+}
+.category-control-item {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.category-control-button {
+  height: 28px;
+  min-width: 70px;
+  line-height: 27px;
+}
+#member-select {
+  height: 28px !important;
+  font-size: 14px !important;
+}
+.toptens-content {
+  padding-left: 20px;
+}

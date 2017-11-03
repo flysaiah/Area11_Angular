@@ -258,13 +258,13 @@ export class GroupComponent implements OnInit {
           } else {
             this.displayToast("There was a problem loading your profile.", true)
           }
-        })
+        });
       } else {
         // If there was a problem we need to have them log in again
         console.log(res["message"]);
         this.authService.logout();
       }
-    })
+    });
   }
 
   constructor(

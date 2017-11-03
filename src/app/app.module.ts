@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule } from '@angular/material';
+import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,11 +16,13 @@ import { AuthService } from './services/auth.service';
 import { AnimeService } from './services/anime.service';
 import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
+import { TopTensService } from './services/toptens.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
 import { GroupComponent } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
+import { TopTensComponent } from './toptens/toptens.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { HeaderComponent } from './header/header.component';
     LoginComponent,
     SettingsComponent,
     GroupComponent,
-    HeaderComponent
+    HeaderComponent,
+    TopTensComponent
   ],
   imports: [
     BrowserModule,
@@ -53,9 +56,10 @@ import { HeaderComponent } from './header/header.component';
     MatSelectModule,
     MatTabsModule,
     MatAutocompleteModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
-  providers: [AuthService, AnimeService, UserService, GroupService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog]
 })
