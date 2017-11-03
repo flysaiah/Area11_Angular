@@ -5,6 +5,7 @@ const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
+const TopTens = require('../models/toptens.js');
 const multer = require('multer');
 const async = require('async');
 const fs = require('fs');
@@ -87,6 +88,7 @@ module.exports = (router) => {
             // If this was the only member, then remove group
             if (count == 1) {
               Group.findOne({ "name": req.body.groupName }).remove().exec();
+              TopTens.find({ group: req.body.groupName }).remove().exec();
               fs.unlink('./public/' + req.body.groupName, (err) => {
                 if (err) {
                   // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
@@ -135,11 +137,52 @@ module.exports = (router) => {
                             if (err) {
                               res.json({ success: false, message: err });
                             } else {
-                              Anime.update({ user: { $in: memberNames } }, { $pull: { recommenders: {name: user.username } } }, { multi: true }, (err) => {
+                              // Update top tens for group
+                              TopTens.find({ group: group.name}, (err, ttList) => {
                                 if (err) {
                                   res.json({ success: false, message: err });
+                                } else if (!ttList) {
+                                  Anime.update({ user: { $in: memberNames } }, { $pull: { recommenders: {name: user.username } } }, { multi: true }, (err) => {
+                                    if (err) {
+                                      res.json({ success: false, message: err });
+                                    } else {
+                                      res.json({ success: true, message: "Left group successfully" });
+                                    }
+                                  });
                                 } else {
-                                  res.json({ success: true, message: "Left group successfully" });
+                                  async.each(ttList, function(toptensObj, done2) {
+                                    if (!toptensObj.entries) {
+                                      done2();
+                                    } else {
+                                      let newEntries = [];
+                                      for (let entry of toptensObj.entries) {
+                                        let newEntry = {name: entry.name}
+                                        let newViewerPrefs = [];
+                                        for (let viewerPref of entry.viewerPrefs) {
+                                          if (viewerPref.member != user.username) {
+                                            newViewerPrefs.push(viewerPref)
+                                          }
+                                        }
+                                        newEntry.viewerPrefs = newViewerPrefs;
+                                        newEntries.push(newEntry);
+                                      }
+                                      TopTens.update({ "category": toptensObj.category, "user": toptensObj.user }, { entries: newEntries }, done2);
+                                    }
+                                  }, function allDone2(err) {
+                                    if (err) {
+                                      res.json({ success: false, message: err });
+                                    } else {
+                                      TopTens.find({ user: user.username }).remove().exec();
+                                      // Update recommendations
+                                      Anime.update({ user: { $in: memberNames } }, { $pull: { recommenders: {name: user.username } } }, { multi: true }, (err) => {
+                                        if (err) {
+                                          res.json({ success: false, message: err });
+                                        } else {
+                                          res.json({ success: true, message: "Left group successfully" });
+                                        }
+                                      });
+                                    }
+                                  });
                                 }
                               });
                             }
@@ -372,7 +415,40 @@ module.exports = (router) => {
                                         if (err) {
                                           res.json({ success: false, message: err });
                                         } else {
-                                          res.json({ success: true, message: "Successfully added to group" });
+                                          // Now we have to update TopTens info
+                                          // Update top tens for group
+                                          TopTens.find({ group: group.name }, (err, ttList) => {
+                                            if (err) {
+                                              res.json({ success: false, message: err });
+                                            } else if (!ttList) {
+                                              res.json({ success: true, message: "Successfully added to group" });
+                                            } else {
+                                              async.each(ttList, function(toptensObj, done4) {
+                                                if (!toptensObj.entries) {
+                                                  done4();
+                                                } else {
+                                                  let newEntries = [];
+                                                  for (let entry of toptensObj.entries) {
+                                                    let newEntry = {name: entry.name}
+                                                    let newViewerPrefs = [];
+                                                    for (let viewerPref of entry.viewerPrefs) {
+                                                      newViewerPrefs.push(viewerPref)
+                                                    }
+                                                    newViewerPrefs.push({ member: newMemberName, shouldHide: false })
+                                                    newEntry.viewerPrefs = newViewerPrefs;
+                                                    newEntries.push(newEntry);
+                                                  }
+                                                  TopTens.update({ "category": toptensObj.category, "user": toptensObj.user }, { entries: newEntries }, done4);
+                                                }
+                                              }, function allDone4(err) {
+                                                if (err) {
+                                                  res.json({ success: false, message: err });
+                                                } else {
+                                                  res.json({ success: true, message: "Successfully added to group" });
+                                                }
+                                              });
+                                            }
+                                          });
                                         }
                                       });
                                     }
@@ -473,7 +549,7 @@ module.exports = (router) => {
           } else {
             res.json({ success: false, message: "No group found" });
           }
-        })
+        });
       } else {
         // First make sure that user is a part of this group
         let found = false;
@@ -499,7 +575,13 @@ module.exports = (router) => {
                       // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                       console.log(err)
                     }
-                    res.json({ success: true, message: "Group changes saved successfully!" });
+                    TopTens.update({ group: req.body.groupName }, { $set: { group: req.body.groupChangesModel.name } }, { multi: true }, (err) => {
+                      if (err) {
+                        res.json({ success: false, message: err });
+                      } else {
+                        res.json({ success: true, message: "Group changes saved successfully!" });
+                      }
+                    });
                   });
                 }
               });
@@ -575,6 +657,7 @@ module.exports = (router) => {
                     if (err) {
                       res.json({ success: false, message: err });
                     } else {
+                      TopTens.find({ group: group.name }).remove().exec();
                       res.json({ success: true, message: "Group successfully deleted" });
                     }
                   });

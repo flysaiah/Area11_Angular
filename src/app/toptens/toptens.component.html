@@ -4,40 +4,63 @@
   <button mat-raised-button class="back-to-group-button" routerLink="/group">Back to Group</button>
 </div>
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<div class="toptens-top-controls">
-  <mat-form-field color="accent">
-    <input matInput placeholder="New Category Name" [(ngModel)]="newCategoryName">
-  </mat-form-field>
-  <button mat-raised-button color="accent" class="new-category-button" [disabled]="!newCategoryName" (click)="addNewCategory()">Add</button>
-</div>
 <div *ngIf="currentGroup['name']">
-  <mat-card class="toptens-card" *ngFor="let category of allCategories; let i = index;">
-    <h1 class="category-header">Top Ten {{ category["category"] }}</h1>
-    <div class="category-controls">
-      <div class="category-control-item">
-        <label for="member-select">Currently viewing:</label>
-        <select id="member-select" [(ngModel)]="categoryLogistics[i]['member']">
-          <option *ngFor="let member of currentGroupMembers" [value]="member['username']">{{ member["username"] }}</option>
-        </select>
-      </div>
-      <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i)">Edit</button>
-      <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="saveChanges(category['category'], i)">Save</button>
-      <button class="category-control-item category-control-button" mat-raised-button color="warn" (click)="deleteCategory(category.category)">Delete category</button>
-    </div>
-    <div class="toptens-content">
-      <div *ngIf="categoryLogistics[i]['member'] != currentUser || !categoryLogistics[i]['isEditing']">
-        <p *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-          <span *ngIf="categoryLogistics[i]['member'] != currentUser && isHidden(entry)">{{ j + 1 }}. Hidden</span>
-          <span *ngIf="categoryLogistics[i]['member'] == currentUser || !isHidden(entry)">{{ j + 1 }}. {{ entry["name"] }}</span>
-        </p>
-      </div>
-      <div *ngIf="categoryLogistics[i]['member'] == currentUser && categoryLogistics[i]['isEditing']">
-        <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-          <p>{{ j + 1 }}. <input [(ngModel)]="entry['name']">
-            Hide from: <mat-checkbox *ngFor="let viewerPref of entry['viewerPrefs']" [name]="category.category + currentUser + j" [(ngModel)]="viewerPref['shouldHide']">{{ viewerPref['member'] }}</mat-checkbox>
-          </p>
+  <div class="toptens-top-controls">
+    <mat-form-field color="accent">
+      <input matInput placeholder="New Category Name" [(ngModel)]="newCategoryName">
+    </mat-form-field>
+    <button mat-raised-button color="accent" class="new-category-button" [disabled]="!newCategoryName" (click)="addNewCategory()">Add</button>
+    <label class="select-category-label" for="category-select">Currently viewing:</label>
+    <select class="select-category" id="category-select" [(ngModel)]="currentCategory">
+      <option value="All Categories">All Categories</option>
+      <option *ngFor="let category of allCategories" [value]="category['category']">{{ category["category"] }}</option>
+    </select>
+  </div>
+  <div *ngIf="allCategories.length">
+    <div *ngFor="let category of allCategories; let i = index;">
+      <mat-card class="toptens-card" *ngIf="currentCategory == 'All Categories' || currentCategory == category['category']">
+        <h1 class="category-header">Top Ten {{ category["category"] }}</h1>
+        <div class="category-controls">
+          <div class="category-control-item">
+            <label for="member-select">Currently viewing:</label>
+            <select id="member-select" [(ngModel)]="categoryLogistics[i]['member']">
+              <option *ngFor="let member of currentGroupMembers" [value]="member['username']">{{ member["username"] }}</option>
+            </select>
+          </div>
+          <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i)">Edit</button>
+          <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="saveChanges(category['category'], i)">Save</button>
+          <button class="category-control-item category-control-button" mat-raised-button color="warn" (click)="deleteCategory(category.category)">Delete category</button>
         </div>
-      </div>
+        <div class="toptens-content">
+          <div *ngIf="categoryLogistics[i]['member'] != currentUser || !categoryLogistics[i]['isEditing']">
+            <p [ngClass]="{'tenth-item': j == 9}"  *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
+              <span *ngIf="categoryLogistics[i]['member'] != currentUser && isHidden(entry)">{{ j + 1 }}. Hidden</span>
+              <span *ngIf="categoryLogistics[i]['member'] == currentUser || !isHidden(entry)">{{ j + 1 }}. {{ entry["name"] }}</span>
+            </p>
+          </div>
+          <div *ngIf="categoryLogistics[i]['member'] == currentUser && categoryLogistics[i]['isEditing']">
+            <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
+              <p [ngClass]="{'tenth-item': j == 9}" >{{ j + 1 }}. <input [(ngModel)]="entry['name']">
+                Hide from:<mat-checkbox class="viewerprefs-checkbox" *ngFor="let viewerPref of entry['viewerPrefs']" [name]="category.category + currentUser + j" [(ngModel)]="viewerPref['shouldHide']">{{ viewerPref['member'] }}</mat-checkbox>
+              </p>
+            </div>
+          </div>
+        </div>
+      </mat-card>
     </div>
+  </div>
+  <div *ngIf="!allCategories.length">
+    <mat-card class="placeholder-card">
+      <mat-card-content>
+        Create & share top ten lists here with your group members! Start by adding some categories above.
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<div *ngIf="!currentGroup['name']">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      Whoops! You need to be in a group to use this page. Go to your "My Group" section to find or create one!
+    </mat-card-content>
   </mat-card>
 </div>

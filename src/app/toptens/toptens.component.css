@@ -13,8 +13,10 @@
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  margin-top: 10px;
-  height: 20px !important;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 15px;
   z-index: 1;
   font-size: 14px;
 }
@@ -30,21 +32,21 @@
 
 @-webkit-keyframes fadein {
   from {top: 0; opacity: 0;}
-  to {top: 30px; opacity: 1;}
+  to {top: 15px; opacity: 1;}
 }
 
 @keyframes fadein {
   from {top: 0; opacity: 0;}
-  to {top: 10px; opacity: 1;}
+  to {top: 15px; opacity: 1;}
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 10px; opacity: 1;}
+  from {top: 15px; opacity: 1;}
   to {top: 0; opacity: 0;}
 }
 
 @keyframes fadeout {
-  from {top: 10px; opacity: 1;}
+  from {top: 15px; opacity: 1;}
   to {top: 0; opacity: 0;}
 }
 
@@ -88,6 +90,21 @@
   min-width: 0px;
   width: 70px;
 }
+.select-category-label {
+  margin-left: 20px;
+  font-size: 18px !important;
+}
+.select-category {
+  height: 30px;
+  font-size: 14px;
+}
+.placeholder-card {
+  margin-top: 10px;
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
 .toptens-card {
   margin-top: 10px;
   width: 750px;
@@ -111,9 +128,15 @@
   line-height: 27px;
 }
 #member-select {
-  height: 28px !important;
-  font-size: 14px !important;
+  height: 28px;
+  font-size: 14px;
 }
 .toptens-content {
   padding-left: 20px;
+}
+.viewerprefs-checkbox {
+  margin-left: 10px;
+}
+.tenth-item {
+  margin-left: -9px;
 }

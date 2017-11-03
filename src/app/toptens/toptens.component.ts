@@ -31,6 +31,7 @@ export class TopTensComponent implements OnInit {
   allCategories: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
+  currentCategory: string;
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -148,6 +149,9 @@ export class TopTensComponent implements OnInit {
     this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Category deleted successfully!");
+        if (this.currentCategory == category) {
+          this.currentCategory = "All Categories";
+        }
         this.refresh();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
@@ -201,8 +205,9 @@ export class TopTensComponent implements OnInit {
     this.newCategoryName = "";
     this.allTopTens = [];
     this.topTensMap = new Map();
-
+    this.allCategories = [];
     this.categoryLogistics = [];
+    this.currentCategory = "All Categories";
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
@@ -238,5 +243,4 @@ export class TopTensComponent implements OnInit {
       }
     });
   }
-
 }

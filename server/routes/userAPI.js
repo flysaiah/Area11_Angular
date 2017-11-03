@@ -5,6 +5,7 @@ const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
+const TopTens = require('../models/toptens.js');
 const multer = require('multer');
 const async = require('async');
 const fs = require('fs');
@@ -91,6 +92,8 @@ module.exports = (router) => {
               // If last member of group, delete group
               if (count == 1) {
                 Group.findOne({ "name": group.name }).remove().exec();
+                // If deleting group, also delete all top tens associated with group
+                TopTens.find({ "group": group.name }).remove().exec();
                 fs.unlink('./public/' + group.name, (err) => {
                   if (err) {
                     // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
@@ -127,15 +130,57 @@ module.exports = (router) => {
                           if (err) {
                             res.json({ success: false, message: err });
                           } else {
-                            User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                            fs.unlink('./public/' + req.decoded.userId, (err) => {
+                            // Update top tens for group
+                            TopTens.find({ group: group.name}, (err, ttList) => {
                               if (err) {
-                                // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
-                                console.log(err);
+                                res.json({ success: false, message: err });
+                              } else if (!ttList) {
+                                User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+                                fs.unlink('./public/' + req.decoded.userId, (err) => {
+                                  if (err) {
+                                    // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                                    console.log(err);
+                                  }
+                                });
+                                Anime.find({ user: user.username }).remove().exec();
+                                res.json({ success: true, message: "User successfully deleted!" });
+                              } else {
+                                async.each(ttList, function(toptensObj, done2) {
+                                  if (!toptensObj.entries) {
+                                    done2();
+                                  } else {
+                                    let newEntries = [];
+                                    for (let entry of toptensObj.entries) {
+                                      let newEntry = {name: entry.name}
+                                      let newViewerPrefs = [];
+                                      for (let viewerPref of entry.viewerPrefs) {
+                                        if (viewerPref.member != user.username) {
+                                          newViewerPrefs.push(viewerPref)
+                                        }
+                                      }
+                                      newEntry.viewerPrefs = newViewerPrefs;
+                                      newEntries.push(newEntry);
+                                    }
+                                    TopTens.update({ "category": toptensObj.category, "user": toptensObj.user }, { entries: newEntries }, done2);
+                                  }
+                                }, function allDone2(err) {
+                                  if (err) {
+                                    res.json({ success: false, message: err });
+                                  } else {
+                                    User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
+                                    fs.unlink('./public/' + req.decoded.userId, (err) => {
+                                      if (err) {
+                                        // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
+                                        console.log(err);
+                                      }
+                                    });
+                                    Anime.find({ user: user.username }).remove().exec();
+                                    TopTens.find({ user: user.username }).remove().exec();
+                                    res.json({ success: true, message: "User successfully deleted!" });
+                                  }
+                                });
                               }
                             });
-                            Anime.find({ user: user.username }).remove().exec();
-                            res.json({ success: true, message: "User successfully deleted!" });
                           }
                         });
                       }
