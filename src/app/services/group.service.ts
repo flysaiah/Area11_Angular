@@ -20,40 +20,40 @@ export class GroupService {
 
   createGroup(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/createGroup', { name: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/createGroup', { name: groupName }, this.options).map(res => res.json());
   }
 
   getGroupInfo(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/getGroupInfo', { name: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/getGroupInfo', { name: groupName }, this.options).map(res => res.json());
   }
   leaveGroup(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/leaveGroup', {groupName: groupName}, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/leaveGroup', {groupName: groupName}, this.options).map(res => res.json());
   }
   disbandGroup(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/disbandGroup', { name: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/disbandGroup', { name: groupName }, this.options).map(res => res.json());
   }
   joinGroupRequest(groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/joinGroupRequest', { groupName: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/joinGroupRequest', { groupName: groupName }, this.options).map(res => res.json());
   }
   acceptUserRequest(groupName: string, pendingUser: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/acceptUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/acceptUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
   }
   rejectUserRequest(groupName: string, pendingUser: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/rejectUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/rejectUserRequest', { name: groupName, pendingUser: pendingUser }, this.options).map(res => res.json());
   }
   saveChanges(groupName: string, groupChangesModel: Group) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/saveGroupChanges', { groupName: groupName, groupChangesModel: groupChangesModel }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/saveGroupChanges', { groupName: groupName, groupChangesModel: groupChangesModel }, this.options).map(res => res.json());
   }
   importCatalog(fromUserID: string, fromUser: string, toUser: string, groupName: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/importCatalog', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/group/importCatalog', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());
   }
 
   constructor(

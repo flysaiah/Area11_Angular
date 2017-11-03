@@ -267,6 +267,27 @@
   padding-top: 10px;
   padding-right: 10px;
 }
+.finalist-topitem {
+  text-align: center;
+}
+.finalist-topitem-header {
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+.finalist-topitem-button {
+  background-color: #FFD700;
+  border-radius: 50px;
+  height: 20px;
+  vertical-align: middle;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+.finalist-stats {
+  padding: 20px;
+}
+.finalist-stats-genre {
+  font-size: 14px;
+}
 .finalist-item-name {
   margin-left: 20px;
 }

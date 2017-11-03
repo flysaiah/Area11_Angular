@@ -20,15 +20,15 @@ export class UserService {
 
   getUserInfo() {
     this.createAuthenticationHeaders();
-    return this.http.get(this.domain + '/api/getUserInfo', this.options).map(res => res.json());
+    return this.http.get(this.domain + '/api/user/getUserInfo', this.options).map(res => res.json());
   }
   saveUserChanges(user: User) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/saveUserChanges', user, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/user/saveUserChanges', user, this.options).map(res => res.json());
   }
   deleteAccount(username: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/deleteAccount', {username: username}, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/user/deleteAccount', {username: username}, this.options).map(res => res.json());
   }
   uploadUserAvatar(formData: FormData) {
     // Need different headers here because of different content-type
@@ -38,7 +38,7 @@ export class UserService {
         'authorization': this.authService.authToken
       })
     });
-    return this.http.post(this.domain + '/api/upload', formData, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/user/upload', formData, this.options).map(res => res.json());
   }
 
   constructor(

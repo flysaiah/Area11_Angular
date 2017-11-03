@@ -15,6 +15,8 @@ export class GroupComponent implements OnInit {
   toastMessage: string;
   toastError: boolean;
 
+  refreshHeader: number;
+
   newGroupName: string;
   groupAvatarUpload: Array<File> = [];
   showUploadOptions: boolean;
@@ -84,10 +86,13 @@ export class GroupComponent implements OnInit {
         this.displayToast(pendingUser.username + " successfully added to group!");
         this.refresh();
       } else if (res["message"] == "Already in group") {
-        this.displayToast(pendingUser.username + " has already been accepted", true);
+        this.displayToast(pendingUser.username + " has already been accepted.", true);
+        this.refresh();
+      } else if (res["message"] == "In different group") {
+        this.displayToast(pendingUser.username + " is a member of a different group.", true);
         this.refresh();
       } else {
-        this.displayToast("There was a problem accepting the request");
+        this.displayToast("There was a problem accepting the request.s");
         console.log(res);
       }
     });
@@ -212,6 +217,8 @@ export class GroupComponent implements OnInit {
   }
 
   refresh() {
+    this.refreshHeader = Math.random();
+
     this.newGroupName = "";
     this.changesModel = new Group("", []);
     this.joinGroupName = "";
@@ -251,13 +258,13 @@ export class GroupComponent implements OnInit {
           } else {
             this.displayToast("There was a problem loading your profile.", true)
           }
-        })
+        });
       } else {
         // If there was a problem we need to have them log in again
         console.log(res["message"]);
         this.authService.logout();
       }
-    })
+    });
   }
 
   constructor(

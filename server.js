@@ -21,7 +21,11 @@ mongoose.connect(config.uri, {useMongoClient: true}, (err) => {
 
 // API files for interacting with MongoDB
 const authentication = require('./server/routes/authentication')(router);
-const api = require('./server/routes/api')(router);
+const animeAPI = require('./server/routes/animeAPI')(router);
+const userAPI = require('./server/routes/userAPI')(router);
+const groupAPI = require('./server/routes/groupAPI')(router);
+const toptensAPI = require('./server/routes/toptensAPI')(router);
+
 
 // Parsers
 app.use(bodyParser.json());
@@ -33,8 +37,11 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // Authentication
 app.use('/authentication', authentication);
 
-// API location
-app.use('/api', api);
+// API locations
+app.use('/api/anime', animeAPI);
+app.use('/api/user', userAPI);
+app.use('/api/group', groupAPI);
+app.use('/api/toptens', toptensAPI);
 
 // Send all other requests to the Angular app
 app.get('*', (req, res) => {

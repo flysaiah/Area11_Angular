@@ -5,6 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { SettingsComponent } from './settings/settings.component';
 import { GroupComponent } from './group/group.component';
+import { TopTensComponent } from './toptens/toptens.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 
@@ -13,7 +14,8 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [NotAuthGuard]},
   { path: 'login', component: LoginComponent, canActivate: [NotAuthGuard]},
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
-  { path: 'group', component: GroupComponent, canActivate: [AuthGuard]}
+  { path: 'group', component: GroupComponent, canActivate: [AuthGuard]},
+  { path: 'group/toptens', component: TopTensComponent, canActivate: [AuthGuard]}
   // { path: '**', component: PageNotFoundComponent}
 ]
 

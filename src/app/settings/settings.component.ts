@@ -14,6 +14,8 @@ export class SettingsComponent implements OnInit {
   model: User = new User("","","");
   showUploadOptions: boolean;
 
+  refreshHeader: number;
+
   showToast: boolean;
   toastMessage: string;
   toastError: boolean;
@@ -102,6 +104,7 @@ export class SettingsComponent implements OnInit {
   }
 
   refresh() {
+    this.refreshHeader = Math.random();
 
     this.showUploadOptions = false;
     this.userAvatar = "";   // Reset this so we force HTML to refresh avatar

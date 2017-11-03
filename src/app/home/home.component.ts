@@ -29,6 +29,8 @@ export class HomeComponent {
   animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
   selectedAnime: Anime;   // Currently selected anime that we show details for
   canSelectAsFinalist: boolean;
+  showFinalistStats: boolean;
+  finalistGenreDict: Map<string, number>;
   possibleCategories: string[];
   // We do simple toasts without outside packages
   showToast: boolean;
@@ -41,8 +43,11 @@ export class HomeComponent {
   allGenres: string[];
   selectedGenre: string;
 
+  refreshHeader: number;
+
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
+  searchText: string;
   filteredSearchAnime: Observable<any[]>;
 
   private displayToast(message: string, error?: boolean) {
@@ -66,13 +71,16 @@ export class HomeComponent {
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
   }
-  showAnimeDetails(anime: Anime) {
+  showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
     if (this.selectedAnime["description"]) {
       this.selectedAnime["description"] = this.selectedAnime["description"].replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
     }
     this.validateSelectAsFinalistButton();
+    if (clearSearchBar) {
+      this.searchText = "";
+    }
   }
 
   private sortByField(fieldName, direction) {
@@ -261,9 +269,21 @@ export class HomeComponent {
         if (!res["success"]) {
           this.displayToast("There was a problem.", true);
         }
-      })
+      });
       this.finalistList.push(this.selectedAnime);
       this.validateSelectAsFinalistButton();
+      // Update finalist stats
+      if (this.selectedAnime["genres"].length && this.finalistGenreDict.size) {
+        for (let genre of this.selectedAnime["genres"]) {
+          let current = this.finalistGenreDict.get(genre);
+          if (typeof current != "undefined") {
+            this.finalistGenreDict.set(genre, current + 1);
+          } else {
+            this.finalistGenreDict;
+          }
+        }
+      }
+      this.allGenres.sort(this.sortGenres().bind(this));
     });
   }
 
@@ -325,6 +345,7 @@ export class HomeComponent {
   }
 
   removeFinalist(index: number) {
+    let genres = this.finalistList[index]["genres"] ? JSON.parse(JSON.stringify(this.finalistList[index]["genres"])) : [];
     this.animeService.removeFinalist(this.finalistList[index]["_id"]).subscribe((res) => {
       if (res["success"]) {
         this.finalistList.splice(index, 1);
@@ -343,6 +364,18 @@ export class HomeComponent {
             // do nothing
           }
         }
+        // Update finalist stats
+        if (genres.length && this.finalistGenreDict.size) {
+          for (let genre of genres) {
+            let current = this.finalistGenreDict.get(genre);
+            if (current) {
+              this.finalistGenreDict.set(genre, current - 1);
+            } else {
+              console.log("This shouldn't be happening");
+            }
+          }
+        }
+        this.allGenres.sort(this.sortGenres().bind(this));
       } else {
         console.log(res);
         this.displayToast("There was a problem", true);
@@ -354,6 +387,42 @@ export class HomeComponent {
     this.showAnimeDetails(this.finalistList[index]);
   }
 
+  viewFinalistStats() {
+    this.showFinalistStats = true;
+    if (!this.finalistGenreDict.size) {
+      this.generateFinalistGenreDict();
+    }
+
+    // Sort genres so we see the ones with most entries first
+  }
+  hideFinalistStats() {
+    this.showFinalistStats = false;
+  }
+
+  private generateFinalistGenreDict() {
+    for (let genre of this.allGenres) {
+      this.finalistGenreDict.set(genre, 0);
+    }
+    for (let finalist of this.finalistList) {
+      for (let genre of finalist.genres) {
+        if (typeof this.finalistGenreDict.get(genre) == undefined) {
+          console.log("This shouldn't be happening");
+          this.finalistGenreDict.set(genre, 0);
+        } else {
+          this.finalistGenreDict.set(genre, this.finalistGenreDict.get(genre) + 1);
+        }
+      }
+    }
+    this.allGenres.sort(this.sortGenres().bind(this));
+  }
+
+  private sortGenres() {
+    return function (a:string,b:string) {
+      return (this.finalistGenreDict.get(a) < this.finalistGenreDict.get(b)) ? 1 : (this.finalistGenreDict.get(a) > this.finalistGenreDict.get(b) ? -1 : 0)
+    }
+
+  }
+
   filterAnime(name: string) {
     return this.searchAnime.filter(anime =>
       anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
@@ -361,7 +430,6 @@ export class HomeComponent {
 
   recommendAnime() {
     this.animeService.recommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
-      console.log(res);
       if (res["success"]) {
         this.displayToast("Anime recommended!");
         if (!this.selectedAnime["recommenders"]) {
@@ -452,12 +520,19 @@ export class HomeComponent {
   ) { }
 
   ngOnInit() {
+    // Use refreshHeader to force header to refresh
+    this.refreshHeader = Math.random();
+
     this.wantToWatchList = [];
     this.consideringList = [];
     this.completedList = [];
     this.finalistList = [];
 
+    this.showFinalistStats = false;
+    this.finalistGenreDict = new Map<string, number>();
+
     this.searchAnimeCtl = new FormControl();
+    this.searchText = "";
     this.filteredSearchAnime = this.searchAnimeCtl.valueChanges
       .startWith(null)
       .map(anime => anime ? this.filterAnime(anime) : this.searchAnime.slice());

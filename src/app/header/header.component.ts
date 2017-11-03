@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 @Component({
@@ -15,12 +15,12 @@ export class HeaderComponent implements OnInit {
     this.authService.logout();
   }
 
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-  ) { }
+  @Input()
+  set refreshHeader(refreshHeader: number) {
+    this.refresh();
+  }
 
-  ngOnInit() {
+  private refresh() {
     this.userAvatar = "";
     this.currentUser = "";
     // Load avatar & username
@@ -34,6 +34,15 @@ export class HeaderComponent implements OnInit {
         console.log(res["message"]);
       }
     });
+  }
+
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) { }
+
+  ngOnInit() {
+    this.refresh();
   }
 
 }

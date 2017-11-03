@@ -1,4 +1,4 @@
-<app-header></app-header>
+<app-header [refreshHeader]="refreshHeader"></app-header>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
   <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
@@ -31,10 +31,10 @@
   </div>
   <div class="search-toolbar-minicontainer">
     <label class="filter-label" for="animeSearch-no-placeholder">Search for anime: </label>
-    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
-    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime)">
+      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
         <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
         <span class="search-anime-name">{{ anime["name"] }}</span>
       </mat-option>
@@ -151,27 +151,40 @@
 
   <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
     <div *ngIf="finalistList.length" class="chooser-tool">
-      <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
-        <div class="finalist-item-name">{{ anime["name"] }}</div>
-        <div class="comments-chiplist">
-          <mat-chip-list>
-            <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
-          </mat-chip-list>
+      <div class="finalist-item finalist-topitem">
+        <h3 class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>
+        <button *ngIf="!showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
+        <button *ngIf="showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <span class="finalist-divider"></span>
+      </div>
+      <div class="finalist-stats" *ngIf="showFinalistStats">
+        <p class="finalist-stats-genre"*ngFor="let genre of allGenres">
+          {{ genre }}: {{ finalistGenreDict.get(genre) }}
+        </p>
+      </div>
+      <div *ngIf="!showFinalistStats">
+        <div class="finalist-item" *ngFor="let anime of finalistList; let i = index;">
+          <div class="finalist-item-name">{{ anime["name"] }}</div>
+          <div class="comments-chiplist">
+            <mat-chip-list>
+              <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
+            </mat-chip-list>
+          </div>
+          <div class="finalist-button-container">
+            <button (click)="viewFinalist(i)" class="finalist-button" mat-raised-button color="primary">View</button>
+            <button (click)="editComments(i)" class="finalist-button" mat-raised-button color="accent">Edit Comments</button>
+            <button (click)="removeFinalist(i)" class="finalist-button" mat-raised-button color="warn">Remove</button>
+          </div>
+          <div class="finalist-button-container-smallscreen">
+            <button class="finalist-smallscreen-action" mat-raised-button color="accent" [matMenuTriggerFor]="finalistMenu">Action</button>
+            <mat-menu #finalistMenu="matMenu">
+              <button class="finalist-button-smallscreen" (click)="viewFinalist(i)">View</button>
+              <button class="finalist-button-smallscreen" (click)="editComments(i)">Edit Comments</button>
+              <button class="finalist-button-smallscreen" (click)="removeFinalist(i)">Remove</button>
+            </mat-menu>
+          </div>
+          <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
         </div>
-        <div class="finalist-button-container">
-          <button (click)="viewFinalist(i)" class="finalist-button" mat-raised-button color="primary">View</button>
-          <button (click)="editComments(i)" class="finalist-button" mat-raised-button color="accent">Edit Comments</button>
-          <button (click)="removeFinalist(i)" class="finalist-button" mat-raised-button color="warn">Remove</button>
-        </div>
-        <div class="finalist-button-container-smallscreen">
-          <button class="finalist-smallscreen-action" mat-raised-button color="accent" [matMenuTriggerFor]="finalistMenu">Action</button>
-          <mat-menu #finalistMenu="matMenu">
-            <button class="finalist-button-smallscreen" (click)="viewFinalist(i)">View</button>
-            <button class="finalist-button-smallscreen" (click)="editComments(i)">Edit Comments</button>
-            <button class="finalist-button-smallscreen" (click)="removeFinalist(i)">Remove</button>
-          </mat-menu>
-        </div>
-        <span *ngIf="finalistList.length != 1 && i != (finalistList.length - 1)" class="finalist-divider"></span>
       </div>
     </div>
   </div>
