@@ -13,6 +13,8 @@ module.exports = (router) => {
     Anime.findOne({ '_id': ObjectID(req.body.id)}, (err, anime) => {
       if (err) {
         res.json({ success: false, message: err })
+      } else if (!anime) {
+        res.json({ success: false, message: 'Already deleted' })
       } else {
         User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
           if (err) {
@@ -194,7 +196,7 @@ module.exports = (router) => {
               if (err) {
                 res.json({ success: false, message: err })
                 return;
-              } else if (animeFF) {
+              } else if (animeFF && anime['malID']) {
                 res.json({ success: false, message: 'Anime already in catalog'});
                 return;
               } else {

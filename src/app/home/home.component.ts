@@ -294,6 +294,9 @@ export class HomeComponent {
         this.refresh();
         this.selectedAnime = new Anime(this.currentUser, "");
         this.displayToast("Anime successfully removed!");
+      } else if (res["message"] == "Already deleted") {
+        this.displayToast("This anime has already been removed.", true);
+        this.refresh();
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
