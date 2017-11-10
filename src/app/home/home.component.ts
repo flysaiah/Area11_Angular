@@ -259,6 +259,8 @@ export class HomeComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Only do something if user hit "Confirm" rather than cancel
+      if (typeof result != "undefined") {
       if (result) {
         this.selectedAnime["comments"] = result.split(";");
         if (this.selectedAnime["comments"][this.selectedAnime["comments"].length - 1] == "") {
@@ -284,6 +286,7 @@ export class HomeComponent {
         }
       }
       this.allGenres.sort(this.sortGenres().bind(this));
+      }
     });
   }
 
