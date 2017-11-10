@@ -8,48 +8,6 @@ const TopTens = require('../models/toptens.js');
 
 module.exports = (router) => {
 
-  // Validation to make sure user is who he/she claims to be and is a member of the group
-  router.use((req, res, next) => {
-    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
-      if (err) {
-        res.json({ success: false, message: err });
-      } else if (!user) {
-        res.json({ success: false, message: "User not found" });
-      } else {
-        Group.findOne({ "name": req.body.groupName }, (err, group) => {
-          if (err) {
-            res.json({ success: false, message: err });
-          } else if (!group) {
-            // Group doesn't exist anymore--delete relevant info from user document
-            User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
-              if (err) {
-                res.json({ success: false, message: err });
-              } else {
-                res.json({ success: false, message: "No group found" });
-              }
-            })
-          } else {
-            // First make sure that user is a part of this group
-            let found = false;
-            for (let member of group.members) {
-              if (!member.isPending && member.id == req.decoded.userId) {
-                found = true;
-              }
-            }
-            if (!found) {
-              res.json({ success: false, message: "Invalid group membership" });
-            } else {
-              // Everything is fine
-              // Store username
-              req.currentUsername = user.username;
-              next();
-            }
-          }
-        });
-      }
-    });
-  });
-
   router.post('/addNewCategory', (req, res) => {
     // First make sure category doesn't already exist
     TopTens.findOne({ group: req.body.groupName, category: req.body.newCategory }, (err, toptens) => {

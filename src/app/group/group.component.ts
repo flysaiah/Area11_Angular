@@ -40,6 +40,8 @@ export class GroupComponent implements OnInit {
         this.refresh();
       } else if (res["message"]["code"] == 11000) {
         this.displayToast("A group with that name already exists.", true)
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         this.displayToast("There was a problem creating the group", true);
         console.log(res);
@@ -91,6 +93,8 @@ export class GroupComponent implements OnInit {
       } else if (res["message"] == "In different group") {
         this.displayToast(pendingUser.username + " is a member of a different group.", true);
         this.refresh();
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         this.displayToast("There was a problem accepting the request.s");
         console.log(res);
@@ -106,6 +110,8 @@ export class GroupComponent implements OnInit {
       } else if (res["message"] == "Already in group") {
         this.displayToast(pendingUser.username + " has already been accepted", true);
         this.refresh();
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         this.displayToast("There was a problem accepting the request", true);
         console.log(res);
@@ -122,6 +128,8 @@ export class GroupComponent implements OnInit {
         this.displayToast("You have already requested membership to this group.", true);
       } else if (res["message"] == "No group found") {
         this.displayToast("That group doesn't exist", true);
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         this.displayToast("There was a problem with sending your request.", true);
       }
@@ -132,6 +140,7 @@ export class GroupComponent implements OnInit {
     this.groupService.disbandGroup(this.currentGroup["name"]).subscribe((res) => {
       if (!res["success"]) {
         this.displayToast("There was a problem deleting the account.", true);
+        console.log(res);
       }
       this.refresh();
     });
@@ -162,6 +171,8 @@ export class GroupComponent implements OnInit {
         }
       } else if (res["message"] == "Nothing to import") {
         this.displayToast("This user has nothing in their catalog.", true);
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         this.displayToast("Something went wrong while importing " + username + "'s catalog.", true);
         console.log(res);
@@ -205,6 +216,8 @@ export class GroupComponent implements OnInit {
         setTimeout(() => {
           this.refresh();
         }, 1500)
+      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+        this.displayToast("There is a problem with your group membership.", true)
       } else {
         console.log(res);
         this.displayToast("There was a problem saving your changes.", true);
@@ -246,8 +259,8 @@ export class GroupComponent implements OnInit {
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);
-                  } else if (res["message"] == "Invalid group membership") {
-                    this.displayToast("You are no longer a member of this group.", true)
+                  } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                    this.displayToast("There is a problem with your group membership.", true)
                   } else {
                     console.log(res);
                     this.displayToast("There was a problem loading your group information.", true);
