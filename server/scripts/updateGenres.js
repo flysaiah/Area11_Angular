@@ -63,19 +63,22 @@ Anime.find({}, (err, animeList) => {
         }
         if (arr.length == 1) {
           // Done populating genreList
-          console.log("Happening");
-          async.eachSeries(genreList, function updateAnime (genreObj, done) {
-            Anime.update({ malID: genreObj.malID }, { $set: {
-              genres: genreObj.genres,
-            } }, {multi: true}, done);
-          }, function allDone (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("DONE");
-              mongoose.disconnect();
-            }
-          });
+          // Give enough time for final iteration to finish
+          setTimeout(() => {
+            console.log("Happening");
+            async.eachSeries(genreList, function updateAnime (genreObj, done) {
+              Anime.update({ malID: genreObj.malID }, { $set: {
+                genres: genreObj.genres,
+              } }, {multi: true}, done);
+            }, function allDone (err) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("DONE");
+                mongoose.disconnect();
+              }
+            });
+          }, 8000)
         } else {
           arr.splice(0,1);
           getGenres(arr)
