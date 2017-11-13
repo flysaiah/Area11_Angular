@@ -86,15 +86,45 @@ export class HomeComponent {
   private sortByField(fieldName, direction) {
     // Returns comparator to sort an array of object by fieldName
     // Direction specifies ascending vs descending
+    // Special case for date
+
     if (direction == "ascending") {
       return function (a,b) {
-        return (a[fieldName] < b[fieldName]) ? -1 : (a[fieldName] > b[fieldName]) ? 1 : 0;
+        let tmpA = a[fieldName];
+        let tmpB = b[fieldName];
+        if (fieldName == "startDate") {
+          if (!tmpA) {
+            tmpA = new Date("01/01/2099");
+          } else {
+            tmpA = new Date(tmpA);
+          }
+          if (!tmpB) {
+            tmpB = new Date("01/01/2099");
+          } else {
+            tmpB = new Date(tmpB);
+          }
+        }
+        return (tmpA < tmpB) ? -1 : (tmpA > tmpB) ? 1 : 0;
+      }
+    } else {
+      return function (a,b) {
+        let tmpA = a[fieldName];
+        let tmpB = b[fieldName];
+        if (fieldName == "startDate") {
+          if (!tmpA) {
+            tmpA = new Date("01/01/2099");
+          } else {
+            tmpA = new Date(tmpA);
+          }
+          if (!tmpB) {
+            tmpB = new Date("01/01/2099");
+          } else {
+            tmpB = new Date(tmpB);
+          }
+        }
+        return (tmpA > tmpB) ? -1 : (tmpA < tmpB) ? 1 : 0;
       }
     }
-    return function (a,b) {
-      return (a[fieldName] > b[fieldName]) ? -1 : (a[fieldName] < b[fieldName]) ? 1 : 0;
-    }
-
   }
 
   watchOPs() {
