@@ -3,6 +3,8 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { GroupService } from '../services/group.service';
 import { Group } from './group';
+import { ConfirmDialog } from '../app.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-group',
@@ -137,12 +139,22 @@ export class GroupComponent implements OnInit {
   }
 
   disbandGroup() {
-    this.groupService.disbandGroup(this.currentGroup["name"]).subscribe((res) => {
-      if (!res["success"]) {
-        this.displayToast("There was a problem deleting the account.", true);
-        console.log(res);
+
+    let dialogRef = this.dialog.open(ConfirmDialog, {
+      data: { doIt: true }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Result is the index of the anime they chose to link, if they chose to link one
+      if (result) {
+      this.groupService.disbandGroup(this.currentGroup["name"]).subscribe((res) => {
+        if (!res["success"]) {
+          this.displayToast("There was a problem deleting the account.", true);
+          console.log(res);
+        }
+        this.refresh();
+      });
       }
-      this.refresh();
     });
   }
 
@@ -283,7 +295,8 @@ export class GroupComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {

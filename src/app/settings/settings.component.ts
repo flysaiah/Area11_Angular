@@ -66,7 +66,6 @@ export class SettingsComponent implements OnInit {
   deleteAccount() {
     // Open dialog
     let dialogRef = this.dialog.open(DeleteAccountDialog, {
-      width: '515px',
       data: {confirm: true}
     });
 

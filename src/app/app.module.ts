@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material';
 import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent, ConfirmDialog } from './app.component';
 import { HomeComponent, LinkAnimeDialog, FinalistCommentsDialog} from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
@@ -31,6 +31,7 @@ import { TopTensComponent } from './toptens/toptens.component';
     LinkAnimeDialog,
     FinalistCommentsDialog,
     DeleteAccountDialog,
+    ConfirmDialog,
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
@@ -61,6 +62,6 @@ import { TopTensComponent } from './toptens/toptens.component';
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog]
 })
 export class AppModule { }

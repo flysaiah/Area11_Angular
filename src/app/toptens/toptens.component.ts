@@ -5,6 +5,8 @@ import { GroupService } from '../services/group.service';
 import { TopTensService } from '../services/toptens.service';
 import { Group } from '../group/group';
 import { TopTens } from './toptens';
+import { ConfirmDialog } from '../app.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-toptens',
@@ -146,18 +148,27 @@ export class TopTensComponent implements OnInit {
   }
 
   deleteCategory(category: string) {
-    this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
-      if (res["success"]) {
-        this.displayToast("Category deleted successfully!");
-        if (this.currentCategory == category) {
-          this.currentCategory = "All Categories";
-        }
-        this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
-        this.displayToast("There is a problem with your group membership.", true)
-      } else {
-        console.log(res);
-        this.displayToast("There was a problem.", true)
+    let dialogRef = this.dialog.open(ConfirmDialog, {
+      data: { doIt: true }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Result is the index of the anime they chose to link, if they chose to link one
+      if (result) {
+        this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
+          if (res["success"]) {
+            this.displayToast("Category deleted successfully!");
+            if (this.currentCategory == category) {
+              this.currentCategory = "All Categories";
+            }
+            this.refresh();
+          } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+            this.displayToast("There is a problem with your group membership.", true)
+          } else {
+            console.log(res);
+            this.displayToast("There was a problem.", true)
+          }
+        });
       }
     });
   }
@@ -196,7 +207,8 @@ export class TopTensComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private groupService: GroupService,
-    private toptensService: TopTensService
+    private toptensService: TopTensService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {

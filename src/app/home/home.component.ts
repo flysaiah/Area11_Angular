@@ -194,7 +194,7 @@ export class HomeComponent {
           data: {suggestions: this.linkAnimeSuggestions}
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe((result) => {
           // Result is the index of the anime they chose to link, if they chose to link one
           if (result || result == 0) {
             this.animeToAdd = this.linkAnimeSuggestions[result];
