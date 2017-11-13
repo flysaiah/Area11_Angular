@@ -540,6 +540,7 @@ export class HomeComponent {
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
         }
+        this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
       } else {
         this.displayToast("There was a problem.", true)
