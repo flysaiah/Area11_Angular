@@ -68,6 +68,8 @@ export class TopTensComponent implements OnInit {
         this.displayToast("There is a problem with your group membership.", true)
       } else if (res["message"] == "Category already exists") {
         this.displayToast("This category already exists.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)
@@ -89,6 +91,8 @@ export class TopTensComponent implements OnInit {
         this.refresh();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)
@@ -171,6 +175,8 @@ export class TopTensComponent implements OnInit {
             this.refresh();
           } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
             this.displayToast("There is a problem with your group membership.", true)
+          } else if (res["message"] == "Token") {
+            this.displayToast("Your session has expired. Please refresh and log back in.", true);
           } else {
             console.log(res);
             this.displayToast("There was a problem.", true)
@@ -203,6 +209,8 @@ export class TopTensComponent implements OnInit {
         this.organizeTopTens();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)

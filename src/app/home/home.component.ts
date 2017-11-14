@@ -141,6 +141,8 @@ export class HomeComponent {
         if (res["message"] == "Error: Parse Error") {
           this.displayToast("No results found.", true)
           return;
+        } else if (res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else {
           this.displayToast("There was a problem.", true)
           console.log(res["message"]);
@@ -260,6 +262,8 @@ export class HomeComponent {
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
           this.displayToast(res["message"], true);
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -298,7 +302,9 @@ export class HomeComponent {
         }
       }
       this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
-        if (!res["success"]) {
+        if (!res["success"] && res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
+        } else if (!res["success"]) {
           this.displayToast("There was a problem.", true);
         }
       });
@@ -330,6 +336,8 @@ export class HomeComponent {
       } else if (res["message"] == "Already deleted") {
         this.displayToast("This anime has already been removed.", true);
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -344,6 +352,8 @@ export class HomeComponent {
         // Have to manually update currently selected anime's category
         this.selectedAnime["category"] = newCategory;
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -372,7 +382,9 @@ export class HomeComponent {
       }
       const tmp = this.finalistList[index];
       this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
-        if (!res["success"]) {
+        if (!res["success"] && res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
+        } else if (!res["success"]) {
           console.log(res);
           this.displayToast("There was a problem.", true);
         }
@@ -412,6 +424,8 @@ export class HomeComponent {
           }
         }
         this.allGenres.sort(this.sortGenres().bind(this));
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem", true);
@@ -475,6 +489,8 @@ export class HomeComponent {
         }
         this.selectedAnime["ownerIsRecommender"] = true;
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
       }
@@ -494,6 +510,8 @@ export class HomeComponent {
           }
         }
         this.selectedAnime["ownerIsRecommender"] = false;
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
         console.log(res);
@@ -542,6 +560,8 @@ export class HomeComponent {
         }
         this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
