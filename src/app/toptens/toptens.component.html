@@ -27,7 +27,7 @@
               <option *ngFor="let member of currentGroupMembers" [value]="member['username']">{{ member["username"] }}</option>
             </select>
           </div>
-          <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i)">Edit</button>
+          <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i, category['category'])">Edit</button>
           <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="saveChanges(category['category'], i)">Save</button>
           <button class="category-control-item category-control-button" mat-raised-button color="warn" (click)="deleteCategory(category.category)">Delete category</button>
         </div>
