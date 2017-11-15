@@ -187,7 +187,7 @@ export class GroupComponent implements OnInit {
     }, 3000);
   }
 
-  importCatalog(username:string, userID:string) {
+  importAnime(username:string, userID:string) {
 
     this.groupService.fetchImportableAnime(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
       if (res["success"]) {
