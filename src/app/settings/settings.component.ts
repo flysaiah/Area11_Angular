@@ -35,6 +35,8 @@ export class SettingsComponent implements OnInit {
         this.displayToast("Profile avatar changed successfully!");
         this.avatarUpload = [];
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem changing your profile avatar.", true);
       }
@@ -66,7 +68,6 @@ export class SettingsComponent implements OnInit {
   deleteAccount() {
     // Open dialog
     let dialogRef = this.dialog.open(DeleteAccountDialog, {
-      width: '515px',
       data: {confirm: true}
     });
 
@@ -79,6 +80,8 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
               this.authService.logout();
             }, 1500);
+          } else if (res["message"] == "Token") {
+            this.displayToast("Your session has expired. Please refresh and log back in.", true);
           } else {
             this.displayToast("There was a problem deleting your account.", true);
             console.log(res);
@@ -93,6 +96,8 @@ export class SettingsComponent implements OnInit {
       if (res["success"]) {
         this.displayToast("Your settings have been saved!");
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem saving your settings.");
       }
@@ -119,7 +124,7 @@ export class SettingsComponent implements OnInit {
           } else {
             this.displayToast("There was a problem loading your settings.", true)
           }
-        })
+        });
       } else {
         // If there was a problem we need to have them log in again
         console.log(res["message"]);

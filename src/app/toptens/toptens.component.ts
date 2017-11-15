@@ -5,6 +5,8 @@ import { GroupService } from '../services/group.service';
 import { TopTensService } from '../services/toptens.service';
 import { Group } from '../group/group';
 import { TopTens } from './toptens';
+import { ConfirmDialog } from '../app.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-toptens',
@@ -23,6 +25,7 @@ export class TopTensComponent implements OnInit {
 
   // Used for keeping track of editing as well as whose lists are being viewed
   categoryLogistics: {member: string, isEditing: boolean}[];
+  editingMap: Map<string, boolean>;   // Need array for HTML template and map for refresh logic
 
   currentGroup: Group;
   currentGroupMembers: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
@@ -65,6 +68,8 @@ export class TopTensComponent implements OnInit {
         this.displayToast("There is a problem with your group membership.", true)
       } else if (res["message"] == "Category already exists") {
         this.displayToast("This category already exists.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)
@@ -72,8 +77,9 @@ export class TopTensComponent implements OnInit {
     });
   }
 
-  enterEditMode(index: number) {
+  enterEditMode(index: number, category: string) {
     this.categoryLogistics[index].isEditing = true;
+    this.editingMap.set(category, true);
   }
 
   saveChanges(category: string, index: number) {
@@ -81,9 +87,12 @@ export class TopTensComponent implements OnInit {
       if (res["success"]) {
         this.displayToast("Your changes have been saved!");
         this.categoryLogistics[index].isEditing = false;
+        this.editingMap.set(category, false);
         this.refresh();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)
@@ -94,13 +103,19 @@ export class TopTensComponent implements OnInit {
   private generateLogistics() {
     this.categoryLogistics = [];
     for (let category of this.allCategories) {
-      this.categoryLogistics.push({member: this.currentUser, isEditing: false});
+      let isEditing = false;
+      if (this.editingMap.get(category.category)) {
+        isEditing = true;
+      }
+      this.categoryLogistics.push({member: this.currentUser, isEditing: isEditing});
     }
   }
 
   private organizeTopTens() {
     // Separate top tens into lists for each category & member
-    this.topTensMap = new Map();
+    if (!this.topTensMap.size) {
+      this.topTensMap = new Map();
+    }
     for (let toptensObj of this.allTopTens) {
       // Ignore category labels
       if (toptensObj.hasNoContent) {
@@ -110,10 +125,8 @@ export class TopTensComponent implements OnInit {
         let newMap = new Map<string, TopTens>();
         newMap.set(toptensObj.user, toptensObj);
         this.topTensMap.set(toptensObj.category, newMap);
-      } else if (!this.topTensMap.get(toptensObj.category).get(toptensObj.user)) {
+      } else if (!this.topTensMap.get(toptensObj.category).get(toptensObj.user) || !this.editingMap.get(toptensObj.category)) {
         this.topTensMap.get(toptensObj.category).set(toptensObj.user, toptensObj);
-      } else {
-        console.log("This shouldn't be happening");
       }
     }
     // Fill in whatever gaps exist
@@ -146,18 +159,29 @@ export class TopTensComponent implements OnInit {
   }
 
   deleteCategory(category: string) {
-    this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
-      if (res["success"]) {
-        this.displayToast("Category deleted successfully!");
-        if (this.currentCategory == category) {
-          this.currentCategory = "All Categories";
-        }
-        this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
-        this.displayToast("There is a problem with your group membership.", true)
-      } else {
-        console.log(res);
-        this.displayToast("There was a problem.", true)
+    let dialogRef = this.dialog.open(ConfirmDialog, {
+      data: { doIt: true }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Result is the index of the anime they chose to link, if they chose to link one
+      if (result) {
+        this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
+          if (res["success"]) {
+            this.displayToast("Category deleted successfully!");
+            if (this.currentCategory == category) {
+              this.currentCategory = "All Categories";
+            }
+            this.refresh();
+          } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+            this.displayToast("There is a problem with your group membership.", true)
+          } else if (res["message"] == "Token") {
+            this.displayToast("Your session has expired. Please refresh and log back in.", true);
+          } else {
+            console.log(res);
+            this.displayToast("There was a problem.", true)
+          }
+        });
       }
     });
   }
@@ -185,6 +209,8 @@ export class TopTensComponent implements OnInit {
         this.organizeTopTens();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem.", true)
@@ -196,7 +222,8 @@ export class TopTensComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private groupService: GroupService,
-    private toptensService: TopTensService
+    private toptensService: TopTensService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -207,6 +234,7 @@ export class TopTensComponent implements OnInit {
     this.topTensMap = new Map();
     this.allCategories = [];
     this.categoryLogistics = [];
+    this.editingMap = new Map<string, boolean>();
     this.currentCategory = "All Categories";
 
     this.authService.getProfile().subscribe((res) => {

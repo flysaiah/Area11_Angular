@@ -38,7 +38,7 @@ module.exports = (router) => {
           // Need this because of hashed passwords
           if (user.comparePassword(req.body.password)) {
             // Password checks out
-            const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '24h' });
+            const token = jwt.sign({ userId: user._id }, config.secret, { expiresIn: '504h' });
             res.json({ success: true, message: "Success", token: token, user: { username: user.username }});
           } else {
             res.json({ success: false, message: "Incorrect password." });
@@ -52,11 +52,11 @@ module.exports = (router) => {
   router.use((req, res, next) => {
     const token = req.headers['authorization'];
     if (!token) {
-      res.json({ success: false, message: "No token provided"})
+      res.json({ success: false, message: "Token" });
     } else {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
-          res.json({ success: false, message: "Token invalid: " + err});
+          res.json({ success: false, message: "Token" });
         } else {
           // can access this anywhere
           req.decoded = decoded;

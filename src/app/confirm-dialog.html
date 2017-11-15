@@ -1,0 +1,8 @@
+<h1 matDialogTitle>Confirm Action</h1>
+<div mat-dialog-content>
+  <p>Are you sure you want to do this?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [matDialogClose]="data.doIt">Yes</button>
+  <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>

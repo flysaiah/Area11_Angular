@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material';
 import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent, ConfirmDialog } from './app.component';
 import { HomeComponent, LinkAnimeDialog, FinalistCommentsDialog} from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
@@ -20,7 +20,7 @@ import { TopTensService } from './services/toptens.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
-import { GroupComponent } from './group/group.component';
+import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
 
@@ -31,10 +31,12 @@ import { TopTensComponent } from './toptens/toptens.component';
     LinkAnimeDialog,
     FinalistCommentsDialog,
     DeleteAccountDialog,
+    ConfirmDialog,
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
     GroupComponent,
+    ImportAnimeDialog,
     HeaderComponent,
     TopTensComponent
   ],
@@ -61,6 +63,6 @@ import { TopTensComponent } from './toptens/toptens.component';
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog]
 })
 export class AppModule { }

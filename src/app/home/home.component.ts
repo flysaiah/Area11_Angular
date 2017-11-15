@@ -86,15 +86,45 @@ export class HomeComponent {
   private sortByField(fieldName, direction) {
     // Returns comparator to sort an array of object by fieldName
     // Direction specifies ascending vs descending
+    // Special case for date
+
     if (direction == "ascending") {
       return function (a,b) {
-        return (a[fieldName] < b[fieldName]) ? -1 : (a[fieldName] > b[fieldName]) ? 1 : 0;
+        let tmpA = a[fieldName];
+        let tmpB = b[fieldName];
+        if (fieldName == "startDate") {
+          if (!tmpA) {
+            tmpA = new Date("01/01/2099");
+          } else {
+            tmpA = new Date(tmpA);
+          }
+          if (!tmpB) {
+            tmpB = new Date("01/01/2099");
+          } else {
+            tmpB = new Date(tmpB);
+          }
+        }
+        return (tmpA < tmpB) ? -1 : (tmpA > tmpB) ? 1 : 0;
+      }
+    } else {
+      return function (a,b) {
+        let tmpA = a[fieldName];
+        let tmpB = b[fieldName];
+        if (fieldName == "startDate") {
+          if (!tmpA) {
+            tmpA = new Date("01/01/2099");
+          } else {
+            tmpA = new Date(tmpA);
+          }
+          if (!tmpB) {
+            tmpB = new Date("01/01/2099");
+          } else {
+            tmpB = new Date(tmpB);
+          }
+        }
+        return (tmpA > tmpB) ? -1 : (tmpA < tmpB) ? 1 : 0;
       }
     }
-    return function (a,b) {
-      return (a[fieldName] > b[fieldName]) ? -1 : (a[fieldName] < b[fieldName]) ? 1 : 0;
-    }
-
   }
 
   watchOPs() {
@@ -111,6 +141,8 @@ export class HomeComponent {
         if (res["message"] == "Error: Parse Error") {
           this.displayToast("No results found.", true)
           return;
+        } else if (res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else {
           this.displayToast("There was a problem.", true)
           console.log(res["message"]);
@@ -164,7 +196,7 @@ export class HomeComponent {
           data: {suggestions: this.linkAnimeSuggestions}
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe((result) => {
           // Result is the index of the anime they chose to link, if they chose to link one
           if (result || result == 0) {
             this.animeToAdd = this.linkAnimeSuggestions[result];
@@ -230,6 +262,8 @@ export class HomeComponent {
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
           this.displayToast(res["message"], true);
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -259,6 +293,8 @@ export class HomeComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Only do something if user hit "Confirm" rather than cancel
+      if (typeof result != "undefined") {
       if (result) {
         this.selectedAnime["comments"] = result.split(";");
         if (this.selectedAnime["comments"][this.selectedAnime["comments"].length - 1] == "") {
@@ -266,7 +302,9 @@ export class HomeComponent {
         }
       }
       this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
-        if (!res["success"]) {
+        if (!res["success"] && res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
+        } else if (!res["success"]) {
           this.displayToast("There was a problem.", true);
         }
       });
@@ -284,6 +322,7 @@ export class HomeComponent {
         }
       }
       this.allGenres.sort(this.sortGenres().bind(this));
+      }
     });
   }
 
@@ -294,6 +333,11 @@ export class HomeComponent {
         this.refresh();
         this.selectedAnime = new Anime(this.currentUser, "");
         this.displayToast("Anime successfully removed!");
+      } else if (res["message"] == "Already deleted") {
+        this.displayToast("This anime has already been removed.", true);
+        this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -308,6 +352,8 @@ export class HomeComponent {
         // Have to manually update currently selected anime's category
         this.selectedAnime["category"] = newCategory;
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
@@ -336,7 +382,9 @@ export class HomeComponent {
       }
       const tmp = this.finalistList[index];
       this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
-        if (!res["success"]) {
+        if (!res["success"] && res["message"] == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
+        } else if (!res["success"]) {
           console.log(res);
           this.displayToast("There was a problem.", true);
         }
@@ -376,6 +424,8 @@ export class HomeComponent {
           }
         }
         this.allGenres.sort(this.sortGenres().bind(this));
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
         this.displayToast("There was a problem", true);
@@ -439,6 +489,8 @@ export class HomeComponent {
         }
         this.selectedAnime["ownerIsRecommender"] = true;
         this.refresh();
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
       }
@@ -458,6 +510,8 @@ export class HomeComponent {
           }
         }
         this.selectedAnime["ownerIsRecommender"] = false;
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
         console.log(res);
@@ -504,7 +558,10 @@ export class HomeComponent {
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
         }
+        this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
+      } else if (res["message"] == "Token") {
+        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
