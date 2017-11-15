@@ -592,6 +592,100 @@ module.exports = (router) => {
 
   });
 
+  router.post('/fetchImportableAnime', (req, res) => {
+    // First check to make sure current user is in the same group as fromUser
+    Group.findOne({ "name": req.body.groupName }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        let found1 = false;
+        let found2 = false;
+        for (let member of group.members) {
+          if (!member.isPending && member.id == req.decoded.userId) {
+            found1 = true;
+          } else if (!member.isPending && member.id == req.body.fromUserID) {
+            found2 = true;
+          }
+        }
+        if (!found1 || !found2) {
+          res.json({ success: false, message: "Users not in same group" });
+        } else {
+          Anime.find({ "user": req.body.fromUser }, (err, fromUserList) => {
+            if (err) {
+              res.json({ success: false, message: err });
+            } else {
+              if (!fromUserList) {
+                res.json({ success: false, message: "Nothing to import"});
+              } else {
+                // Add each not-already-existing MAL-linked anime
+                let importableAnime = [];
+                async.each(fromUserList, function updateAnime (anime, done) {
+                  if (anime["malID"]) {
+                    Anime.findOne({ "malID":  anime["malID"], "user": req.body.toUser }, (err, existingAnime) => {
+                      done();
+                      if (err) {
+                        return;
+                      } else if (!existingAnime) {
+                        importableAnime.push(anime)
+                      }
+                    });
+                  } else {
+                    done();
+                  }
+                }, function allDone (err) {
+                  if (err) {
+                    res.json({ success: false, message: err });
+                  } else {
+                    // Because of the slightly hacky use of done() we wait half a second to make sure it's done running
+                    setTimeout(() => {
+                      res.json({ success: true, importableAnime: importableAnime });
+                    }, 500)
+                  }
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+  });
+
+  router.post('/importAnime', (req, res) => {
+    // Saves list of anime that user selected from group member's catalog to user's catalog
+    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        async.each(req.body.animeList, function saveAnime (anime, done) {
+          const newAnime = new Anime({
+            user: user.username,
+            name: anime['name'],
+            description: anime['description'],
+            rating: anime['rating'],
+            thumbnail: anime['thumbnail'],
+            malID: anime['malID'],
+            category: 'Considering',
+            isFinalist: false,
+            genres: anime['genres'],
+            startDate: anime['startDate'],
+            endDate: anime['endDate'],
+            type: anime['type'],
+            englishTitle: anime['englishTitle'],
+            status: anime['status'],
+            recommenders: anime['recommenders']
+          });
+          newAnime.save(done);
+        }, function allDone(err) {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            res.json({ success: true, message: "Successfully imported anime!" });
+          }
+        });
+      }
+    });
+  });
+
   router.post('/importCatalog', (req, res) => {
     // Adds all not-already-existing anime from one group member's catalog to another's 'Considering' category
     // First check to make sure current user is in the same group as fromUser
@@ -647,7 +741,7 @@ module.exports = (router) => {
                         });
                         newAnime.save((err) => {
                           if (err) {
-                            res.json({ success: false, message: err });
+                            console.log(err);
                             return;
                           }
                         });

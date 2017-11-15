@@ -51,6 +51,14 @@ export class GroupService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/group/saveGroupChanges', { groupName: groupName, groupChangesModel: groupChangesModel }, this.options).map(res => res.json());
   }
+  fetchImportableAnime(fromUserID: string, fromUser: string, toUser: string, groupName: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/group/fetchImportableAnime', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());
+  }
+  importAnime(groupName: string, animeList: string[]) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/group/importAnime', { groupName: groupName, animeList: animeList }, this.options).map(res => res.json());
+  }
   importCatalog(fromUserID: string, fromUser: string, toUser: string, groupName: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/group/importCatalog', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());

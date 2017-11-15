@@ -1,0 +1,54 @@
+.import-thumbnail {
+  /*height: 200px;*/
+  height: 190px;
+  width: 130px;
+  float: left;
+}
+.import-info {
+  float: left;
+  margin-left: 20px;
+  width: 250px;
+  height: 190px;
+}
+.import-items {
+  height: 510px;
+  overflow: auto;
+  border-bottom: 1px solid #c3c3c3;
+}
+.import-item {
+  height: 200px;
+  padding-bottom: 0px;
+  padding-top: 5px;
+  font-size: 15px;
+}
+.import-container {
+  height: 600px;
+  overflow: auto;
+  font-family: "Roboto";
+  padding-bottom: 0px;
+}
+.recommended-message-container {
+  margin-top: 10px;
+}
+.recommended-message {
+  background-color: #3d85c6;
+  color: white;
+  font-size: 13px;
+  margin-left: -5px;
+  padding: 5px;
+  border-radius: 30px;
+}
+.import-checkbox {
+  position: absolute;
+  bottom: 10px;
+  left: 175px;
+}
+.import-action-button-container {
+  height: 50px;
+  margin-top: 10px;
+  text-align: center;
+}
+.import-action-button {
+  margin-left: 5px;
+  margin-right: 5px;
+}

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { GroupService } from '../services/group.service';
 import { Group } from './group';
 import { ConfirmDialog } from '../app.component';
-import { MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-group',
@@ -188,16 +188,74 @@ export class GroupComponent implements OnInit {
   }
 
   importCatalog(username:string, userID:string) {
-    // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
-    this.groupService.importCatalog(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
+
+    this.groupService.fetchImportableAnime(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
       if (res["success"]) {
-        if (res["message"] != 0) {
-          this.displayToast("You have successfully imported " + res["message"] + " anime from " + username + "'s catalog!'")
-        } else {
+        // Add attributes for checkbox
+        let importableAnime = res["importableAnime"];
+        for (let anime of importableAnime) {
+          anime["selected"] = false;
+        }
+
+        if (!importableAnime.length) {
           this.displayToast(username + " doesn't have any anime you can import!", true)
+        } else {
+          let dialogRef = this.dialog.open(ImportAnimeDialog, {
+            data: { importableAnime: importableAnime, importAll: "Import All"}
+          });
+          dialogRef.afterClosed().subscribe((result) => {
+            // Result is the index of the anime they chose to link, if they chose to link one
+            if (result) {
+              if (result == "Import All") {
+                // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
+                this.groupService.importCatalog(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
+                  if (res["success"]) {
+                    if (res["message"] != 0) {
+                      this.displayToast("You have successfully imported " + res["message"] + " anime from " + username + "'s catalog!'")
+                    } else {
+                      this.displayToast(username + " doesn't have any anime you can import!", true)
+                    }
+                  } else if (res["message"] == "Nothing to import") {
+                    this.displayToast("This user has nothing in their catalog.", true);
+                  } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                    this.displayToast("There is a problem with your group membership.", true)
+                  } else if (res["message"] == "Token") {
+                    this.displayToast("Your session has expired. Please refresh and log back in.", true);
+                  } else {
+                    this.displayToast("Something went wrong while importing " + username + "'s catalog.", true);
+                    console.log(res);
+                  }
+                });
+              } else {
+                // User has individually selected anime to import
+                let selectedAnime = [];
+                for (let anime of result) {
+                  if (anime["selected"]) {
+                    selectedAnime.push(anime);
+                  }
+                }
+                if (!selectedAnime.length) {
+                  this.displayToast("You haven't selected any anime to import!", true);
+                } else {
+                  this.groupService.importAnime(this.currentGroup["name"], selectedAnime).subscribe((res) => {
+                    if (res["success"]) {
+                      this.displayToast("You have successfully imported " + selectedAnime.length + " anime from " + username + "'s catalog!'")
+                    } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                      this.displayToast("There is a problem with your group membership.", true)
+                    } else if (res["message"] == "Token") {
+                      this.displayToast("Your session has expired. Please refresh and log back in.", true);
+                    } else {
+                      this.displayToast("Something went wrong while importing the selected anime.", true);
+                      console.log(res);
+                    }
+                  });
+                }
+              }
+            }
+          });
         }
       } else if (res["message"] == "Nothing to import") {
-        this.displayToast("This user has nothing in their catalog.", true);
+        this.displayToast(username + " doesn't have any anime you can import!", true)
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
       } else if (res["message"] == "Token") {
@@ -322,4 +380,19 @@ export class GroupComponent implements OnInit {
     this.refresh();
   }
 
+}
+
+@Component({
+  selector: 'import-anime',
+  templateUrl: './import-anime.html',
+  styleUrls: ['./import-anime.css']
+})
+export class ImportAnimeDialog {
+  constructor(
+    public dialogRef: MatDialogRef<ImportAnimeDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
