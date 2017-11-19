@@ -59,12 +59,22 @@ Anime.find({}, (err, animeList) => {
                   }
                 }
                 if (malAnime && malAnime["title"]) {
+                  let startDate = (new Date(malAnime["start_date"])).toLocaleDateString();
+                  if (startDate.indexOf("-") != -1) {
+                    let tmp = startDate.split("-");
+                    startDate = tmp[1] + "/" + tmp[2] + "/" + tmp[0];
+                  }
+                  let endDate = (new Date(malAnime["end_date"])).toLocaleDateString();
+                  if (endDate.indexOf("-") != -1) {
+                    let tmp = endDate.split("-");
+                    endDate = tmp[1] + "/" + tmp[2] + "/" + tmp[0];
+                  }
                   Anime.update({ malID: malAnime.id }, { $set: {
                     description: (typeof malAnime["synopsis"] == "string" ? malAnime["synopsis"] : "").toString(),
                     rating: (typeof malAnime["score"] == "string" ? malAnime["score"] : "").toString(),
                     thumbnail: (typeof malAnime["image"] == "string" ? malAnime["image"] : "").toString(),
-                    startDate: (new Date(malAnime["start_date"])).toLocaleDateString(),
-                    endDate: (new Date(malAnime["end_date"])).toLocaleDateString(),
+                    startDate: startDate,
+                    endDate: endDate,
                     type: (typeof malAnime["type"] == "string" ? malAnime["type"] : "").toString(),
                     englishTitle: (typeof malAnime["english"] == "string" ? malAnime["english"] : "").toString(),
                     status: (typeof malAnime["status"] == "string" ? malAnime["status"] : "").toString()
