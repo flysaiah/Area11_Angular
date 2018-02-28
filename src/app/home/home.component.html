@@ -79,17 +79,17 @@
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : (anime["rating"].toString().length == 1 ? anime["rating"] + ".00" : anime["rating"] + "0")) : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'">Considering ({{ consideringList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of consideringList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <img *ngIf="anime['recommenders'] && anime['recommenders'].length" class="recommended-icon" src="./assets/recommend-star.svg"> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : (anime["rating"].toString().length == 1 ? anime["rating"] + ".00" : anime["rating"] + "0")) : '') }})</span>
         </mat-list-item>
         <mat-divider *ngIf="showCategory == 'All Categories' || showCategory == 'Considering'"></mat-divider>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Completed'">Completed ({{ completedList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of completedList">
-          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : anime["rating"] + "0") : '') }})</span>
+          <span class="catalog-item-name">{{ anime.name }}</span> <span *ngIf="anime['rating']" class="catalog-rating">({{ (anime["rating"] ? (anime["rating"].toString().length == 4 ? anime["rating"] : (anime["rating"].toString().length == 1 ? anime["rating"] + ".00" : anime["rating"] + "0")) : '') }})</span>
         </mat-list-item>
       </mat-nav-list>
     </div>
