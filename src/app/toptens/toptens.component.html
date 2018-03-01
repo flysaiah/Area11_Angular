@@ -23,7 +23,7 @@
   <div *ngIf="allCategories.length">
     <div *ngFor="let category of allCategories; let i = index;">
       <mat-card class="toptens-card" *ngIf="currentCategory == 'All Categories' || currentCategory == category['category']">
-        <h1 class="category-header">Top Ten {{ category["category"] }}</h1>
+        <h1 class="category-header">Top {{ this.totalOrderMode ? "" : "Ten" }} {{ category["category"] }}</h1>
         <div class="category-controls">
           <div class="category-control-item">
             <label for="member-select">Currently viewing:</label>
