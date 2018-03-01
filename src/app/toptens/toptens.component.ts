@@ -23,9 +23,11 @@ export class TopTensComponent implements OnInit {
 
   currentUser: string;
 
-  // Used for keeping track of editing as well as whose lists are being viewed
+  // Used for keeping track of editing as well as whose lists are being viewed AND whether it's in total order mode or not
   categoryLogistics: {member: string, isEditing: boolean}[];
   editingMap: Map<string, boolean>;   // Need array for HTML template and map for refresh logic
+
+  totalOrderMode: boolean;   // True when we are viewing total order for any 1 category (only 1 can be viewed at a time like this)
 
   currentGroup: Group;
   currentGroupMembers: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
@@ -82,6 +84,18 @@ export class TopTensComponent implements OnInit {
     this.editingMap.set(category, true);
   }
 
+  viewTotalOrdering() {
+    // Only show this category so as not to confuse visuall w/all the cards
+    if (this.currentCategory == "All Categories") {
+      this.currentCategory = this.allCategories[0]["category"];
+    }
+    this.totalOrderMode = true;
+  }
+
+  leaveTotalOrdering() {
+    this.totalOrderMode = false;
+  }
+
   saveChanges(category: string, index: number) {
     this.toptensService.saveChanges(this.currentGroup.name, this.topTensMap.get(category).get(this.currentUser)).subscribe((res) => {
       if (res["success"]) {
@@ -100,6 +114,40 @@ export class TopTensComponent implements OnInit {
     });
   }
 
+  moveUp(category: string, catIndex: number, entryIndex: number) {
+    // Swap entry with the entry above it
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let tmp = entries[entryIndex]
+    entries[entryIndex] = entries[entryIndex - 1]
+    entries[entryIndex - 1] = tmp
+  }
+
+  moveDown(category: string, catIndex: number, entryIndex: number) {
+    // Swap entry with the entry below it
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let tmp = entries[entryIndex]
+    entries[entryIndex] = entries[entryIndex + 1]
+    entries[entryIndex + 1] = tmp
+  }
+
+  addNewEntry(category: string, catIndex: number, entryIndex: number) {
+    // Swap entry with the entry below it
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let newViewerPrefs = [];
+    for (let gMemb of this.currentGroupMembers) {
+      if (gMemb.username != this.currentUser) {
+        newViewerPrefs.push({ member: gMemb.username, shouldHide: false });
+      }
+    }
+    let newEntry = {name: "", viewerPrefs: newViewerPrefs}
+    entries = entries.splice(entryIndex + 1, 0, newEntry)
+  }
+
+  removeEntry(category: string, catIndex: number, entryIndex: number) {
+    // Swap entry with the entry below it
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    entries = entries.splice(entryIndex , 1)
+  }
   private generateLogistics() {
     this.categoryLogistics = [];
     for (let category of this.allCategories) {
@@ -236,6 +284,7 @@ export class TopTensComponent implements OnInit {
     this.categoryLogistics = [];
     this.editingMap = new Map<string, boolean>();
     this.currentCategory = "All Categories";
+    this.totalOrderMode = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

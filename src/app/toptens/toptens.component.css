@@ -99,6 +99,14 @@
   width: 150px;
   font-size: 14px;
 }
+.total-order-mode-enable {
+  display: inline;
+  margin-left: 20px;
+}
+.total-order-control-button {
+  height: 32px;
+  line-height: 32px;
+}
 .placeholder-card {
   margin-top: 10px;
   width: 750px;
@@ -140,4 +148,14 @@
 }
 .tenth-item {
   margin-left: -9px;
+}
+.ordering-button {
+  justify-content: center;
+  padding: 0px;
+  min-width: 30px;
+  width: 30px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 5px;
+  font: 400 11px system-ui;
 }
