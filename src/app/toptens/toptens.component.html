@@ -20,7 +20,7 @@
       <button *ngIf="this.totalOrderMode" class="category-control-item total-order-control-button" mat-raised-button color="primary" (click)="leaveTotalOrdering()">View top tens</button>
     </div>
   </div>
-  <div *ngIf="allCategories.length">
+  <div *ngIf="allCategories.length && !isLoading">
     <div *ngFor="let category of allCategories; let i = index;">
       <mat-card class="toptens-card" *ngIf="currentCategory == 'All Categories' || currentCategory == category['category']">
         <h1 class="category-header">Top {{ this.totalOrderMode ? "" : "Ten" }} {{ category["category"] }}</h1>
@@ -59,7 +59,16 @@
       </mat-card>
     </div>
   </div>
-  <div *ngIf="!allCategories.length">
+  <div *ngIf="isLoading">
+    <mat-card class="placeholder-card">
+      <mat-card-content>
+        <p>Loading top tens information...<p>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!allCategories.length && !isLoading">
     <mat-card class="placeholder-card">
       <mat-card-content>
         Create & share top ten lists here with your group members! Start by adding some categories above.
