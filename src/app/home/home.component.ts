@@ -237,6 +237,9 @@ export class HomeComponent {
       this.consideringList = this.newConsidering.filter(this.genreFilter.bind(this));
       this.completedList = this.newCompleted.filter(this.genreFilter.bind(this));
     }
+    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
+    this.sortAnime(this.sortCriteria);
+
   }
 
   private getGenres() {
