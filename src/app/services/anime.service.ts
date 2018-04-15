@@ -49,9 +49,17 @@ export class AnimeService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/anime/changeFinalistStatus', { id: animeID, newStatus: true, comments: comments }, this.options).map(res => res.json());
   }
-  removeFinalist(animeID) {
+  removeFinalist(animeID: string) {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/anime/changeFinalistStatus', { id: animeID, newStatus: false }, this.options).map(res => res.json());
+  }
+  addNewSeason(animeID: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/anime/changeNewSeasonStatus', { id: animeID, hasNewSeason: true }, this.options).map(res => res.json());
+  }
+  removeNewSeason(animeID: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/anime/changeNewSeasonStatus', { id: animeID, hasNewSeason: false }, this.options).map(res => res.json());
   }
   recommendAnime(anime, recommender: string) {
     this.createAuthenticationHeaders();

@@ -144,6 +144,9 @@
   align-items: flex-start;
   justify-content: center;
 }
+.move-menu-button {
+  text-align: center;
+}
 .flex-item {
   width: 28%;
   margin-left: 1%;
@@ -231,6 +234,11 @@
   max-height: 550px;
   padding-right: 24px;
 }
+.details-panel-content-newseason {
+  overflow: auto;
+  max-height: 550px;
+  padding-right: 24px;
+}
 .no-padding-bottom {
   padding-bottom: 0px !important;
 }
@@ -240,9 +248,20 @@
   height: 100px;
   overflow: auto;
 }
+.details-button-container-newseason {
+  border-top: 1px solid #c3c3c3;
+  padding-top: 5px;
+  height: 100px;
+  overflow: auto;
+}
 .details-button {
   margin: 5px !important;
   color: white;
+}
+.new-season-button {
+  margin: 5px !important;
+  color: black;
+  background-color: #FFD700;
 }
 .chooser-tool {
   border: 1px solid #c3c3c3;
@@ -304,6 +323,14 @@
 }
 .finalist-button-container-smallscreen {
   display: none;
+}
+@media screen and (min-width: 1432px) {
+  .details-button-container {
+    height: 50px;
+  }
+  .details-panel-content {
+    max-height: 600px;
+  }
 }
 @media screen and (max-width: 1130px) {
     .finalist-button-container {
