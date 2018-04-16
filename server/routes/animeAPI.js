@@ -1,4 +1,3 @@
-// Contains all API hooks except those used for authentication
 const express = require('express');
 const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
@@ -361,6 +360,27 @@ module.exports = (router) => {
             res.json({ success: false, message: "Anime not found" });
           } else {
             res.json({ success: true, message: "Finalist status changed!" });
+          }
+        });
+      }
+    });
+  });
+
+  router.post('/changeNewSeasonStatus', (req, res) => {
+    // Either add as finalist or remove finalist depending on newStatus
+    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else if (!user) {
+        res.json({ success: false, message: "User not found" });
+      } else {
+        Anime.findOneAndUpdate({ "_id": ObjectID(req.body.id), user: user.username }, { $set: { hasNewSeason: req.body.hasNewSeason } }, (err, anime) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else if (!anime) {
+            res.json({ success: false, message: "Anime not found" });
+          } else {
+            res.json({ success: true, message: "New Season status changed!" });
           }
         });
       }

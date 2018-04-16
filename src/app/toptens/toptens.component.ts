@@ -38,6 +38,8 @@ export class TopTensComponent implements OnInit {
   newCategoryName: string;
   currentCategory: string;
 
+  isLoading: boolean;
+
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
@@ -204,6 +206,8 @@ export class TopTensComponent implements OnInit {
         }
       }
     }
+
+    this.isLoading = false
   }
 
   deleteCategory(category: string) {
@@ -285,6 +289,7 @@ export class TopTensComponent implements OnInit {
     this.editingMap = new Map<string, boolean>();
     this.currentCategory = "All Categories";
     this.totalOrderMode = false;
+    this.isLoading = true;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

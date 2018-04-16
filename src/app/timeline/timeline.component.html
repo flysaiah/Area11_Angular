@@ -1,0 +1,66 @@
+
+<app-header [refreshHeader]="refreshHeader"></app-header>
+<div class="search-toolbar">
+  <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
+</div>
+
+<div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
+
+<div *ngIf="!eraList.length && isLoading">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      <p>Loading timeline information...<p>
+      <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="!eraList.length && !isLoading">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      Keep track of your anime history by making a timeline! Start by adding an era here!
+      <br>
+      <br>
+      <button mat-raised-button color="primary" (click)="createTimeline()">Create First Era</button>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="eraList.length" class="timeline">
+  <div *ngFor="let era of eraList; let i = index;" class="container" [ngClass]="{'left': i % 2 == 0, 'right': i % 2 == 1}">
+    <mat-card class="content">
+      <div *ngIf="editingEra != i" class="era-header">
+        <h1 class="era-title">{{ era["name"] }}</h1>
+        <h4 *ngIf="era['startDate'] && era['endDate']" class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
+        <h4 *ngIf="era['startDate'] && !era['endDate']" class="era-date">{{ era["startDate"] }} - Present</h4>
+        <button class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
+        <button [disabled]="editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
+        <button [disabled]="i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
+      </div>
+      <div *ngIf="editingEra == i" class="era-header">
+        <mat-form-field color="accent" class="">
+          <input matInput placeholder="Era Name" [(ngModel)]="era['name']" name="eraName">
+        </mat-form-field>
+        <br>
+        <mat-form-field color="accent" class="edit-start-date">
+          <input matInput placeholder="Start Date" [(ngModel)]="era['startDate']" name="eraStart">
+        </mat-form-field>
+        <mat-form-field color="accent" class="edit-end-date">
+          <input matInput placeholder="End Date" [(ngModel)]="era['endDate']" name="eraEnd">
+        </mat-form-field>
+        <br>
+        <button class="save-changes-button" mat-raised-button color="accent" (click)="saveEraChanges(i)">Save Changes</button>
+      </div>
+      <span class="era-horizontal-line"></span>
+      <br>
+      <div *ngIf="editingEra != i">
+        <p *ngFor="let entry of era['entries']">{{ entry }}</p>
+      </div>
+      <div *ngIf="editingEra == i">
+        <mat-form-field>
+          <textarea matInput class="era-textarea" matTextareaAutosize matAutosizeMinCols="100" [(ngModel)]="editingEraString"></textarea>
+        </mat-form-field>
+      </div>
+    </mat-card>
+  </div>
+</div>

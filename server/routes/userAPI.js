@@ -1,4 +1,3 @@
-// Contains all API hooks except those used for authentication
 const express = require('express');
 const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;

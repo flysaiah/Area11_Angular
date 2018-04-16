@@ -237,6 +237,9 @@ export class HomeComponent {
       this.consideringList = this.newConsidering.filter(this.genreFilter.bind(this));
       this.completedList = this.newCompleted.filter(this.genreFilter.bind(this));
     }
+    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
+    this.sortAnime(this.sortCriteria);
+
   }
 
   private getGenres() {
@@ -273,7 +276,7 @@ export class HomeComponent {
 
   private validateSelectAsFinalistButton() {
     // Custom validation for 'select as finalist' button
-    if (this.selectedAnime["category"] != "Completed") {
+    if (this.selectedAnime["category"] != "Completed" || this.selectedAnime["category"] == "Completed" && this.selectedAnime["hasNewSeason"]) {
       this.canSelectAsFinalist = true;
       for (let anime of this.finalistList) {
         if (this.selectedAnime["_id"] == anime["_id"]) {
@@ -322,6 +325,30 @@ export class HomeComponent {
         }
       }
       this.allGenres.sort(this.sortGenres().bind(this));
+      }
+    });
+  }
+
+  addNewSeason() {
+    // Update hasNewSeason flag for anime
+    this.animeService.addNewSeason(this.selectedAnime["_id"]).subscribe(res => {
+      if (res["success"]) {
+        this.selectedAnime.hasNewSeason = true;
+      } else {
+        this.displayToast("There was a problem.", true)
+        console.log(res["message"]);
+      }
+    });
+  }
+
+  removeNewSeason() {
+    // Update hasNewSeason flag for anime
+    this.animeService.removeNewSeason(this.selectedAnime["_id"]).subscribe(res => {
+      if (res["success"]) {
+        this.selectedAnime.hasNewSeason = false;
+      } else {
+        this.displayToast("There was a problem.", true)
+        console.log(res["message"]);
       }
     });
   }
