@@ -18,6 +18,8 @@ export class TimelineComponent implements OnInit {
   toastMessage: string;
   toastError: boolean;
 
+  refreshHeader: number;
+
   eraList: Era[];
   editingEra: number;   // Can only edit one era at a time; this is the index of the one being edited
   editingEraString: string   // string version of current era that appears in textarea
@@ -119,6 +121,8 @@ export class TimelineComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.refreshHeader = Math.random();
+
     this.isLoading = true;
     this.eraList = [];
     this.editingEra = -1;
