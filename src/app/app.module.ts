@@ -17,12 +17,14 @@ import { AnimeService } from './services/anime.service';
 import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { TopTensService } from './services/toptens.service';
+import { TimelineService } from './services/timeline.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
 import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
+import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.component';
 
 @NgModule({
   declarations: [
@@ -32,13 +34,15 @@ import { TopTensComponent } from './toptens/toptens.component';
     FinalistCommentsDialog,
     DeleteAccountDialog,
     ConfirmDialog,
+    DeleteEraDialog,
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
     GroupComponent,
     ImportAnimeDialog,
     HeaderComponent,
-    TopTensComponent
+    TopTensComponent,
+    TimelineComponent
   ],
   imports: [
     BrowserModule,
@@ -62,8 +66,8 @@ import { TopTensComponent } from './toptens/toptens.component';
     MatCheckboxModule,
     MatProgressBarModule
   ],
-  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog]
 })
 export class AppModule { }

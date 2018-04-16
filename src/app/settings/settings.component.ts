@@ -86,7 +86,7 @@ export class SettingsComponent implements OnInit {
             this.displayToast("There was a problem deleting your account.", true);
             console.log(res);
           }
-        })
+        });
       }
     });
   }
