@@ -6,7 +6,7 @@
   <!-- Filtering/sorting -->
   <div class="search-toolbar-minicontainer">
     <label class="filter-label" for="catalogCategoryFilter">Filter by Category: </label>
-    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh()" class="catalog-sort">
+    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh(true)" class="catalog-sort">
       <option value="All Categories">All Categories</option>
       <option value="Want to Watch">Want to Watch</option>
       <option value="Considering">Considering</option>
@@ -81,7 +81,7 @@
     </div>
 
     <!-- Anime catalogue -->
-    <div class="catalog" *ngIf="!isLoading">
+    <div class="catalog" [scrollTop]="scrollTop" *ngIf="!isLoading">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">

@@ -46,6 +46,7 @@ export class HomeComponent {
 
   refreshHeader: number;
   isLoading: boolean;
+  scrollTop: number;
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
@@ -585,7 +586,7 @@ export class HomeComponent {
     });
   }
 
-  refresh() {
+  refresh(scrollTop?: boolean) {
     // Fetch all anime stored in database and update our lists
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
@@ -626,6 +627,10 @@ export class HomeComponent {
         this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
         this.isLoading = false;
+        if (scrollTop) {
+          // Scroll to top of catalog; this happens when category is changed
+          this.scrollTop = Math.random();
+        }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -647,6 +652,7 @@ export class HomeComponent {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
     this.isLoading = true;
+    this.scrollTop = 0;
 
     this.autoTimelineAdd = false;
 
