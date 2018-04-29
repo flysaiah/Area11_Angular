@@ -229,7 +229,7 @@
   border-width: 5px;
   margin-top: 10px;
 }
-.details-panel-content {
+.details-panel-content, .details-panel-content-completed, .details-panel-content-newseason {
   overflow: auto;
   max-height: 550px;
   padding-right: 24px;

@@ -102,7 +102,7 @@
 
   <mat-card class="no-padding-bottom" [ngClass]="{'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
     <div *ngIf="selectedAnime['name']">
-      <div class="details-panel-content-newseason" >
+      <div [ngClass]="{'details-panel-content': selectedAnime['category'] != 'Completed', 'details-panel-content-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-content-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" >
         <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
         <div class="details-flex-container">
           <div class="details-thumbnail-container">
