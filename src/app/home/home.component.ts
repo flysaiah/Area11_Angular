@@ -3,7 +3,7 @@ import { Anime } from '../anime';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
-import { UserService } from '../services/user.service';
+import { TimelineService } from '../services/timeline.service';
 
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -39,6 +39,7 @@ export class HomeComponent {
   sortCriteria: string;
   showCategory: string;
   currentUser: string;
+  autoTimelineAdd: boolean;   // If true, then automatically add completed anime to timeline
 
   allGenres: string[];
   selectedGenre: string;
@@ -378,7 +379,23 @@ export class HomeComponent {
       if (res["success"]) {
         // Have to manually update currently selected anime's category
         this.selectedAnime["category"] = newCategory;
-        this.refresh();
+        // If autoTimelineAdd is true, then add to timeline here on move to completed
+        if (newCategory == "Completed" && this.autoTimelineAdd) {
+          this.timelineService.addAnimeToTimeline(this.selectedAnime["name"], -1).subscribe(res => {
+            if (res["success"]) {
+              this.refresh();
+            } else if (res["message"] == "Timeline not found") {
+              this.displayToast("You haven't started your timeline yet.", true);
+              this.refresh();
+            } else {
+              this.displayToast("There was a problem.", true);
+              this.refresh();
+              console.log(res["message"]);
+            }
+          });
+        } else {
+          this.refresh();
+        }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -601,11 +618,14 @@ export class HomeComponent {
     private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
+    private timelineService: TimelineService
   ) { }
 
   ngOnInit() {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
+
+    this.autoTimelineAdd = false;
 
     this.wantToWatchList = [];
     this.consideringList = [];
@@ -638,6 +658,9 @@ export class HomeComponent {
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
+        if (res["user"]["autoTimelineAdd"]) {
+          this.autoTimelineAdd = res["user"]["autoTimelineAdd"];
+        }
         this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
         this.refresh();

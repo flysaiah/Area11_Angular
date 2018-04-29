@@ -40,4 +40,9 @@ export class TimelineService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/timeline/fetchTimeline', { }, this.options).map(res => res.json());
   }
+
+  addAnimeToTimeline(name: string, index: number) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/timeline/addAnimeToTimeline', { name: name, index: index }, this.options).map(res => res.json());
+  }
 }

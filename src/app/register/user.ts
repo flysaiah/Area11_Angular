@@ -4,6 +4,7 @@ export class User {
     public password: string,
     public bestgirl: string,
     public avatar?: string,
-    public group?: string
+    public group?: string,
+    public autoTimelineAdd?: boolean
   ) {}
 }
