@@ -45,6 +45,7 @@ export class HomeComponent {
   selectedGenre: string;
 
   refreshHeader: number;
+  isLoading: boolean;
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
@@ -604,6 +605,7 @@ export class HomeComponent {
         }
         this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
+        this.isLoading = false;
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -624,6 +626,7 @@ export class HomeComponent {
   ngOnInit() {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
+    this.isLoading = true;
 
     this.autoTimelineAdd = false;
 

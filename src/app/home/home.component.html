@@ -74,8 +74,13 @@
       </div>
     </mat-card>
 
+    <div class="catalog catalog-loading" *ngIf="isLoading">
+      <p>Loading catalog information...<p>
+      <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
+
     <!-- Anime catalogue -->
-    <div class="catalog">
+    <div class="catalog" *ngIf="!isLoading">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
@@ -159,12 +164,19 @@
   <div class="flex-item">
     <div class="area11-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
-    <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
+    <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length && !isLoading">
       Anime you add to your final selection process will appear here!
     </mat-card>
 
+    <div *ngIf="isLoading">
+      <mat-card class="chooser-tool-placeholder">
+        <p>Loading finalist information...<p>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+      </mat-card>
+    </div>
+
   <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
-    <div *ngIf="finalistList.length" class="chooser-tool">
+    <div *ngIf="finalistList.length && !isLoading" class="chooser-tool">
       <div class="finalist-item finalist-topitem">
         <h3 *ngIf="finalistList.length == 1" class="finalist-topitem-header-cr">Currently Watching</h3>
         <h3 *ngIf="finalistList.length != 1" class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>

@@ -170,6 +170,9 @@
   max-height: 656px;
   margin-top: 10px;
 }
+.catalog-loading {
+  padding: 15px;
+}
 .catalog-item-name {
   width: 71%;
 }
