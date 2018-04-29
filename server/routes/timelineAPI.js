@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
-const Anime = require('../models/anime.js');
 const Timeline = require('../models/timeline.js');
-const User = require('../models/user.js');
-const async = require('async');
 
 module.exports = (router) => {
 

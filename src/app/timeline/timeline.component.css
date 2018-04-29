@@ -84,6 +84,10 @@ p {
 .era-title {
   margin-bottom: 7px;
 }
+.era-subheader {
+  margin-top: 5px;
+  font-size: 20px;
+}
 .era-date {
   margin-top: 7px;
   margin-bottom: 5px;
@@ -116,6 +120,7 @@ p {
 }
 .era-textarea {
   font-size: 16px;
+  width: 100%;
 }
 .edit-start-date {
   width: 110px;
