@@ -211,10 +211,32 @@ export class HomeComponent {
     });
   }
 
+  private randomSort(animeArr) {
+    // Uses Fisher-Yates algorithm to randomly sort array
+    let a = JSON.parse(JSON.stringify(animeArr));
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  }
+
   sortAnime(criteria) {
     // Sort all anime lists by the criteria picked in the toolbar select
     const c1 = criteria.split(",")[0];
     const c2 = criteria.split(",")[1];
+    if (c1 == "random") {
+      this.wantToWatchList = this.randomSort(this.wantToWatchList);
+      this.consideringList = this.randomSort(this.consideringList);
+      this.completedList = this.randomSort(this.completedList);
+    } else {
+      this.wantToWatchList.sort(this.sortByField(c1, c2));
+      this.consideringList.sort(this.sortByField(c1, c2));
+      this.completedList.sort(this.sortByField(c1, c2));
+    }
     this.wantToWatchList.sort(this.sortByField(c1, c2));
     this.consideringList.sort(this.sortByField(c1, c2));
     this.completedList.sort(this.sortByField(c1, c2));
@@ -384,15 +406,13 @@ export class HomeComponent {
         if (newCategory == "Completed" && this.autoTimelineAdd) {
           this.timelineService.addAnimeToTimeline(this.selectedAnime["name"], -1).subscribe(res => {
             if (res["success"]) {
-              this.refresh();
             } else if (res["message"] == "Timeline not found") {
               this.displayToast("You haven't started your timeline yet.", true);
-              this.refresh();
             } else {
               this.displayToast("There was a problem.", true);
-              this.refresh();
               console.log(res["message"]);
             }
+            this.refresh();
           });
         } else {
           this.refresh();
@@ -403,7 +423,7 @@ export class HomeComponent {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
-    })
+    });
   }
 
   editComments(index: number) {
