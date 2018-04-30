@@ -315,6 +315,7 @@ export class HomeComponent {
   selectAsFinalist() {
     // Add selected anime to chooser panel
     // First bring up a dialog to allow them to enter any comments
+    let selectedAnime = this.selectedAnime;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
       data: {comments: ""}
@@ -324,22 +325,22 @@ export class HomeComponent {
       // Only do something if user hit "Confirm" rather than cancel
       if (typeof result != "undefined") {
       if (result) {
-        this.selectedAnime["comments"] = result.split(";");
-        if (this.selectedAnime["comments"][this.selectedAnime["comments"].length - 1] == "") {
-          this.selectedAnime["comments"].splice(-1,1);
+        selectedAnime["comments"] = result.split(";");
+        if (selectedAnime["comments"][selectedAnime["comments"].length - 1] == "") {
+          selectedAnime["comments"].splice(-1,1);
         }
       }
-      this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
+      this.animeService.selectAsFinalist(selectedAnime["_id"], selectedAnime["comments"]).subscribe((res) => {
         if (!res["success"] && res["message"] == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else if (!res["success"]) {
           this.displayToast("There was a problem.", true);
         }
       });
-      this.finalistList.push(this.selectedAnime);
+      this.finalistList.push(selectedAnime);
       this.validateSelectAsFinalistButton();
       // Update finalist stats
-      if (this.selectedAnime["genres"].length && this.finalistGenreDict.size) {
+      if (selectedAnime["genres"].length && this.finalistGenreDict.size) {
         for (let genre of this.selectedAnime["genres"]) {
           let current = this.finalistGenreDict.get(genre);
           if (typeof current != "undefined") {
