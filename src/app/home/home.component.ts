@@ -53,6 +53,8 @@ export class HomeComponent {
   searchText: string;
   filteredSearchAnime: Observable<any[]>;
 
+  hideFinalistsPanel: boolean;
+
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
@@ -128,6 +130,14 @@ export class HomeComponent {
         return (tmpA > tmpB) ? -1 : (tmpA < tmpB) ? 1 : 0;
       }
     }
+  }
+
+  hideFinalists() {
+    this.hideFinalistsPanel = true;
+  }
+
+  showFinalists() {
+    this.hideFinalistsPanel = false;
   }
 
   watchOPs() {
@@ -689,6 +699,8 @@ export class HomeComponent {
     this.possibleCategories = ["Want to Watch", "Considering", "Completed"];
     this.showToast = false;
     this.toastMessage = "";
+
+    this.hideFinalistsPanel = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

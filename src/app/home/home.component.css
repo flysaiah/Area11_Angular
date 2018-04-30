@@ -105,15 +105,12 @@
 .search-anime-name {
   display: inline !important;
 }
-.open-op-button {
+.hide-finalists-button {
   float: right;
   border-radius: 50px;
   height: 20px;
   color: black;
   line-height: 20px;
-}
-.open-op-button:disabled {
-  background-color: #d1d1d1
 }
 .add-anime-prompt {
   margin-top: 5px;
@@ -149,6 +146,11 @@
 }
 .flex-item {
   width: 28%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+.flex-item-2col {
+  width: 45%;
   margin-left: 1%;
   margin-right: 1%;
 }
@@ -197,20 +199,28 @@
   padding-top: 0px !important;
   padding-right: 0px !important;
 }
+.details-panel-2col {
+  width: 50% !important;
+}
 .details-title {
   margin-bottom: 8px;
 }
-.details-flex-container {
+.details-flex-container, .details-flex-container-2col {
   display: flex;
   align-items: flex-start;
   justify-content: space-around;
 }
-@media screen and (max-width: 1260px) {
+@media screen and (max-width: 1305px) {
   .details-flex-container {
     justify-content: space-between;
   }
 }
-.details-thumbnail-container {
+@media screen and (max-width: 1035px) {
+  .details-flex-container-2col {
+    justify-content: space-between;
+  }
+}
+.details-thumbnail-container, .details-thumbnail-container-2col {
   display: inline-block;
   width: 48%;
   text-align: center;
@@ -224,6 +234,12 @@
   text-align: left;
   font-size: 14px;
 }
+.details-misc-2col {
+  display: inline-block;
+  width: 50%;
+  text-align: left;
+  font-size: 14px;
+}
 .details-panel-placeholder {
   width: 34%;
   text-align: center;
@@ -232,12 +248,14 @@
   border-width: 5px;
   margin-top: 10px;
 }
-.details-panel-content, .details-panel-content-completed, .details-panel-content-newseason {
-  overflow: auto;
-  max-height: 550px;
-  padding-right: 24px;
-}
-.details-panel-content-newseason {
+.details-panel-placeholder-2col {
+  width: 50%;
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  margin-top: 10px;}
+.details-panel-content, .details-panel-content-completed, .details-panel-content-newseason, .details-panel-content-2col, .details-panel-content-completed-2col, .details-panel-content-newseason-2col {
   overflow: auto;
   max-height: 550px;
   padding-right: 24px;
@@ -245,7 +263,7 @@
 .no-padding-bottom {
   padding-bottom: 0px !important;
 }
-.details-button-container, .details-button-container-completed, .details-button-container-newseason {
+.details-button-container, .details-button-container-completed, .details-button-container-newseason, .details-button-container-2col, .details-button-container-completed-2col, .details-button-container-newseason-2col {
   border-top: 1px solid #c3c3c3;
   padding-top: 5px;
   height: 100px;
@@ -310,6 +328,14 @@
   margin-bottom: 10px;
   min-width: 50px !important;
 }
+.finalist-topitem-watchops {
+  border-radius: 50px;
+  height: 20px;
+  vertical-align: middle;
+  line-height: 20px;
+  margin-bottom: 10px;
+  min-width: 70px !important;
+}
 .finalist-stats {
   padding: 20px;
 }
@@ -353,7 +379,33 @@
     max-height: 600px;
   }
 }
-@media screen and (max-width: 1130px) {
+@media screen and (min-width: 984px) {
+  .details-button-container-2col {
+    height: 50px;
+  }
+  .details-panel-content-2col {
+    max-height: 600px;
+  }
+}
+/* 2 */
+@media screen and (min-width: 947px) {
+  .details-button-container-completed-2col {
+    height: 50px;
+  }
+  .details-panel-content-completed-2col {
+    max-height: 600px;
+  }
+}
+/* 3 */
+@media screen and (min-width: 1294px) {
+  .details-button-container-newseason-2col {
+    height: 50px;
+  }
+  .details-panel-content-newseason-2col {
+    max-height: 600px;
+  }
+}
+@media screen and (max-width: 1150px) {
     .finalist-button-container {
       display: none;
     }
@@ -385,7 +437,19 @@
       width: 100%;
       text-align: center;
     }
-
+}
+@media screen and (max-width: 1040px) {
+  .details-thumbnail-container-2col {
+    width: auto;
+  }
+  .details-flex-container-2col {
+    display: block;
+  }
+  .details-misc-2col {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
 }
 .finalist-button {
   border-radius: 50px;
