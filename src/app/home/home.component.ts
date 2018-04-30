@@ -533,6 +533,11 @@ export class HomeComponent {
     this.allGenres.sort(this.sortGenres().bind(this));
   }
 
+  shuffleFinalists() {
+    // Randomize order of finalist list
+    this.finalistList = this.randomSort(this.finalistList);
+  }
+
   private sortGenres() {
     return function (a:string,b:string) {
       return (this.finalistGenreDict.get(a) < this.finalistGenreDict.get(b)) ? 1 : (this.finalistGenreDict.get(a) > this.finalistGenreDict.get(b) ? -1 : 0)

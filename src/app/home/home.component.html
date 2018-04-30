@@ -181,8 +181,9 @@
       <div class="finalist-item finalist-topitem">
         <h3 *ngIf="finalistList.length == 1" class="finalist-topitem-header-cr">Currently Watching</h3>
         <h3 *ngIf="finalistList.length != 1" class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>
-        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
-        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
+        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-shuffle" mat-raised-button color="primary" (click)="shuffleFinalists()">Shuffle</button>
         <span class="finalist-divider"></span>
       </div>
       <div class="finalist-stats" *ngIf="showFinalistStats">
