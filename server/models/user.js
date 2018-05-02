@@ -8,7 +8,8 @@ const userSchema = new Schema({
   bestgirl: { type: String, required: true, unique: false, lowercase: false},
   avatar: String,
   group: String,   // name of the group
-  autoTimelineAdd: Boolean
+  autoTimelineAdd: Boolean,
+  fireworks: Boolean
 });
 
 // This runs any time the user Schema is activated

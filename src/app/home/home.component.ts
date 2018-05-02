@@ -4,6 +4,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
 import { TimelineService } from '../services/timeline.service';
+import { UserService } from '../services/user.service';
 
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -54,6 +55,8 @@ export class HomeComponent {
   filteredSearchAnime: Observable<any[]>;
 
   hideFinalistsPanel: boolean;
+  enableFireworks: boolean;
+  fireworks: boolean;   // If true, then fireworks animation plays
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -484,6 +487,12 @@ export class HomeComponent {
             break;
           } case 1: {
             this.displayToast("Congratulations to the victor!");
+            if (this.enableFireworks) {
+              this.fireworks = true;
+              setTimeout(() => {
+                this.fireworks = false;
+              }, 6000);
+            }
             break;
           } default: {
             // do nothing
@@ -661,7 +670,8 @@ export class HomeComponent {
     private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
-    private timelineService: TimelineService
+    private timelineService: TimelineService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -701,16 +711,28 @@ export class HomeComponent {
     this.toastMessage = "";
 
     this.hideFinalistsPanel = false;
+    this.fireworks = false;
+    this.enableFireworks = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
-        if (res["user"]["autoTimelineAdd"]) {
-          this.autoTimelineAdd = res["user"]["autoTimelineAdd"];
-        }
         this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
-        this.refresh();
+
+        this.userService.getUserInfo().subscribe((res) => {
+          if (res["success"]) {
+            if (res["user"]["autoTimelineAdd"]) {
+              this.autoTimelineAdd = res["user"]["autoTimelineAdd"];
+            }
+            if (res["user"]["fireworks"]) {
+              this.enableFireworks = res["user"]["fireworks"];
+            }
+            this.refresh();
+          } else {
+            this.displayToast("There was a problem loading your settings.", true)
+          }
+        });
       } else {
         // If there was a problem we need to have them log in again
         this.authService.logout();

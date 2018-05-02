@@ -5,6 +5,7 @@ export class User {
     public bestgirl: string,
     public avatar?: string,
     public group?: string,
-    public autoTimelineAdd?: boolean
+    public autoTimelineAdd?: boolean,
+    public fireworks?: boolean
   ) {}
 }

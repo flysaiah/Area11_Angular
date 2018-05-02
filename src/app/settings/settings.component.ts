@@ -124,6 +124,9 @@ export class SettingsComponent implements OnInit {
             if (res["user"]["autoTimelineAdd"]) {
               this.model["autoTimelineAdd"] = res["user"]["autoTimelineAdd"];
             }
+            if (res["user"]["fireworks"]) {
+              this.model["fireworks"] = res["user"]["fireworks"];
+            }
           } else {
             this.displayToast("There was a problem loading your settings.", true)
           }

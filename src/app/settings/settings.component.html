@@ -14,7 +14,12 @@
       </mat-checkbox>
       <br>
       <br>
-      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !autoTimelineAdd.dirty" (click)="saveChanges()">Save Changes</button>
+      <mat-checkbox matInput labelPosition="before" name="fireworks" [(ngModel)]="model.fireworks" #fireworks="ngModel">
+        Fireworks animation on final selection
+      </mat-checkbox>
+      <br>
+      <br>
+      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !autoTimelineAdd.dirty && !fireworks.dirty" (click)="saveChanges()">Save Changes</button>
       <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
