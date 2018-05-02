@@ -28,7 +28,7 @@
 
 <div *ngIf="eraList.length" class="timeline">
   <div *ngFor="let era of eraList; let i = index;" class="container" [ngClass]="{'left': i % 2 == 0, 'right': i % 2 == 1}">
-    <mat-card class="content">
+    <mat-card class="content" [ngStyle]="{'background-color': era['backgroundColor']}">
       <!-- VIEW -->
       <div *ngIf="editingEra != i" class="era-header">
         <h1 class="era-title">{{ era["name"] }}</h1>
@@ -55,6 +55,11 @@
         </mat-form-field>
         <mat-form-field color="accent" class="edit-end-date">
           <input matInput placeholder="End Date" [(ngModel)]="era['endDate']" name="eraEnd">
+        </mat-form-field>
+        <br>
+        <mat-form-field color="accent">
+          <input matInput placeholder="Background color" [(colorPicker)]="era['backgroundColor']" [style.background]="era['backgroundColor']"
+          [value]="era['backgroundColor']" [cpPosition]="'bottom'"/>
         </mat-form-field>
         <br>
         <button class="save-changes-button" mat-raised-button color="accent" (click)="saveEraChanges(i)">Save Changes</button>
