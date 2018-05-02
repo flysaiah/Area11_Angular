@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
 import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent, ConfirmDialog } from './app.component';
@@ -64,7 +65,8 @@ import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.componen
     MatAutocompleteModule,
     ReactiveFormsModule,
     MatCheckboxModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    ColorPickerModule
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],

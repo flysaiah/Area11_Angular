@@ -3,6 +3,7 @@ import { Anime } from '../anime';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
+import { TimelineService } from '../services/timeline.service';
 import { UserService } from '../services/user.service';
 
 import { FormControl } from '@angular/forms';
@@ -39,16 +40,23 @@ export class HomeComponent {
   sortCriteria: string;
   showCategory: string;
   currentUser: string;
+  autoTimelineAdd: boolean;   // If true, then automatically add completed anime to timeline
 
   allGenres: string[];
   selectedGenre: string;
 
   refreshHeader: number;
+  isLoading: boolean;
+  scrollTop: number;
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
   searchText: string;
   filteredSearchAnime: Observable<any[]>;
+
+  hideFinalistsPanel: boolean;
+  enableFireworks: boolean;
+  fireworks: boolean;   // If true, then fireworks animation plays
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -125,6 +133,14 @@ export class HomeComponent {
         return (tmpA > tmpB) ? -1 : (tmpA < tmpB) ? 1 : 0;
       }
     }
+  }
+
+  hideFinalists() {
+    this.hideFinalistsPanel = true;
+  }
+
+  showFinalists() {
+    this.hideFinalistsPanel = false;
   }
 
   watchOPs() {
@@ -209,10 +225,32 @@ export class HomeComponent {
     });
   }
 
+  private randomSort(animeArr) {
+    // Uses Fisher-Yates algorithm to randomly sort array
+    let a = JSON.parse(JSON.stringify(animeArr));
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  }
+
   sortAnime(criteria) {
     // Sort all anime lists by the criteria picked in the toolbar select
     const c1 = criteria.split(",")[0];
     const c2 = criteria.split(",")[1];
+    if (c1 == "random") {
+      this.wantToWatchList = this.randomSort(this.wantToWatchList);
+      this.consideringList = this.randomSort(this.consideringList);
+      this.completedList = this.randomSort(this.completedList);
+    } else {
+      this.wantToWatchList.sort(this.sortByField(c1, c2));
+      this.consideringList.sort(this.sortByField(c1, c2));
+      this.completedList.sort(this.sortByField(c1, c2));
+    }
     this.wantToWatchList.sort(this.sortByField(c1, c2));
     this.consideringList.sort(this.sortByField(c1, c2));
     this.completedList.sort(this.sortByField(c1, c2));
@@ -290,6 +328,7 @@ export class HomeComponent {
   selectAsFinalist() {
     // Add selected anime to chooser panel
     // First bring up a dialog to allow them to enter any comments
+    let selectedAnime = this.selectedAnime;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
       data: {comments: ""}
@@ -299,22 +338,22 @@ export class HomeComponent {
       // Only do something if user hit "Confirm" rather than cancel
       if (typeof result != "undefined") {
       if (result) {
-        this.selectedAnime["comments"] = result.split(";");
-        if (this.selectedAnime["comments"][this.selectedAnime["comments"].length - 1] == "") {
-          this.selectedAnime["comments"].splice(-1,1);
+        selectedAnime["comments"] = result.split(";");
+        if (selectedAnime["comments"][selectedAnime["comments"].length - 1] == "") {
+          selectedAnime["comments"].splice(-1,1);
         }
       }
-      this.animeService.selectAsFinalist(this.selectedAnime["_id"], this.selectedAnime["comments"]).subscribe((res) => {
+      this.animeService.selectAsFinalist(selectedAnime["_id"], selectedAnime["comments"]).subscribe((res) => {
         if (!res["success"] && res["message"] == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else if (!res["success"]) {
           this.displayToast("There was a problem.", true);
         }
       });
-      this.finalistList.push(this.selectedAnime);
+      this.finalistList.push(selectedAnime);
       this.validateSelectAsFinalistButton();
       // Update finalist stats
-      if (this.selectedAnime["genres"].length && this.finalistGenreDict.size) {
+      if (selectedAnime["genres"].length && this.finalistGenreDict.size) {
         for (let genre of this.selectedAnime["genres"]) {
           let current = this.finalistGenreDict.get(genre);
           if (typeof current != "undefined") {
@@ -378,14 +417,28 @@ export class HomeComponent {
       if (res["success"]) {
         // Have to manually update currently selected anime's category
         this.selectedAnime["category"] = newCategory;
-        this.refresh();
+        // If autoTimelineAdd is true, then add to timeline here on move to completed
+        if (newCategory == "Completed" && this.autoTimelineAdd) {
+          this.timelineService.addAnimeToTimeline(this.selectedAnime["name"], -1).subscribe(res => {
+            if (res["success"]) {
+            } else if (res["message"] == "Timeline not found") {
+              this.displayToast("You haven't started your timeline yet.", true);
+            } else {
+              this.displayToast("There was a problem.", true);
+              console.log(res["message"]);
+            }
+            this.refresh();
+          });
+        } else {
+          this.refresh();
+        }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res["message"]);
       }
-    })
+    });
   }
 
   editComments(index: number) {
@@ -434,6 +487,12 @@ export class HomeComponent {
             break;
           } case 1: {
             this.displayToast("Congratulations to the victor!");
+            if (this.enableFireworks) {
+              this.fireworks = true;
+              setTimeout(() => {
+                this.fireworks = false;
+              }, 6000);
+            }
             break;
           } default: {
             // do nothing
@@ -493,6 +552,11 @@ export class HomeComponent {
     this.allGenres.sort(this.sortGenres().bind(this));
   }
 
+  shuffleFinalists() {
+    // Randomize order of finalist list
+    this.finalistList = this.randomSort(this.finalistList);
+  }
+
   private sortGenres() {
     return function (a:string,b:string) {
       return (this.finalistGenreDict.get(a) < this.finalistGenreDict.get(b)) ? 1 : (this.finalistGenreDict.get(a) > this.finalistGenreDict.get(b) ? -1 : 0)
@@ -547,7 +611,7 @@ export class HomeComponent {
     });
   }
 
-  refresh() {
+  refresh(scrollTop?: boolean) {
     // Fetch all anime stored in database and update our lists
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
@@ -587,6 +651,11 @@ export class HomeComponent {
         }
         this.filterAnimeByGenre(this.selectedGenre);
         this.sortAnime(this.sortCriteria);
+        this.isLoading = false;
+        if (scrollTop) {
+          // Scroll to top of catalog; this happens when category is changed
+          this.scrollTop = Math.random();
+        }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -601,11 +670,17 @@ export class HomeComponent {
     private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
+    private timelineService: TimelineService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
+    this.isLoading = true;
+    this.scrollTop = 0;
+
+    this.autoTimelineAdd = false;
 
     this.wantToWatchList = [];
     this.consideringList = [];
@@ -635,12 +710,29 @@ export class HomeComponent {
     this.showToast = false;
     this.toastMessage = "";
 
+    this.hideFinalistsPanel = false;
+    this.fireworks = false;
+    this.enableFireworks = false;
+
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
         this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
-        this.refresh();
+
+        this.userService.getUserInfo().subscribe((res) => {
+          if (res["success"]) {
+            if (res["user"]["autoTimelineAdd"]) {
+              this.autoTimelineAdd = res["user"]["autoTimelineAdd"];
+            }
+            if (res["user"]["fireworks"]) {
+              this.enableFireworks = res["user"]["fireworks"];
+            }
+            this.refresh();
+          } else {
+            this.displayToast("There was a problem loading your settings.", true)
+          }
+        });
       } else {
         // If there was a problem we need to have them log in again
         this.authService.logout();

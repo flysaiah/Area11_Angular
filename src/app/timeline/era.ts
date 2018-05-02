@@ -6,5 +6,7 @@ export class Era {
     public endDate?: string,
     public location?: string,
     public metadata?: string,
+    public subHeader?: string,
+    public backgroundColor?: string
   ) {}
 }

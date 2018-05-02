@@ -28,18 +28,26 @@
 
 <div *ngIf="eraList.length" class="timeline">
   <div *ngFor="let era of eraList; let i = index;" class="container" [ngClass]="{'left': i % 2 == 0, 'right': i % 2 == 1}">
-    <mat-card class="content">
+    <mat-card class="content" [ngStyle]="{'background-color': era['backgroundColor']}">
+      <!-- VIEW -->
       <div *ngIf="editingEra != i" class="era-header">
         <h1 class="era-title">{{ era["name"] }}</h1>
-        <h4 *ngIf="era['startDate'] && era['endDate']" class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
+        <h3 *ngIf="era['subHeader']" class="era-title era-subheader">{{ era["subHeader"] }}</h3>
+        <h4 *ngIf="era['startDate'] && era['endDate'] &&era['startDate'] != era['endDate'] " class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
+        <h4 *ngIf="era['startDate'] && era['endDate'] && era['startDate'] == era['endDate']" class="era-date">{{ era["startDate"] }}</h4>
         <h4 *ngIf="era['startDate'] && !era['endDate']" class="era-date">{{ era["startDate"] }} - Present</h4>
         <button class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
         <button [disabled]="editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
         <button [disabled]="i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
       </div>
+      <!-- EDIT -->
       <div *ngIf="editingEra == i" class="era-header">
-        <mat-form-field color="accent" class="">
+        <mat-form-field color="accent">
           <input matInput placeholder="Era Name" [(ngModel)]="era['name']" name="eraName">
+        </mat-form-field>
+        <br>
+        <mat-form-field color="accent">
+          <input matInput placeholder="Era Subheader" [(ngModel)]="era['subHeader']" name="eraSubheader">
         </mat-form-field>
         <br>
         <mat-form-field color="accent" class="edit-start-date">
@@ -47,6 +55,11 @@
         </mat-form-field>
         <mat-form-field color="accent" class="edit-end-date">
           <input matInput placeholder="End Date" [(ngModel)]="era['endDate']" name="eraEnd">
+        </mat-form-field>
+        <br>
+        <mat-form-field color="accent">
+          <input matInput placeholder="Background color" [(colorPicker)]="era['backgroundColor']" [style.background]="era['backgroundColor']"
+          [value]="era['backgroundColor']" [cpPosition]="'bottom'"/>
         </mat-form-field>
         <br>
         <button class="save-changes-button" mat-raised-button color="accent" (click)="saveEraChanges(i)">Save Changes</button>
@@ -57,8 +70,8 @@
         <p *ngFor="let entry of era['entries']">{{ entry }}</p>
       </div>
       <div *ngIf="editingEra == i">
-        <mat-form-field>
-          <textarea matInput class="era-textarea" matTextareaAutosize matAutosizeMinCols="100" [(ngModel)]="editingEraString"></textarea>
+        <mat-form-field class="era-textarea">
+          <textarea matInput matTextareaAutosize [(ngModel)]="editingEraString"></textarea>
         </mat-form-field>
       </div>
     </mat-card>

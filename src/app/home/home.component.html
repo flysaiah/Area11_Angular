@@ -1,3 +1,8 @@
+<div *ngIf="fireworks" class="pyro">
+  <div class="before"></div>
+  <div class="after"></div>
+</div>
+
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
@@ -6,7 +11,7 @@
   <!-- Filtering/sorting -->
   <div class="search-toolbar-minicontainer">
     <label class="filter-label" for="catalogCategoryFilter">Filter by Category: </label>
-    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh()" class="catalog-sort">
+    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh(true)" class="catalog-sort">
       <option value="All Categories">All Categories</option>
       <option value="Want to Watch">Want to Watch</option>
       <option value="Considering">Considering</option>
@@ -22,6 +27,7 @@
       <option value="rating,ascending">Rating (Low to High)</option>
       <option value="startDate,ascending">Air Date (Old to New)</option>
       <option value="startDate,descending">Air Date (New to Old)</option>
+      <option value="random,_">Random</option>
     </select>
   </div>
   <div class="search-toolbar-minicontainer">
@@ -42,12 +48,13 @@
       </mat-option>
     </mat-autocomplete>
   </div>
-  <button mat-raised-button class="open-op-button" [disabled]="!finalistList.length" (click)="watchOPs()">Watch Finalist OPs</button>
+  <button *ngIf="!hideFinalistsPanel" mat-raised-button class="hide-finalists-button" (click)="hideFinalists()">Hide Finalists Panel</button>
+  <button *ngIf="hideFinalistsPanel" mat-raised-button class="hide-finalists-button" (click)="showFinalists()">Show Finalists Panel</button>
 </div>
 
 <div class="home-container">
   <!-- Add anime prompt -->
-  <div class="flex-item">
+  <div [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
     <mat-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
       <div>
         <mat-form-field color="accent" class="add-anime-name">
@@ -74,8 +81,13 @@
       </div>
     </mat-card>
 
+    <div class="catalog catalog-loading" *ngIf="isLoading">
+      <p>Loading catalog information...<p>
+      <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
+
     <!-- Anime catalogue -->
-    <div class="catalog">
+    <div class="catalog" [scrollTop]="scrollTop" *ngIf="!isLoading">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
@@ -96,20 +108,22 @@
   </div>
 
   <!-- Details View -->
-  <mat-card class="details-panel-placeholder" *ngIf="!selectedAnime['name']">
+  <mat-card [ngClass]="{'details-panel-placeholder-2col': hideFinalistsPanel, 'details-panel-placeholder': !hideFinalistsPanel}" *ngIf="!selectedAnime['name']">
     Click on anime in any of your lists to see details from MAL here!
   </mat-card>
 
-  <!-- Need two versions of this because of the CSS for the button-panel: There is an extra button for completed anime w/new season -->
-  <mat-card class="details-panel no-padding-bottom" *ngIf="selectedAnime['name'] && (selectedAnime['category'] != 'Completed' || !selectedAnime['hasNewSeason'])">
+  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
     <div *ngIf="selectedAnime['name']">
-      <div class="details-panel-content" >
+      <div [ngClass]="{'details-panel-content': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
+       'details-panel-content-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'],
+       'details-panel-content-2col': hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
+        'details-panel-content-newseason-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" >
         <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
-        <div class="details-flex-container">
-          <div class="details-thumbnail-container">
+        <div [ngClass]="{'details-flex-container': !hideFinalistsPanel, 'details-flex-container-2col': hideFinalistsPanel}">
+          <div [ngClass]="{'details-thumbnail-container': !hideFinalistsPanel, 'details-thumbnail-container-2col': hideFinalistsPanel}">
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
-          <div class="details-misc">
+          <div [ngClass]="{'details-misc': !hideFinalistsPanel, 'details-misc-2col': hideFinalistsPanel}">
             <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}</p>
             <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}</p>
             <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] }}</p>
@@ -134,7 +148,10 @@
           <p [innerHTML]="selectedAnime['description']"></p>
         </div>
       </div>
-      <div class="details-button-container">
+      <div [ngClass]="{'details-button-container': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-button-container-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
+       'details-button-container-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'], 'details-button-container-2col': hideFinalistsPanel && selectedAnime['category'] != 'Completed',
+        'details-button-container-completed-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
+        'details-button-container-newseason-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}">
         <button mat-raised-button color="accent" [matMenuTriggerFor]="moveMenu" class="details-button">Change Category</button>
         <mat-menu #moveMenu="matMenu" yPosition="above">
           <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')">
@@ -157,76 +174,29 @@
     </div>
   </mat-card>
 
-  <mat-card class="details-panel no-padding-bottom" *ngIf="selectedAnime['name'] && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']">
-    <div *ngIf="selectedAnime['name']">
-      <div class="details-panel-content-newseason" >
-        <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
-        <div class="details-flex-container">
-          <div class="details-thumbnail-container">
-            <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
-          </div>
-          <div class="details-misc">
-            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}</p>
-            <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}</p>
-            <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] }}</p>
-            <p><strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
-            <p><strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
-            <p><strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
-            <p><strong>Genres:</strong>
-              <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
-                <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
-              </span>
-              <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
-            </p>
-            <p><strong>Recommenders:</strong>
-              <span *ngIf="selectedAnime['recommenders'] && selectedAnime['recommenders'].length">
-                <span *ngFor="let recommender of selectedAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == selectedAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
-              </span>
-              <span *ngIf="!selectedAnime['recommenders'] || !selectedAnime['recommenders'].length">None</span>
-            </p>
-          </div>
-        </div>
-        <div class="details-description">
-          <p [innerHTML]="selectedAnime['description']"></p>
-        </div>
-      </div>
-      <div class="details-button-container-newseason">
-        <button mat-raised-button color="accent" [matMenuTriggerFor]="moveMenu" class="details-button">Change Category</button>
-        <mat-menu #moveMenu="matMenu" yPosition="above">
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')">
-            <span>Move to Want to Watch</span>
-          </a>
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')">
-            <span>Move to Considering</span>
-          </a>
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')">
-            <span>Move to Completed</span>
-          </a>
-        </mat-menu>
-        <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed' || selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['ownerIsRecommender']" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['ownerIsRecommender']" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason']" class="new-season-button" (click)="addNewSeason()" mat-raised-button color="accent">Add New Season</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="new-season-button" (click)="removeNewSeason()" mat-raised-button color="accent">Remove New Season</button>
-        <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
-      </div>
-    </div>
-  </mat-card>
-
-  <div class="flex-item">
+  <div *ngIf="!hideFinalistsPanel" class="flex-item">
     <div class="area11-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
-    <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length">
+    <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length && !isLoading">
       Anime you add to your final selection process will appear here!
     </mat-card>
 
+    <div *ngIf="isLoading">
+      <mat-card class="chooser-tool-placeholder">
+        <p>Loading finalist information...<p>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+      </mat-card>
+    </div>
+
   <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
-    <div *ngIf="finalistList.length" class="chooser-tool">
+    <div *ngIf="finalistList.length && !isLoading" class="chooser-tool">
       <div class="finalist-item finalist-topitem">
         <h3 *ngIf="finalistList.length == 1" class="finalist-topitem-header-cr">Currently Watching</h3>
         <h3 *ngIf="finalistList.length != 1" class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>
-        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
-        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-button" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
+        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <button *ngIf="finalistList.length > 1" class="finalist-topitem-shuffle" mat-raised-button color="primary" (click)="shuffleFinalists()">Shuffle</button>
+        <button *ngIf="finalistList.length > 1" mat-raised-button class="finalist-topitem-watchops" color="accent" (click)="watchOPs()">Watch OPs</button>
         <span class="finalist-divider"></span>
       </div>
       <div class="finalist-stats" *ngIf="showFinalistStats">
