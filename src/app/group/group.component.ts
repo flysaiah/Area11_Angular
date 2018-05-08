@@ -18,6 +18,7 @@ export class GroupComponent implements OnInit {
   toastError: boolean;
 
   refreshHeader: number;
+  isLoading: boolean;
 
   newGroupName: string;
   groupAvatarUpload: Array<File> = [];
@@ -345,20 +346,24 @@ export class GroupComponent implements OnInit {
                   // Force refresh of image
                   this.currentGroupAvatar = "/" + res["group"]["name"].split(" ").join("-") + "?xxx=" + Math.random();
                   this.generateUserRequests();
+                  this.isLoading = false;
                 } else {
                   if (res["message"] == "No group found") {
                     this.displayToast("Your group was disbanded", true);
+                    this.isLoading = false;
                   } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
-                    this.displayToast("There is a problem with your group membership.", true)
+                    this.displayToast("There is a problem with your group membership.", true);
+                    this.isLoading = false;
                   } else {
                     console.log(res);
                     this.displayToast("There was a problem loading your group information.", true);
+                    this.isLoading = false;
                   }
                 }
               });
             }
           } else {
-            this.displayToast("There was a problem loading your profile.", true)
+            this.displayToast("There was a problem loading your profile.", true);
           }
         });
       } else {
@@ -377,6 +382,7 @@ export class GroupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.refresh();
   }
 

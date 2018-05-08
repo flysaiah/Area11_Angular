@@ -15,6 +15,7 @@ export class SettingsComponent implements OnInit {
   showUploadOptions: boolean;
 
   refreshHeader: number;
+  isLoading: boolean;
 
   showToast: boolean;
   toastMessage: string;
@@ -127,6 +128,7 @@ export class SettingsComponent implements OnInit {
             if (res["user"]["fireworks"]) {
               this.model["fireworks"] = res["user"]["fireworks"];
             }
+            this.isLoading = false;
           } else {
             this.displayToast("There was a problem loading your settings.", true)
           }
@@ -146,6 +148,7 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.refresh();
   };
 }

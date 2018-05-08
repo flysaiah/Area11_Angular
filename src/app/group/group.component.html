@@ -4,7 +4,7 @@
   <button *ngIf="currentGroup['name']" mat-raised-button class="toptens-button" routerLink="toptens">Top Tens</button>
 </div>
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<mat-card class="group-container">
+<mat-card class="group-container" *ngIf="!isLoading">
   <mat-card-content>
     <mat-tab-group>
       <!-- Info about current group members -->
@@ -130,5 +130,11 @@
         </div>
       </mat-tab>
     </mat-tab-group>
+  </mat-card-content>
+</mat-card>
+<mat-card class="group-loading-placeholder" *ngIf="isLoading">
+  <mat-card-content>
+    <p>Loading group information...<p>
+    <mat-progress-bar mode="buffer"></mat-progress-bar>
   </mat-card-content>
 </mat-card>

@@ -200,3 +200,9 @@
 .create-group-input-label {
   margin-left: 3px;
 }
+.group-loading-placeholder {
+  width: 750px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
+}

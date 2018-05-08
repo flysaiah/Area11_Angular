@@ -116,3 +116,9 @@
 .upload-input {
   width: 50% !important;
 }
+.settings-loading-placeholder {
+  width: 750px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
+}
