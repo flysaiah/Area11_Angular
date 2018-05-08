@@ -67,14 +67,14 @@
   margin-left: 60px;
 }
 .settings-container {
-  width: 50%;
+  width: 750px;
   margin-right: auto;
   margin-left: auto;
   margin-top: 20px;
-  min-height: 500px;
+  height: 450px;
 }
 .settings-form {
-  width: 50%;
+  width: 45%;
   float: left;
 }
 .settings-input {
@@ -89,9 +89,9 @@
   width: 50%;
 }
 .user-profile {
-  width: 50%;
+  width: 55%;
   color: #800015;
-  font-size: 50px;
+  font-size: 45px;
   float: left;
   text-align: center;
 }
@@ -106,7 +106,7 @@
   margin-right: auto;
 }
 .settings-avatar-name {
-  margin-top: -10px;
+  margin-top: -5px;
   margin-bottom: 0px;
 }
 .change-avatar {
@@ -115,4 +115,10 @@
 }
 .upload-input {
   width: 50% !important;
+}
+.settings-loading-placeholder {
+  width: 750px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
 }

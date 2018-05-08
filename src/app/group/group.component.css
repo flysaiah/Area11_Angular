@@ -76,12 +76,12 @@
   margin-right: 60px;
 }
 .group-container {
-  width: 60%;
+  width: 750px;
   margin-right: auto;
   margin-left: auto;
   margin-top: 20px;
   min-height: 400px;
-  max-height: 630px;
+  max-height: 625px;
   overflow: auto;
 }
 .group-settings-tab {
@@ -157,9 +157,9 @@
   text-align: center;
 }
 .group-settings-avatar-big {
-  width: 60%;
+  width: 85%;
   height: 0;
-  padding-bottom: 60%;
+  padding-bottom: 85%;
   background: no-repeat center/cover;
   border-radius: 50%;
   border: 1px solid black;
@@ -167,8 +167,9 @@
   margin-right: auto;
 }
 .group-settings-avatar-name {
-  font-size: 40px;
+  font-size: 45px;
   margin-top: 0px;
+  margin-bottom: 15px;
   color: #800015;
 }
 .change-avatar {
@@ -198,4 +199,10 @@
 }
 .create-group-input-label {
   margin-left: 3px;
+}
+.group-loading-placeholder {
+  width: 750px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
 }

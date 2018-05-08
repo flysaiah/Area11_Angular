@@ -3,7 +3,7 @@
   <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
 </div>
 <div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<mat-card class="settings-container">
+<mat-card class="settings-container" *ngIf="!isLoading">
   <mat-card-content>
     <form class="settings-form" #userForm="ngForm">
       <mat-form-field class="settings-input" color="accent">
@@ -15,7 +15,7 @@
       <br>
       <br>
       <mat-checkbox matInput labelPosition="before" name="fireworks" [(ngModel)]="model.fireworks" #fireworks="ngModel">
-        Fireworks animation on final selection
+        Fireworks animation on final selection&nbsp;
       </mat-checkbox>
       <br>
       <br>
@@ -32,5 +32,11 @@
         <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
       </div>
     </div>
+  </mat-card-content>
+</mat-card>
+<mat-card class="settings-loading-placeholder" *ngIf="isLoading">
+  <mat-card-content>
+    <p>Loading group information...<p>
+    <mat-progress-bar mode="buffer"></mat-progress-bar>
   </mat-card-content>
 </mat-card>

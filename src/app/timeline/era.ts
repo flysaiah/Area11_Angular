@@ -7,6 +7,7 @@ export class Era {
     public location?: string,
     public metadata?: string,
     public subHeader?: string,
-    public backgroundColor?: string
+    public backgroundColor?: string,
+    public whiteText?: boolean
   ) {}
 }
