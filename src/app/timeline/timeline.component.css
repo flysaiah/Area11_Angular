@@ -70,6 +70,15 @@ p {
   line-height: 20px;
   margin-left: 60px;
 }
+.infolists-button {
+  float: right;
+  margin-top: 10px;
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-right: 60px;
+}
 .placeholder-card {
   margin-top: 10px;
   width: 750px;

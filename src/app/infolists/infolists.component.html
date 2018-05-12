@@ -1,0 +1,27 @@
+<app-header [refreshHeader]="refreshHeader"></app-header>
+<div class="search-toolbar">
+  <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
+  <button mat-raised-button class="back-to-timeline-button" routerLink="/timeline">Back to Timeline</button>
+</div>
+<div class="area11-infolists-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
+<mat-card class="infolists-left-container">
+  <h2>Categories</h2>
+  <!-- <div class="infolists-left-button-container">
+    <button class="infolists-left-button" mat-raised-button color="primary">View All</button>
+    <button class="infolists-left-button" mat-raised-button color="primary">Hide All</button>
+    <button class="infolists-left-button" mat-raised-button color="accent">Add New</button>
+  </div> -->
+  <mat-divider></mat-divider>
+  <mat-selection-list class="infolists-list" [(ngModel)]="selectedInfolists" ngDefaultControl>
+    <mat-list-option *ngFor="let infolist of allInfolists" [value]="infolist">
+      {{ infolist["name"] }}
+    </mat-list-option>
+  </mat-selection-list>
+  <button (click)="testt()">Testt</button>
+</mat-card>
+
+<div class="infolists-right-container">
+  <mat-card class="infolists-right-card" *ngFor="let infolist of selectedInfolists">
+    <h2>{{ infolist["name"] }}</h2>
+  </mat-card>
+</div>

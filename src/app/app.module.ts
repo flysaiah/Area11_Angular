@@ -26,6 +26,7 @@ import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
 import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.component';
+import { InfolistsComponent } from './infolists/infolists.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.componen
     ImportAnimeDialog,
     HeaderComponent,
     TopTensComponent,
-    TimelineComponent
+    TimelineComponent,
+    InfolistsComponent
   ],
   imports: [
     BrowserModule,
