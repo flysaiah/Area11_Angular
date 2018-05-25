@@ -39,7 +39,7 @@ Anime.find({}, (err, animeList) => {
           }
           setTimeout(() => {
             const query = encodeURIComponent(anime["name"]);
-            request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
+            request.get({url: 'https://area11-burn:vi0letbestgirl@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
               if (!err) {
                 let entries = JSON.parse(parser.toJson(body).toString())["anime"]["entry"];
                 let malAnime;

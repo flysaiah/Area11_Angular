@@ -161,7 +161,7 @@ module.exports = (router) => {
     const query = encodeURIComponent(req["body"]["query"]);
     const parser = require('xml2json');
     const request = require('request');
-    request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
+    request.get({url: 'https://area11-burn:vi0letbestgirl@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
       if (!err) {
         let jsonString = parser.toJson(body);
         res.json({ success: true, data: JSON.parse(jsonString.toString())["anime"]["entry"] });
