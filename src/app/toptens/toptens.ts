@@ -7,6 +7,7 @@ export class TopTens {
       name: string,
       viewerPrefs: {member: string, shouldHide: boolean}[]
     }[],
-    public hasNoContent?: boolean
+    public hasNoContent?: boolean,
+    public isSelected?: boolean
   ) {}
 }

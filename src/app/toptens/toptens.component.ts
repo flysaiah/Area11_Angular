@@ -36,7 +36,8 @@ export class TopTensComponent implements OnInit {
   allCategories: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
-  currentCategory: string;
+  currentCategory: string;   // Used only for total ordering mode
+  hideSelectorPanel: boolean;
 
   isLoading: boolean;
 
@@ -81,17 +82,39 @@ export class TopTensComponent implements OnInit {
     });
   }
 
+  selectAll() {
+    this.allCategories.map((ttObj) => {
+      ttObj.isSelected = true;
+      return ttObj;
+    })
+  }
+
+  selectNone() {
+    this.allCategories.map((ttObj) => {
+      ttObj.isSelected = false;
+      return ttObj;
+    })
+  }
+
   enterEditMode(index: number, category: string) {
     this.categoryLogistics[index].isEditing = true;
     this.editingMap.set(category, true);
   }
 
   viewTotalOrdering() {
-    // Only show this category so as not to confuse visuall w/all the cards
-    if (this.currentCategory == "All Categories") {
-      this.currentCategory = this.allCategories[0]["category"];
-    }
+    // Only show this category so as not to confuse visual w/all the cards
     this.totalOrderMode = true;
+    // Default to the first category that is already showing
+    this.currentCategory = "";
+    for (let category of this.allCategories) {
+      if (category.isSelected) {
+        this.currentCategory = category.category;
+        break;
+      }
+    }
+    if (!this.currentCategory) {
+      this.currentCategory = this.allCategories[0].category
+    }
   }
 
   leaveTotalOrdering() {
@@ -99,6 +122,8 @@ export class TopTensComponent implements OnInit {
   }
 
   saveChanges(category: string, index: number) {
+    // This isn't very nice but for now it's the simplest way to avoid putting isSelected into database
+    delete this.topTensMap.get(category).get(this.currentUser).isSelected;
     this.toptensService.saveChanges(this.currentGroup.name, this.topTensMap.get(category).get(this.currentUser)).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Your changes have been saved!");
@@ -221,9 +246,6 @@ export class TopTensComponent implements OnInit {
         this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
           if (res["success"]) {
             this.displayToast("Category deleted successfully!");
-            if (this.currentCategory == category) {
-              this.currentCategory = "All Categories";
-            }
             this.refresh();
           } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
             this.displayToast("There is a problem with your group membership.", true)
@@ -287,9 +309,9 @@ export class TopTensComponent implements OnInit {
     this.allCategories = [];
     this.categoryLogistics = [];
     this.editingMap = new Map<string, boolean>();
-    this.currentCategory = "All Categories";
     this.totalOrderMode = false;
     this.isLoading = true;
+    this.hideSelectorPanel = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

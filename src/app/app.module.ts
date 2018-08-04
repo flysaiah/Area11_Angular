@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
+import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule } from '@angular/material';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -68,7 +68,8 @@ import { InfolistsComponent } from './infolists/infolists.component';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatProgressBarModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatRadioModule
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
