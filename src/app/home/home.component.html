@@ -31,6 +31,13 @@
     </select>
   </div>
   <div class="search-toolbar-minicontainer">
+    <label class="filter-label" for="catalogFilterByType">Filter by Type: </label>
+    <select id="catalogFilterByType" [(ngModel)]="selectedType" (ngModelChange)="filterAnimeByType($event)" class="catalog-sort">
+      <option value="All Types">All Types</option>
+      <option *ngFor="let type of allTypes" [value]="type">{{ type }}</option>
+    </select>
+  </div>
+  <div class="search-toolbar-minicontainer">
     <label class="filter-label" for="catalogGenreFilter">View by Genre: </label>
     <select id="catalogGenreFilter" [(ngModel)]="selectedGenre" (ngModelChange)="filterAnimeByGenre($event)" class="catalog-sort">
       <option value="All Genres">All Genres</option>
@@ -38,9 +45,7 @@
     </select>
   </div>
   <div class="search-toolbar-minicontainer">
-    <label class="filter-label" for="animeSearch-no-placeholder">Search for anime: </label>
-    <input id="animeSearch-no-placeholder" class="search-anime-input-no-placeholder" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
-    <input id="animeSearch" class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+    <input class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
         <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />

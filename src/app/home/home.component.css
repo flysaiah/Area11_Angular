@@ -286,29 +286,23 @@
 .search-toolbar-minicontainer {
   display: inline;
 }
-.search-anime-input-no-placeholder {
-  width: 200px;
-  border: 1px solid black;
-}
 .search-anime-input {
-  display: none;
+  width: 100px;
+  border: 1px solid black;
+  display: inline;
 }
 @media screen and (max-width: 1300px) {
   .filter-label {
-    display: none;
-  }
-  .search-anime-input {
-    width: 200px;
-    border: 1px solid black;
-    display: inline;
-  }
-  .search-anime-input-no-placeholder {
     display: none;
   }
 }
 .search-option {
   font-size: 10px;
   border-bottom: 1px solid gray;
+}
+/* HACK: This is me being lazy */
+/deep/ .mat-autocomplete-panel {
+  width: 225px
 }
 .search-anime-thumbnail {
   vertical-align: middle;

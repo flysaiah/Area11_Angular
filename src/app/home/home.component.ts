@@ -45,6 +45,9 @@ export class HomeComponent {
   allGenres: string[];
   selectedGenre: string;
 
+  allTypes: string[];
+  selectedType: string;
+
   refreshHeader: number;
   isLoading: boolean;
   scrollTop: number;
@@ -265,6 +268,10 @@ export class HomeComponent {
     return false;
   }
 
+  private typeFilter(anime) {
+    return (this.selectedType == anime["type"])
+  }
+
   filterAnimeByGenre(criteria) {
     if (criteria == "All Genres") {
       this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
@@ -280,6 +287,20 @@ export class HomeComponent {
 
   }
 
+  filterAnimeByType(criteria) {
+    if (criteria == "All Types") {
+      this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
+      this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
+      this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
+    } else {
+      this.wantToWatchList = this.newWantToWatch.filter(this.typeFilter.bind(this));
+      this.consideringList = this.newConsidering.filter(this.typeFilter.bind(this));
+      this.completedList = this.newCompleted.filter(this.typeFilter.bind(this));
+    }
+    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
+    this.sortAnime(this.sortCriteria);
+  }
+
   private getGenres() {
     let allGenres = new Set<string>();
     // NOTE: This could be a little costly eventually, so make sure to minimize when we call refresh()
@@ -291,6 +312,16 @@ export class HomeComponent {
       }
     }
     this.allGenres = Array.from(allGenres);
+  }
+
+  private getTypes() {
+    let allTypes = new Set<string>();
+    for (let anime of this.searchAnime) {
+      if (!allTypes.has(anime["type"])) {
+        allTypes.add(anime["type"])
+      }
+    }
+    this.allTypes = Array.from(allTypes);
   }
 
   addAnimeToCatalog(category?: string) {
@@ -645,11 +676,13 @@ export class HomeComponent {
         this.finalistList = newFinalistList;
         this.searchAnime = newSearchAnimeList;
         this.getGenres();
+        this.getTypes();
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
         }
         this.filterAnimeByGenre(this.selectedGenre);
+        this.filterAnimeByType(this.selectedType);
         this.sortAnime(this.sortCriteria);
         this.isLoading = false;
         if (scrollTop) {
@@ -699,6 +732,9 @@ export class HomeComponent {
 
     this.selectedGenre = "All Genres";
     this.allGenres = [];
+
+    this.selectedType = "All Types";
+    this.allTypes = []
 
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
