@@ -142,7 +142,20 @@
   margin-bottom: 0px;
 }
 .group-member-bestgirl {
-  margin-top: 5px;
+  margin-top: 10px !important;
+  margin-bottom: 0px !important;
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.group-member-current-show {
+  margin-top: 0px !important;
+  margin-bottom: 10px !important;
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .group-settings-left {
   width: 50%;

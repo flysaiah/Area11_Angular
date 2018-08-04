@@ -481,20 +481,42 @@ module.exports = (router) => {
           } else if (members) {
             // Need to modify members so we can remove password and include isPending
             let newMembers = [];
-            for (let member of members) {
-              newMembers.push({
-                id: member.id,
-                username: member.username,
-                bestgirl: member.bestgirl,
-                avatar: (member.avatar ? member.avatar : ""),
-                isPending: groupMemberMap.get(member.id)
+            let currentShowsMap = {};
+
+            async.each(members, function(member, done) {
+              // Additional query to get each member's current show
+              // TODO: This is probably not the smartest way to do this, but I'm not
+              // sure if adding "current show" to the user schema is a better route atm
+              Anime.find({user: member.username, isFinalist: true}, (err, animeList) => {
+                if (err) {
+                  res.json({ success: false, message: err })
+                } else {
+                  newMembers.push({
+                    id: member.id,
+                    username: member.username,
+                    bestgirl: member.bestgirl,
+                    avatar: (member.avatar ? member.avatar : ""),
+                    isPending: groupMemberMap.get(member.id)
+                  });
+                  if (animeList && animeList.length && animeList.length == 1) {
+                    currentShowsMap[member.username] = animeList[0]["name"];
+                  } else {
+                    currentShowsMap[member.username] = "N/A";
+                  }
+                  done();
+                }
               })
-            }
-            let groupObj = {
-              name: group.name,
-              members: newMembers,
-            }
-            res.json({ success: true, group: groupObj })
+            }, function allDone(err) {
+              if (err) {
+                res.json({ success: false, message: err });
+              } else {
+                let groupObj = {
+                  name: group.name,
+                  members: newMembers,
+                }
+                res.json({ success: true, group: groupObj, currentlyWatching: currentShowsMap})
+              }
+            });
           } else {
             res.json({ success: false, message: "Unknown error in /getGroupInfo" })
           }

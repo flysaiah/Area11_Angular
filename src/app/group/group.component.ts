@@ -28,8 +28,8 @@ export class GroupComponent implements OnInit {
   currentGroupAvatar: string;
   changesModel: Group;
   // Use these arrays so we can iterate through isPending=true vs isPending=false easier in the HTML
-  currentGroupMembersCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
-  currentGroupMembersCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  currentGroupMembersCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean, currentlyWatching?: string}[];
+  currentGroupMembersCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean, currentlyWatching?: string}[];
   pendingGroupRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
   pendingUserRequestsCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
   pendingUserRequestsCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
@@ -319,6 +319,18 @@ export class GroupComponent implements OnInit {
     this.showUploadOptions = !this.showUploadOptions;
   }
 
+  getCurrentAnime(resData: Object) {
+    // Update group info with the anime currently being watched by each member
+    for (let member of this.currentGroupMembersCol1) {
+      member.currentlyWatching = resData[member.username];
+    }
+
+    for (let member of this.currentGroupMembersCol2) {
+
+      member.currentlyWatching = resData[member.username];
+    }
+  }
+
   refresh() {
     this.refreshHeader = Math.random();
 
@@ -346,6 +358,7 @@ export class GroupComponent implements OnInit {
                   // Force refresh of image
                   this.currentGroupAvatar = "/" + res["group"]["name"].split(" ").join("-") + "?xxx=" + Math.random();
                   this.generateUserRequests();
+                  this.getCurrentAnime(res["currentlyWatching"]);
                   this.isLoading = false;
                 } else {
                   if (res["message"] == "No group found") {

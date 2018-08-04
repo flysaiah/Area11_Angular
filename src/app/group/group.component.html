@@ -19,7 +19,8 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
@@ -30,7 +31,8 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
                 <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
