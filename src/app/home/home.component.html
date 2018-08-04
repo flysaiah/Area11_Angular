@@ -86,13 +86,13 @@
       </div>
     </mat-card>
 
-    <div class="catalog catalog-loading" *ngIf="isLoading">
+    <div class="catalog catalog-loading" *ngIf="isLoading || catalogIsLoading">
       <p>Loading catalog information...<p>
       <mat-progress-bar mode="buffer"></mat-progress-bar>
     </div>
 
     <!-- Anime catalogue -->
-    <div class="catalog" [scrollTop]="scrollTop" *ngIf="!isLoading">
+    <div class="catalog" [scrollTop]="scrollTop" *ngIf="!isLoading && !catalogIsLoading">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">

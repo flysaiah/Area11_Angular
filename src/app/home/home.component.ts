@@ -50,6 +50,7 @@ export class HomeComponent {
 
   refreshHeader: number;
   isLoading: boolean;
+  catalogIsLoading: boolean;   // for when we just need the animation on left panel
   scrollTop: number;
 
   searchAnimeCtl: FormControl;
@@ -642,8 +643,11 @@ export class HomeComponent {
     });
   }
 
-  refresh(scrollTop?: boolean) {
+  refresh(fromCategoryChange?: boolean) {
     // Fetch all anime stored in database and update our lists
+    if (fromCategoryChange) {
+    this.catalogIsLoading = true;
+  }
     this.showAddAnimePrompt = false;
     this.animeToAdd = new Anime(this.currentUser, "");
 
@@ -685,9 +689,11 @@ export class HomeComponent {
         this.filterAnimeByType(this.selectedType);
         this.sortAnime(this.sortCriteria);
         this.isLoading = false;
-        if (scrollTop) {
+        this.catalogIsLoading = false;
+        if (fromCategoryChange) {
           // Scroll to top of catalog; this happens when category is changed
           this.scrollTop = Math.random();
+
         }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
@@ -711,6 +717,7 @@ export class HomeComponent {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
     this.isLoading = true;
+    this.catalogIsLoading = false;
     this.scrollTop = 0;
 
     this.autoTimelineAdd = false;
