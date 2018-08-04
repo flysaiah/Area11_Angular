@@ -172,6 +172,12 @@
 .category-header {
   text-align: center;
 }
+.last-edited-date {
+  text-align: center;
+  margin-top: -10px;
+  font-size: 11pt;
+  margin-bottom: 10px;
+}
 .category-controls {
   display: flex;
   justify-content: center;
