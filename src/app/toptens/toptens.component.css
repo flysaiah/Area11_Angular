@@ -198,6 +198,9 @@
 .tenth-item {
   margin-left: -9px;
 }
+.hundredth-item {
+  margin-left: -19px;
+}
 .ordering-button {
   justify-content: center;
   padding: 0px;

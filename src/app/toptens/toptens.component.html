@@ -61,7 +61,7 @@
         <div class="toptens-content">
           <div *ngIf="categoryLogistics[i]['member'] != currentUser || !categoryLogistics[i]['isEditing']">
             <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-              <p *ngIf="totalOrderMode || j <= 9" [ngClass]="{'tenth-item': j >= 9}">
+              <p *ngIf="totalOrderMode || j <= 9" [ngClass]="{'tenth-item': j >= 9 && j < 99, 'hundredth-item': j >= 99}">
                 <span *ngIf="categoryLogistics[i]['member'] != currentUser && isHidden(entry)">{{ j + 1 }}. Hidden</span>
                 <span *ngIf="categoryLogistics[i]['member'] == currentUser || !isHidden(entry)">{{ j + 1 }}. {{ entry["name"] }}</span>
               </p>
@@ -69,7 +69,7 @@
           </div>
           <div *ngIf="categoryLogistics[i]['member'] == currentUser && categoryLogistics[i]['isEditing']">
             <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-              <p *ngIf="totalOrderMode || j <= 9" display="inline" [ngClass]="{'tenth-item': j >= 9}" >{{ j + 1 }}. <input [(ngModel)]="entry['name']">
+              <p *ngIf="totalOrderMode || j <= 9" display="inline" [ngClass]="{'tenth-item': j >= 9 && j < 99, 'hundredth-item': j >= 99}" >{{ j + 1 }}. <input [(ngModel)]="entry['name']">
                 <button mat-raised-button class="ordering-button" color="primary" (click)="moveUp(category['category'], i, j)" [disabled]="j == 0">▲</button>
                 <button mat-raised-button class="ordering-button" color="primary" (click)="moveDown(category['category'], i, j)" [disabled]="!totalOrderMode && j == 9 || totalOrderMode && j == topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries'].length - 1">▼</button>
                 <button mat-raised-button class="ordering-button" color="accent" *ngIf="totalOrderMode" (click)="addNewEntry(category['category'], i, j)">＋</button>
