@@ -86,6 +86,9 @@ p {
   margin-right: auto;
   text-align: center;
 }
+.loading-bar {
+  text-align: left;
+}
 .era-container {
   text-align: center;
 }

@@ -374,9 +374,12 @@ export class GroupComponent implements OnInit {
                   }
                 }
               });
+            } else {
+              this.isLoading = false;
             }
           } else {
             this.displayToast("There was a problem loading your profile.", true);
+            this.isLoading = false;
           }
         });
       } else {

@@ -154,13 +154,13 @@ export class TimelineComponent implements OnInit {
           this.timelineService.fetchTimeline(user).subscribe((res) => {
             if (res["success"] && res["timeline"]) {
               this.eraList = res["timeline"]["eras"];
-              this.isLoading = false;
             } else if (!res["success"] && res["message"] == "Permission denied") {
               this.unauthorizedError = true;
             } else if (!res["success"]) {
               this.displayToast("There was a problem.", true);
               console.log(res["message"]);
             }
+            this.isLoading = false;
           });
         } else {
           // If there was a problem we need to have them log in again

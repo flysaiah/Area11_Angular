@@ -80,6 +80,7 @@
                 <div class="group-member-name-container">
                   <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
                   <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <br>
                   <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
                   <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
                 </div>
