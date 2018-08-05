@@ -21,8 +21,9 @@
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
                 <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
           </div>
@@ -33,8 +34,9 @@
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
                 <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
-                <button class="import-or-leave-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
               </div>
             </div>
           </div>

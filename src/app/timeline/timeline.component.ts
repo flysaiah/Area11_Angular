@@ -3,6 +3,7 @@ import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { Anime } from '../anime';
 import { AuthService } from '../services/auth.service';
 import { TimelineService } from '../services/timeline.service';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Era } from './era';
 
 @Component({
@@ -22,7 +23,10 @@ export class TimelineComponent implements OnInit {
 
   eraList: Era[];
   editingEra: number;   // Can only edit one era at a time; this is the index of the one being edited
-  editingEraString: string   // string version of current era that appears in textarea
+  editingEraString: string;   // string version of current era that appears in textarea
+
+  isTimelineOwner: boolean;   // Only the timeline owner can edit the timeline; group members can observe
+  unauthorizedError: boolean;   // For when someone tries to access someone's timline who isn't a group member
 
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
@@ -117,34 +121,54 @@ export class TimelineComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private timelineService: TimelineService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.refreshHeader = Math.random();
+    this.isTimelineOwner = true;
+    this.unauthorizedError = false;
 
     this.isLoading = true;
     this.eraList = [];
     this.editingEra = -1;
     this.editingEraString = "";
 
-    this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
-        this.timelineService.fetchTimeline().subscribe((res) => {
-          if (res["success"] && res["timeline"]) {
-            this.eraList = res["timeline"]["eras"];
-            this.isLoading = false;
-          } else if (!res["success"]) {
-            this.displayToast("There was a problem.", true);
-            console.log(res["message"]);
-          }
-        });
-      } else {
-        // If there was a problem we need to have them log in again
-        this.authService.logout();
-        console.log(res["message"]);
+    // URL parameter lets us know if we're querying our own timeline or a group member's
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      this.isTimelineOwner = true;
+      this.isLoading = true;
+      this.eraList = [];
+      this.editingEra = -1;
+      this.editingEraString = "";
+
+      let user = ""
+      if (params.user) {
+        this.isTimelineOwner = false;
+        user = params.user;
       }
+      this.authService.getProfile().subscribe((res) => {
+        if (res["success"]) {
+          this.currentUser = res["user"]["username"];
+          this.timelineService.fetchTimeline(user).subscribe((res) => {
+            if (res["success"] && res["timeline"]) {
+              this.eraList = res["timeline"]["eras"];
+              this.isLoading = false;
+            } else if (!res["success"] && res["message"] == "Permission denied") {
+              this.unauthorizedError = true;
+            } else if (!res["success"]) {
+              this.displayToast("There was a problem.", true);
+              console.log(res["message"]);
+            }
+          });
+        } else {
+          // If there was a problem we need to have them log in again
+          this.authService.logout();
+          console.log(res["message"]);
+        }
+      });
+
     });
   }
 }

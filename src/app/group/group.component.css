@@ -201,8 +201,8 @@
 .find-or-create-button {
   width: 120px;
 }
-.import-or-leave-button {
-  width: 125px;
+.group-member-button {
+  min-width: 80px;
   height: 30px;
   line-height: 30px;
 }

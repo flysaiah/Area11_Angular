@@ -36,9 +36,9 @@ export class TimelineService {
     return this.http.post(this.domain + '/api/timeline/saveTimeline', { eras: eras }, this.options).map(res => res.json());
   }
 
-  fetchTimeline() {
+  fetchTimeline(user: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/timeline/fetchTimeline', { }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/timeline/fetchTimeline', { user: user }, this.options).map(res => res.json());
   }
 
   addAnimeToTimeline(name: string, index: number) {
