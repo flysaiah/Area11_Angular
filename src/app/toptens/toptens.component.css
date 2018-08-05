@@ -83,12 +83,11 @@
   margin-right: auto;
   text-align: center;
 }
-.toptens-title {
-  margin-top: 30px;
-}
 .toptens-top-navigator {
   width: 1000px;
   padding: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
@@ -103,17 +102,25 @@
   height: 25px;
   line-height: 25px;
   min-width: 80px !important;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .toptens-top-navigator-options {
   padding-left: 20px;
   padding-right: 20px;
   text-align: left;
 }
+.toptens-top-navigator-controls {
+  margin-top: -20px;
+}
 .category-checkbox-batch-options {
   text-align: center;
 }
 .category-checkbox-options-container {
+  width: 850px;
   margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .new-category-button {
   margin-left: 5px;
@@ -212,6 +219,8 @@
   padding: 0px;
   min-width: 30px;
   width: 30px;
+  margin-left: 2px;
+  margin-right: 2px;
   height: 20px;
   line-height: 20px;
   border-radius: 5px;

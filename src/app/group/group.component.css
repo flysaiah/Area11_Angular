@@ -205,6 +205,8 @@
   min-width: 80px;
   height: 30px;
   line-height: 30px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 .find-or-create-input {
   margin-left: 5px;

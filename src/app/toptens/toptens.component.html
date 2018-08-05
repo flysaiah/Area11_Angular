@@ -9,8 +9,8 @@
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <div *ngIf="currentGroup['name'] && !isLoading">
   <mat-card *ngIf="!hideSelectorPanel" class="toptens-top-navigator">
-    <h1 *ngIf="!totalOrderMode" class="toptens-title">Top Tens</h1>
-    <h1 *ngIf="totalOrderMode" class="toptens-title">Total Ordering</h1>
+    <h1 *ngIf="!totalOrderMode">Top Tens</h1>
+    <h1 *ngIf="totalOrderMode">Total Ordering</h1>
     <div class="toptens-top-navigator-controls">
       <mat-form-field color="accent">
         <input matInput placeholder="New Category Name" [(ngModel)]="newCategoryName">
@@ -52,7 +52,7 @@
         </div>
         <div class="category-controls">
           <div class="category-control-item">
-            <label for="member-select">Currently viewing:</label>
+            <label for="member-select">Currently viewing: </label>
             <select id="member-select" [(ngModel)]="categoryLogistics[i]['member']">
               <option *ngFor="let member of currentGroupMembers" [value]="member['username']">{{ member["username"] }}</option>
             </select>

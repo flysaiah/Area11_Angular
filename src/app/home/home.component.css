@@ -519,6 +519,7 @@
   margin-top: 5px;
 }
 .finalist-topitem-viewstats {
+  margin-right: 2px;
   background-color: #FFD700;
   border-radius: 50px;
   height: 20px;
@@ -527,6 +528,8 @@
   margin-bottom: 10px;
 }
 .finalist-topitem-shuffle {
+  margin-left: 2px;
+  margin-right: 2px;
   border-radius: 50px;
   height: 20px;
   vertical-align: middle;
@@ -535,6 +538,7 @@
   min-width: 50px !important;
 }
 .finalist-topitem-watchops {
+  margin-left: 2px;
   border-radius: 50px;
   height: 20px;
   vertical-align: middle;
@@ -553,7 +557,7 @@
 }
 .finalist-button-container {
   float: right;
-  margin-top: 5px;
+  margin-top: 13px;
   margin-bottom: 10px;
   margin-right: 2%;
   white-space: nowrap;
@@ -561,7 +565,7 @@
 .finalist-button-container-smallscreen {
   display: none;
 }
-@media screen and (min-width: 1432px) {
+@media screen and (min-width: 1409px) {
   .details-button-container {
     height: 50px;
   }
@@ -569,7 +573,7 @@
     max-height: 600px;
   }
 }
-@media screen and (min-width: 1375px) {
+@media screen and (min-width: 1352px) {
   .details-button-container-completed {
     height: 50px;
   }
@@ -577,7 +581,7 @@
     max-height: 600px;
   }
 }
-@media screen and (min-width: 1895px) {
+@media screen and (min-width: 1872px) {
   .details-button-container-newseason {
     height: 50px;
   }
@@ -585,7 +589,7 @@
     max-height: 600px;
   }
 }
-@media screen and (min-width: 984px) {
+@media screen and (min-width: 961px) {
   .details-button-container-2col {
     height: 50px;
   }
@@ -594,7 +598,7 @@
   }
 }
 /* 2 */
-@media screen and (min-width: 947px) {
+@media screen and (min-width: 924px) {
   .details-button-container-completed-2col {
     height: 50px;
   }
@@ -603,7 +607,7 @@
   }
 }
 /* 3 */
-@media screen and (min-width: 1294px) {
+@media screen and (min-width: 1271px) {
   .details-button-container-newseason-2col {
     height: 50px;
   }
@@ -619,7 +623,7 @@
       display: block;
       margin-right: 2%;
       float: right;
-      margin-top: 5px;
+      margin-top: 13px;
       margin-bottom: 5px;
     }
     .finalist-smallscreen-action {
@@ -658,6 +662,8 @@
   }
 }
 .finalist-button {
+  margin-right: 1px;
+  margin-left: 2px;
   border-radius: 50px;
   height: 20px;
   vertical-align: middle;

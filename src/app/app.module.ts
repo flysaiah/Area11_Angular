@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -49,9 +48,9 @@ import { InfolistsComponent } from './infolists/infolists.component';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    HttpModule,
     MatInputModule,
     MatDialogModule,
     FormsModule,
@@ -59,7 +58,6 @@ import { InfolistsComponent } from './infolists/infolists.component';
     MatCardModule,
     MatChipsModule,
     AppRoutingModule,
-    HttpModule,
     MatFormFieldModule,
     MatMenuModule,
     MatSelectModule,
