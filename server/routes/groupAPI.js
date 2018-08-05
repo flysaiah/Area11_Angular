@@ -100,7 +100,7 @@ module.exports = (router) => {
         Group.findOne({ "name": req.body.groupName }, (err, group) => {
           if (err) {
             res.json({ success: false, message: err });
-          } else if (!group) {
+          } else if (!group && req.body.groupName) {
             // Group doesn't exist anymore--delete relevant info from user document
             User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
               if (err) {
@@ -109,6 +109,8 @@ module.exports = (router) => {
                 res.json({ success: false, message: "No group found" });
               }
             });
+          } else if (!group) {
+            res.json({ success: false, message: "No group found" });
           } else {
             // First make sure that user is a part of this group
             let found = false;

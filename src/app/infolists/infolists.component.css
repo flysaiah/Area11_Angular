@@ -79,18 +79,35 @@ p {
   line-height: 20px;
   margin-right: 60px;
 }
+.infolists-flex-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+@media screen and (max-width: 1150px) {
+  .infolists-flex-container {
+    display: grid;
+  }
+  .infolists-left-container {
+    margin-bottom: 50px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 .infolists-left-container {
   float: left;
   padding-left: 0px;
   padding-right: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 15px;
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
   border-radius: 2px;
   box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-  margin-left: 2%;
-  width: 400px;
+  min-width: 400px;
   text-align: center;
 }
 .infolists-left-button-container {
@@ -100,17 +117,35 @@ p {
 .infolists-left-button {
   height: 28px;
   line-height: 28px;
-  margin-left: 1px;
-  margin-right: 1px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.add-new-infolist-container {
+  margin-top: 10px;
+}
+.add-new-infolist-button {
+  margin-left: 5px;
+  height: 28px;
+  line-height: 28px;
+  width: 88px;
 }
 .infolists-list {
   text-align: left;
+  margin-left: 20px;
 }
-
+.infolists-list-item {
+  margin-top: 20px;
+}
+.delete-infolist-button {
+  float: right;
+  margin-right: 20px;
+  height: 30px;
+  min-width: 50px !important;
+  line-height: 30px
+}
 .infolists-right-container {
   float: left;
-  width: 700px;
-  margin-left: 50px;
+  min-width: 700px;
 }
 .infolists-right-card {
   text-align: center;
@@ -119,4 +154,62 @@ p {
   border-width: 5px;
   border-radius: 2px;
   box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  margin-bottom: 20px;
+}
+.infolists-add-save-container {
+  text-align: center;
+}
+.infolists-right-button {
+  min-width: 70px;
+  height: 28px;
+  line-height: 28px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.empty-list-placeholder {
+  margin-top: 20px;
+}
+.infolists-table {
+  margin-top: 20px;
+  width: 650px;
+  margin-right: auto;
+  margin-left: auto;
+  border-collapse: collapse;
+}
+
+.infolists-table th {
+  background-color: #3d85c6;
+  color: white;
+}
+.td-fixed-height {
+  height: 20px;
+}
+.infolists-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.infolists-table td, .infolists-table th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: left;
+}
+.lock-svg {
+  height: 20px;
+  position: relative;
+  top: 2px;
+  right: 5px;
+}
+.lock-unlock-button {
+  background-color: #3d85c6;
+  width: 20px;
+  border: 0;
+}
+.lock-unlock-button:hover {
+  cursor: pointer;
+}
+.table-cell-anime {
+  width: 325px;
+}
+.table-cell-info {
+  width: 325px;
 }

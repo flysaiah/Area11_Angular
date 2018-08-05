@@ -23,6 +23,7 @@ mongoose.connect(config.uri, {useMongoClient: true}, (err) => {
 const authentication = require('./server/routes/authentication')(router);
 const animeAPI = require('./server/routes/animeAPI')(router);
 const userAPI = require('./server/routes/userAPI')(router);
+const infolistAPI = require('./server/routes/infolistAPI')(router);
 const timelineAPI = require('./server/routes/timelineAPI')(router);
 const groupAPI = require('./server/routes/groupAPI')(router);
 const toptensAPI = require('./server/routes/toptensAPI')(router);
@@ -42,6 +43,7 @@ app.use('/authentication', authentication);
 app.use('/api/anime', animeAPI);
 app.use('/api/user', userAPI);
 app.use('/api/timeline', timelineAPI);
+app.use('/api/infolist', infolistAPI)
 app.use('/api/group', groupAPI);
 app.use('/api/toptens', toptensAPI);
 

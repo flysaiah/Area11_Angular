@@ -18,6 +18,7 @@ import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { TopTensService } from './services/toptens.service';
 import { TimelineService } from './services/timeline.service';
+import { InfolistService } from './services/infolist.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
@@ -69,7 +70,7 @@ import { InfolistsComponent } from './infolists/infolists.component';
     ColorPickerModule,
     MatRadioModule
   ],
-  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, InfolistService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog]
 })

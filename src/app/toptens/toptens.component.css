@@ -165,6 +165,9 @@
   margin-right: auto;
   text-align: center;
 }
+.loading-bar {
+  text-align: left;
+}
 .toptens-card {
   margin-top: 10px;
   width: 750px;

@@ -7,8 +7,7 @@ const infolistSchema = new Schema({
   user: { type: String, required: true, unique: false, lowercase: false},
   entries: [{ anime: String, info: String }],
   lastEditedDate: Date,
-  linkedToCatalog: Boolean
 });
 
 
-module.exports = mongoose.model('TopTens', infolistSchema);
+module.exports = mongoose.model('Infolist', infolistSchema);

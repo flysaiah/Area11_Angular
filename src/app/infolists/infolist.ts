@@ -1,7 +1,10 @@
 export class Infolist {
   constructor(
     public name: string,
-    public linkedToCatalog: boolean,
-    public colNames: string[]
+    public entries: { anime: string, info: string }[],
+    public user?: string,
+    public isSelected?: boolean,
+    public animeColumnUnlocked?: boolean,
+    public infoColumnUnlocked?: boolean
   ) {}
 }
