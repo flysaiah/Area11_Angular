@@ -5,6 +5,7 @@ const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
 const Group = require('../models/group.js');
 const async = require('async');
+const Horseman = require('node-horseman');
 
 module.exports = (router) => {
 
@@ -156,103 +157,174 @@ module.exports = (router) => {
     });
   });
 
-  router.post('/malSearch', (req, res) => {
-    // Query myanimelist API for info based on name of anime
-    const query = encodeURIComponent(req["body"]["query"]);
-    const parser = require('xml2json');
-    const request = require('request');
-    request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
-      if (!err) {
-        let jsonString = parser.toJson(body);
-        res.json({ success: true, data: JSON.parse(jsonString.toString())["anime"]["entry"] });
-      } else {
-        res.json({ success: false, message: err.toString()})
-        return;   // We need this because of a weird error that happens in express due to the way errors are handled
-      }
-    });
-  });
+  // router.post('/malSearch', (req, res) => {
+  //   // Query myanimelist API for info based on name of anime
+  //   const query = encodeURIComponent(req["body"]["query"]);
+  //   const parser = require('xml2json');
+  //   const request = require('request');
+  //   request.get({url: 'https://area11-burn:yuibestgirl4ever@myanimelist.net/api/anime/search.xml?q=' + query}, function (err, response, body) {
+  //     if (!err) {
+  //       let jsonString = parser.toJson(body);
+  //       res.json({ success: true, data: JSON.parse(jsonString.toString())["anime"]["entry"] });
+  //     } else {
+  //       res.json({ success: false, message: err.toString()})
+  //       return;   // We need this because of a weird error that happens in express due to the way errors are handled
+  //     }
+  //   });
+  // });
 
   router.post('/addAnimeToCatalog', (req, res) => {
 
-    const anime = req.body.anime;
+    // TODO: Put this in a python script and run it on the side
+    const horseman = new Horseman({
+      timeout: 5000,
+      loadImages: false,
+      injectJquery: false,
+    });
+    horseman.open(req.body.malURL).html().then((stuff) => {
+      // Description
+      const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
+      // Rating
+      let rating;
+      let r = stuff.split('<span itemprop="ratingValue">');
+      if (r.length > 1) {
+        rating = r[1].split("</span>")[0].trim();
+      }
+      // Thumbnail
+      const thumbnail = stuff.split('<meta property="og:image" content="')[1].split('">')[0].trim();
+      // Genres
+      let genreArr = [];
+      const foo = stuff.split("Genres:")[1].split("</div>")[0].replace(/["]+/g, '').split("title=");
+      for (let i=1; i<foo.length; i++) {
+        let tmp = foo[i];
+        genreArr.push(tmp.split("<a")[0].split(">")[0]);
+      }
+      // Start Date & End Date
+      const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
+      let startDate = "Unknown";
+      let endDate = "Unknown";
+      if (airing.split(" to ").length > 1) {
+        let start = new Date(airing.split(" to ")[0]);
+        let end = new Date(airing.split(" to ")[1]);
+        if (start.toLocaleDateString() == "Invalid Date") {
+          startDate = airing.split(" to ")[0];
+        } else {
+          startDate = start.toLocaleDateString();
+        }
+        if (end.toLocaleDateString() == "Invalid Date") {
+          endDate = airing.split(" to ")[1];
+        } else {
+          endDate = end.toLocaleDateString();
+        }
+      }
+      // Type
+      const type = stuff.split('<span class="dark_text">Type:</span>')[1].split('</a></div>')[0].split(">")[1].trim();
+      // English Title
+      let englishTitle = "Unknown";
+      let et = stuff.split('English:</span>');
+      if (et.length > 1) {
+        englishTitle = et[1].split('</div>')[0].trim();
+      }
+      const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
+      const name = stuff.split('<h1 class="h1"><span itemprop="name">')[1].split('</span></h1>')[0].trim();
+      const malID = req.body.malURL.split("/anime/")[1].split("/")[0];
 
-    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
-      if (err) {
-        res.json({ success: false, message: err });
-      } else if (!user) {
-        res.json({ success: false, message: "User not found" });
-      } else if (user.username != anime['user']) {
-        res.json({ success: false, message: "Username in request doesn't match current user" });
-      } else {
-        // First check to make sure they haven't added this anime already
-        Anime.findOne({ user: anime['user'], name: anime['name']}, (err, animeF) => {
-          if (err) {
-            res.json({ success: false, message: err })
-          } else if (animeF) {
-            res.json({ success: false, message: 'Anime already in catalog'});
-          } else {
-            Anime.findOne({ user: anime['user'], malID: anime['malID']}, (err, animeFF) => {
-              if (err) {
-                res.json({ success: false, message: err })
-                return;
-              } else if (animeFF && anime['malID']) {
-                res.json({ success: false, message: 'Anime already in catalog'});
-                return;
-              } else {
-                // Now we can add anime
-                let newAnime = new Anime({
-                  user: anime['user'],
-                  name: anime['name'],
-                  description: anime['description'],
-                  rating: anime['rating'],
-                  thumbnail: anime['thumbnail'],
-                  malID: anime['malID'],
-                  category: anime['category'],
-                  isFinalist: anime['isFinalist'],
-                  genres: anime['genres'],
-                  startDate: anime['startDate'],
-                  endDate: anime['endDate'],
-                  type: anime['type'],
-                  englishTitle: anime['englishTitle'],
-                  status: anime['status']
-                });
-
-                // Update recommenations if user is in a group
-                if (!newAnime.malID) {
-                  newAnime.save((err) => {
-                    if (err) {
-                      res.json({ success: false, message: err });
-                    } else {
-                      res.json({ success: true, message: 'Anime added to catalog!' });
-                    }
-                  });
+      User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+        if (err) {
+          res.json({ success: false, message: err });
+        } else if (!user) {
+          res.json({ success: false, message: "User not found" });
+        } else {
+          // First check to make sure they haven't added this anime already
+          Anime.findOne({ user: user.user, name: name}, (err, animeF) => {
+            if (err) {
+              res.json({ success: false, message: err })
+            } else if (animeF) {
+              res.json({ success: false, message: 'Anime already in catalog'});
+            } else {
+              Anime.findOne({ user: user.username, malID: malID}, (err, animeFF) => {
+                if (err) {
+                  res.json({ success: false, message: err })
+                  return;
+                } else if (animeFF && malID) {
+                  res.json({ success: false, message: 'Anime already in catalog'});
+                  return;
                 } else {
-                  User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
-                    if (err) {
-                      res.json({ success: false, message: err });
-                    } else if (!user) {
-                      res.json({ success: false, message: "User doesn't exist" })
-                    } else {
-                      // Next check if user is in group--if not, we just save this anime
-                      if (!user.group) {
-                        newAnime.save((err) => {
-                          if (err) {
-                            res.json({ success: false, message: err });
-                          } else {
-                            res.json({ success: true, message: 'Anime added to catalog!' });
-                          }
-                        });
+                  // Now we can add anime
+                  let newAnime = new Anime({
+                    user: user.username,
+                    name: name,
+                    description: description,
+                    rating: rating,
+                    thumbnail: thumbnail,
+                    malID: malID,
+                    category: req.body.category,
+                    isFinalist: false,
+                    genres: genreArr,
+                    startDate: startDate,
+                    endDate: endDate,
+                    type: type,
+                    englishTitle: englishTitle,
+                    status: status
+                  });
+
+                  // Update recommenations if user is in a group
+                  if (!newAnime.malID) {
+                    newAnime.save((err) => {
+                      if (err) {
+                        res.json({ success: false, message: err });
                       } else {
-                        // Check if group is valid & user is in this group
-                        Group.findOne({ "name": user.group }, (err, group) => {
-                          if (err) {
-                            res.json({ success: false, message: err });
-                          } else if (!group) {
-                            // Group doesn't exist anymore--delete relevant info from user document & continue with add
-                            User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
-                              if (err) {
-                                res.json({ success: false, message: err });
-                              } else {
+                        res.json({ success: true, message: 'Anime added to catalog!' });
+                      }
+                    });
+                  } else {
+                    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+                      if (err) {
+                        res.json({ success: false, message: err });
+                      } else if (!user) {
+                        res.json({ success: false, message: "User doesn't exist" })
+                      } else {
+                        // Next check if user is in group--if not, we just save this anime
+                        if (!user.group) {
+                          newAnime.save((err) => {
+                            if (err) {
+                              res.json({ success: false, message: err });
+                            } else {
+                              res.json({ success: true, message: 'Anime added to catalog!' });
+                            }
+                          });
+                        } else {
+                          // Check if group is valid & user is in this group
+                          Group.findOne({ "name": user.group }, (err, group) => {
+                            if (err) {
+                              res.json({ success: false, message: err });
+                            } else if (!group) {
+                              // Group doesn't exist anymore--delete relevant info from user document & continue with add
+                              User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { group: "" } }, (err, user) => {
+                                if (err) {
+                                  res.json({ success: false, message: err });
+                                } else {
+                                  newAnime.save((err) => {
+                                    if (err) {
+                                      res.json({ success: false, message: err });
+                                    } else {
+                                      res.json({ success: true, message: 'Anime added to catalog!' });
+                                    }
+                                  });
+                                }
+                              });
+                            } else {
+                              let found = false;
+                              let numMembers = 0;
+                              for (let member of group.members) {
+                                if (!member.isPending) {
+                                  numMembers += 1;
+                                }
+                                if (!member.isPending && member.id == req.decoded.userId) {
+                                  found = true;
+                                }
+                              }
+                              if (!found || numMembers == 1) {
                                 newAnime.save((err) => {
                                   if (err) {
                                     res.json({ success: false, message: err });
@@ -260,89 +332,69 @@ module.exports = (router) => {
                                     res.json({ success: true, message: 'Anime added to catalog!' });
                                   }
                                 });
-                              }
-                            });
-                          } else {
-                            let found = false;
-                            let numMembers = 0;
-                            for (let member of group.members) {
-                              if (!member.isPending) {
-                                numMembers += 1;
-                              }
-                              if (!member.isPending && member.id == req.decoded.userId) {
-                                found = true;
-                              }
-                            }
-                            if (!found || numMembers == 1) {
-                              newAnime.save((err) => {
-                                if (err) {
-                                  res.json({ success: false, message: err });
-                                } else {
-                                  res.json({ success: true, message: 'Anime added to catalog!' });
-                                }
-                              });
-                            } else {
-                              // Grab the relevant recommendations from the group members
-                              // Use all member names because we don't know who (if anyone) also has this anime
-                              let memberNames = [];
-                              async.each(group.members, function getMemberName (member, done) {
-                                if (!member.isPending && member.id != req.decoded.userId) {
-                                  User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
-                                    if (err) {
-                                      done();
-                                    } else if (!memberUser) {
-                                      done();
-                                    } else {
-                                      memberNames.push(memberUser.username);
-                                      done();
-                                    }
-                                  });
-                                } else {
-                                  done();
-                                }
-                              }, function allDone (err) {
-                                if (err) {
-                                  res.json({ success: false, message: err });
-                                } else {
-                                  Anime.findOne({ malID: newAnime.malID, user: { $in: memberNames } }, (err, memberAnime) => {
-                                    if (err) {
-                                      res.json({ success: false, message: err });
-                                    } else if (!memberAnime) {
-                                      newAnime.save((err) => {
-                                        if (err) {
-                                          res.json({ success: false, message: err });
-                                        } else {
-                                          res.json({ success: true, message: 'Anime added to catalog!' });
-                                        }
-                                      });
-                                    } else {
-                                      if (memberAnime.recommenders) {
-                                        newAnime.recommenders = memberAnime.recommenders;
+                              } else {
+                                // Grab the relevant recommendations from the group members
+                                // Use all member names because we don't know who (if anyone) also has this anime
+                                let memberNames = [];
+                                async.each(group.members, function getMemberName (member, done) {
+                                  if (!member.isPending && member.id != req.decoded.userId) {
+                                    User.findOne({ _id: ObjectID(member.id) }, (err, memberUser) => {
+                                      if (err) {
+                                        done();
+                                      } else if (!memberUser) {
+                                        done();
+                                      } else {
+                                        memberNames.push(memberUser.username);
+                                        done();
                                       }
-                                      newAnime.save((err) => {
-                                        if (err) {
-                                          res.json({ success: false, message: err });
-                                        } else {
-                                          res.json({ success: true, message: 'Anime added to catalog!' });
+                                    });
+                                  } else {
+                                    done();
+                                  }
+                                }, function allDone (err) {
+                                  if (err) {
+                                    res.json({ success: false, message: err });
+                                  } else {
+                                    Anime.findOne({ malID: newAnime.malID, user: { $in: memberNames } }, (err, memberAnime) => {
+                                      if (err) {
+                                        res.json({ success: false, message: err });
+                                      } else if (!memberAnime) {
+                                        newAnime.save((err) => {
+                                          if (err) {
+                                            res.json({ success: false, message: err });
+                                          } else {
+                                            res.json({ success: true, message: 'Anime added to catalog!' });
+                                          }
+                                        });
+                                      } else {
+                                        if (memberAnime.recommenders) {
+                                          newAnime.recommenders = memberAnime.recommenders;
                                         }
-                                      });
-                                    }
-                                  });
-                                }
-                              });
+                                        newAnime.save((err) => {
+                                          if (err) {
+                                            res.json({ success: false, message: err });
+                                          } else {
+                                            res.json({ success: true, message: 'Anime added to catalog!' });
+                                          }
+                                        });
+                                      }
+                                    });
+                                  }
+                                });
+                              }
                             }
-                          }
-                        });
+                          });
+                        }
                       }
-                    }
-                  });
+                    });
+                  }
                 }
-              }
-            });
-          }
-        });
-      }
-    });
+              });
+            }
+          });
+        }
+      });
+    }).close();
   });
 
   router.post('/changeFinalistStatus', (req, res) => {

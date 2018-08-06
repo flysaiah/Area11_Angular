@@ -60,30 +60,35 @@
 <div class="home-container">
   <!-- Add anime prompt -->
   <div [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
-    <mat-card *ngIf="showAddAnimePrompt" class="add-anime-prompt">
+    <mat-card *ngIf="showAddAnimePrompt && !currentlyAddingAnime" class="add-anime-prompt">
       <div>
         <mat-form-field color="accent" class="add-anime-name">
-          <input matInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName">
+          <!-- <input matInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName"> -->
+          <input matInput placeholder="MAL URL of Anime" [(ngModel)]="newAnimeMALURL" name="animeURL">
         </mat-form-field>
-        <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">{{ (animeToAdd['malID'] ? 'Relink' : 'Link') }}</button>
+        <!-- <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">{{ (animeToAdd['malID'] ? 'Relink' : 'Link') }}</button> -->
         <div class="add-anime-normal">
           <mat-form-field class="add-to-category">
-            <mat-select placeholder="Add to..." name="addAnimeCat" [(ngModel)]="animeToAdd['category']">
+            <mat-select placeholder="Add to..." name="addAnimeCat" [(ngModel)]="newAnimeCategory">
               <!-- <option value="" disabled selected>Select a Category</option> -->
               <mat-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-raised-button color="primary" [disabled]="!animeToAdd['name'] || !animeToAdd['category']" class="add-to-button" type=button (click)="addAnimeToCatalog()">Add to Catalog</button>
+          <button mat-raised-button color="primary" [disabled]="!newAnimeMALURL || !newAnimeCategory" class="add-to-button" type=button (click)="addAnimeToCatalog()">Add to Catalog</button>
         </div>
         <div class="add-anime-smallscreen">
           <button class="add-anime-smallscreen" mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">Add</button>
           <mat-menu #addMenu="matMenu">
-            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
-            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
-            <button mat-menu-item [disabled]="!animeToAdd['name']" (click)="addAnimeToCatalog('Completed')">Add to Completed</button>
+            <button mat-menu-item [disabled]="!newAnimeMALURL" (click)="addAnimeToCatalog('Want to Watch')">Add to Want to Watch</button>
+            <button mat-menu-item [disabled]="!newAnimeMALURL" (click)="addAnimeToCatalog('Considering')">Add to Considering</button>
+            <button mat-menu-item [disabled]="!newAnimeMALURL" (click)="addAnimeToCatalog('Completed')">Add to Completed</button>
           </mat-menu>
         </div>
       </div>
+    </mat-card>
+    <mat-card class="add-anime-prompt add-anime-loading" *ngIf="showAddAnimePrompt && currentlyAddingAnime">
+      <p>Adding anime to catalog...<p>
+      <mat-progress-bar class="add-anime-loader" mode="buffer"></mat-progress-bar>
     </mat-card>
 
     <div class="catalog catalog-loading" *ngIf="isLoading || catalogIsLoading">
@@ -129,9 +134,9 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div [ngClass]="{'details-misc': !hideFinalistsPanel, 'details-misc-2col': hideFinalistsPanel}">
-            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : selectedAnime["startDate"]) : "Unknown" }}</p>
-            <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : selectedAnime["endDate"]) : "Unknown" }}</p>
-            <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] }}</p>
+            <p><strong>Started:</strong> {{ selectedAnime["startDate"] ? (selectedAnime["startDate"] == "Invalid Date" ? "Unknown" : formatDate(selectedAnime["startDate"])) : "Unknown" }}</p>
+            <p><strong>Ended:</strong> {{ selectedAnime["endDate"] ? (selectedAnime["endDate"] == "Invalid Date" ? "Unknown" : formatDate(selectedAnime["endDate"])) : "Unknown" }}</p>
+            <p><strong>MAL rating:</strong> {{ selectedAnime["rating"] ? selectedAnime["rating"] : "Unknown" }}</p>
             <p><strong>Type:</strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
             <p><strong>English:</strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
             <p><strong>Status:</strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
