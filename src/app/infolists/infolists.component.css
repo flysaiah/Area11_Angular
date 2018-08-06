@@ -1,0 +1,215 @@
+.area11-infolists-toast {
+  display: none;
+  background-color: #3d85c6;
+  color: #fff;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  border-width: 2px;
+  text-align: center;
+  border-radius: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 15px;
+  z-index: 1;
+  font-size: 14px;
+}
+.toast-error {
+  background-color: #ff5722;
+}
+.area11-infolists-toast.show {
+  display: block;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 15px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 15px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 15px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 15px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+.search-toolbar {
+  width: 100%;
+  color: #f0f0f0;
+  vertical-align: middle;
+  background-color: #800015;
+  border: 1px solid #330000;
+  border-width: 2px;
+  height: 40px;
+  line-height: 40px;
+  text-shadow: 1px 1px 0 #444;
+  margin-bottom: 20px;
+}
+p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.home-button {
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-left: 60px;
+}
+.back-to-timeline-button {
+  float: right;
+  margin-top: 10px;
+  border-radius: 50px;
+  height: 20px;
+  color: black;
+  line-height: 20px;
+  margin-right: 60px;
+}
+.infolists-flex-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+@media screen and (max-width: 1150px) {
+  .infolists-flex-container {
+    display: grid;
+  }
+  .infolists-left-container {
+    margin-bottom: 50px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+.infolists-left-container {
+  float: left;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 15px;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  border-radius: 2px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  min-width: 400px;
+  text-align: center;
+}
+.infolists-left-button-container {
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+.infolists-left-button {
+  height: 28px;
+  line-height: 28px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.add-new-infolist-container {
+  margin-top: 10px;
+}
+.add-new-infolist-button {
+  margin-left: 5px;
+  height: 28px;
+  line-height: 28px;
+  width: 88px;
+}
+.infolists-list {
+  text-align: left;
+  margin-left: 20px;
+}
+.infolists-list-item {
+  margin-top: 20px;
+}
+.delete-infolist-button {
+  float: right;
+  margin-right: 20px;
+  height: 30px;
+  min-width: 50px !important;
+  line-height: 30px
+}
+.infolists-right-container {
+  float: left;
+  min-width: 700px;
+}
+.infolists-right-card {
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  border-radius: 2px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  margin-bottom: 20px;
+}
+.infolists-add-save-container {
+  text-align: center;
+}
+.infolists-right-button {
+  min-width: 70px;
+  height: 28px;
+  line-height: 28px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.empty-list-placeholder {
+  margin-top: 20px;
+}
+.infolists-table {
+  margin-top: 20px;
+  width: 650px;
+  margin-right: auto;
+  margin-left: auto;
+  border-collapse: collapse;
+}
+
+.infolists-table th {
+  background-color: #3d85c6;
+  color: white;
+}
+.td-fixed-height {
+  height: 20px;
+}
+.infolists-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.infolists-table td, .infolists-table th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: left;
+}
+.lock-svg {
+  height: 20px;
+  position: relative;
+  top: 2px;
+  right: 5px;
+}
+.lock-unlock-button {
+  background-color: #3d85c6;
+  width: 20px;
+  border: 0;
+}
+.lock-unlock-button:hover {
+  cursor: pointer;
+}
+.table-cell-anime {
+  width: 325px;
+}
+.table-cell-info {
+  width: 325px;
+}

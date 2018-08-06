@@ -7,7 +7,8 @@ const toptensSchema = new Schema({
   category: { type: String, required: true, unique: false, lowercase: false},
   user: String,
   entries: [{ name: String, viewerPrefs: [{ member: String, shouldHide: Boolean }] }],
-  hasNoContent: Boolean
+  hasNoContent: Boolean,
+  lastEditedDate: Date
 });
 
 

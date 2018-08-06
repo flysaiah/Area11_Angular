@@ -1,32 +1,58 @@
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <div class="search-toolbar">
   <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
-  <button mat-raised-button class="back-to-group-button" routerLink="/group">Back to Group</button>
+  <button mat-raised-button class="menu-right-button" routerLink="/group">Back to Group</button>
+  <button *ngIf="!hideSelectorPanel" mat-raised-button class="menu-right-button" (click)="hideSelectorPanel = true;">Hide Selector Panel</button>
+  <button *ngIf="hideSelectorPanel" mat-raised-button class="menu-right-button" (click)="hideSelectorPanel = false;">Show Selector Panel</button>
+
 </div>
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-<div *ngIf="currentGroup['name']">
-  <div class="toptens-top-controls">
-    <mat-form-field color="accent">
-      <input matInput placeholder="New Category Name" [(ngModel)]="newCategoryName">
-    </mat-form-field>
-    <button mat-raised-button color="accent" class="new-category-button" [disabled]="!newCategoryName" (click)="addNewCategory()">Add</button>
-    <label class="select-category-label" for="category-select">Currently viewing:</label>
-    <select class="select-category" id="category-select" [(ngModel)]="currentCategory">
-      <option [disabled]="totalOrderMode" value="All Categories">All Categories</option>
-      <option *ngFor="let category of allCategories" [value]="category['category']">{{ category["category"] }}</option>
-    </select>
-    <div class="total-order-mode-enable">
-      <button *ngIf="!this.totalOrderMode" class="category-control-item total-order-control-button" mat-raised-button color="primary" (click)="viewTotalOrdering()">View total ordering</button>
-      <button *ngIf="this.totalOrderMode" class="category-control-item total-order-control-button" mat-raised-button color="primary" (click)="leaveTotalOrdering()">View top tens</button>
+<div *ngIf="currentGroup['name'] && !isLoading">
+  <mat-card *ngIf="!hideSelectorPanel" class="toptens-top-navigator">
+    <h1 *ngIf="!totalOrderMode">Top Tens</h1>
+    <h1 *ngIf="totalOrderMode">Total Ordering</h1>
+    <div class="toptens-top-navigator-controls">
+      <mat-form-field color="accent">
+        <input matInput placeholder="New Category Name" [(ngModel)]="newCategoryName">
+      </mat-form-field>
+      <button mat-raised-button color="accent" class="new-category-button" [disabled]="!newCategoryName" (click)="addNewCategory()">Add</button>
+      <div class="total-order-mode-enable">
+        <button *ngIf="!totalOrderMode" class="category-control-item total-order-control-button" mat-raised-button color="primary" (click)="viewTotalOrdering()">Switch to Total Ordering Mode</button>
+        <button *ngIf="totalOrderMode" class="category-control-item total-order-control-button" mat-raised-button color="primary" (click)="leaveTotalOrdering()">Switch to Top Tens Mode</button>
+      </div>
     </div>
-  </div>
+    <div class="toptens-top-navigator-options">
+      <div *ngIf="!totalOrderMode">
+        <div class="category-checkbox-batch-options">
+          <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectAll()">Select All</button>
+          <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectNone()">Select None</button>
+        </div>
+        <hr>
+        <div class="category-checkbox-options-container">
+          <div *ngFor="let category of allCategories" class="category-checkbox-option" title="{{category['category']}}">
+            <mat-checkbox [(ngModel)]="category['isSelected']" [value]="category['category']">{{ category["category"] }}</mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="totalOrderMode">
+        <hr>
+        <mat-radio-group [(ngModel)]="currentCategory">
+          <mat-radio-button class="category-radio-option" *ngFor="let category of allCategories" [value]="category['category']" title="{{category['category']}}">{{ category["category"] }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+    </div>
+  </mat-card>
   <div *ngIf="allCategories.length && !isLoading">
     <div *ngFor="let category of allCategories; let i = index;">
-      <mat-card class="toptens-card" *ngIf="currentCategory == 'All Categories' || currentCategory == category['category']">
-        <h1 class="category-header">Top {{ this.totalOrderMode ? "" : "Ten" }} {{ category["category"] }}</h1>
+      <mat-card class="toptens-card" *ngIf="(!totalOrderMode && category['isSelected']) || (totalOrderMode && currentCategory == category['category'])">
+        <h1 class="category-header">Top {{ totalOrderMode ? "" : "Ten" }} {{ category["category"] }}</h1>
+        <div *ngIf="topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['lastEditedDate']" class="last-edited-date">
+          <p>Last edited: {{ getDateString(topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['lastEditedDate']) }}</p>
+        </div>
         <div class="category-controls">
           <div class="category-control-item">
-            <label for="member-select">Currently viewing:</label>
+            <label for="member-select">Currently viewing: </label>
             <select id="member-select" [(ngModel)]="categoryLogistics[i]['member']">
               <option *ngFor="let member of currentGroupMembers" [value]="member['username']">{{ member["username"] }}</option>
             </select>
@@ -38,7 +64,7 @@
         <div class="toptens-content">
           <div *ngIf="categoryLogistics[i]['member'] != currentUser || !categoryLogistics[i]['isEditing']">
             <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-              <p *ngIf="totalOrderMode || j <= 9" [ngClass]="{'tenth-item': j >= 9}">
+              <p *ngIf="totalOrderMode || j <= 9" [ngClass]="{'tenth-item': j >= 9 && j < 99, 'hundredth-item': j >= 99}">
                 <span *ngIf="categoryLogistics[i]['member'] != currentUser && isHidden(entry)">{{ j + 1 }}. Hidden</span>
                 <span *ngIf="categoryLogistics[i]['member'] == currentUser || !isHidden(entry)">{{ j + 1 }}. {{ entry["name"] }}</span>
               </p>
@@ -46,7 +72,7 @@
           </div>
           <div *ngIf="categoryLogistics[i]['member'] == currentUser && categoryLogistics[i]['isEditing']">
             <div *ngFor="let entry of topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries']; let j = index">
-              <p *ngIf="totalOrderMode || j <= 9" display="inline" [ngClass]="{'tenth-item': j >= 9}" >{{ j + 1 }}. <input [(ngModel)]="entry['name']">
+              <p *ngIf="totalOrderMode || j <= 9" display="inline" [ngClass]="{'tenth-item': j >= 9 && j < 99, 'hundredth-item': j >= 99}" >{{ j + 1 }}. <input [(ngModel)]="entry['name']">
                 <button mat-raised-button class="ordering-button" color="primary" (click)="moveUp(category['category'], i, j)" [disabled]="j == 0">▲</button>
                 <button mat-raised-button class="ordering-button" color="primary" (click)="moveDown(category['category'], i, j)" [disabled]="!totalOrderMode && j == 9 || totalOrderMode && j == topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['entries'].length - 1">▼</button>
                 <button mat-raised-button class="ordering-button" color="accent" *ngIf="totalOrderMode" (click)="addNewEntry(category['category'], i, j)">＋</button>
@@ -58,14 +84,6 @@
         </div>
       </mat-card>
     </div>
-  </div>
-  <div *ngIf="isLoading">
-    <mat-card class="placeholder-card">
-      <mat-card-content>
-        <p>Loading top tens information...<p>
-        <mat-progress-bar mode="buffer"></mat-progress-bar>
-      </mat-card-content>
-    </mat-card>
   </div>
 
   <div *ngIf="!allCategories.length && !isLoading">
@@ -80,6 +98,15 @@
   <mat-card class="placeholder-card">
     <mat-card-content>
       Whoops! You need to be in a group to use this page. Go to your "My Group" section to find or create one!
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="isLoading">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      <p>Loading top tens information...<p>
+      <mat-progress-bar class="loading-bar" mode="buffer"></mat-progress-bar>
     </mat-card-content>
   </mat-card>
 </div>

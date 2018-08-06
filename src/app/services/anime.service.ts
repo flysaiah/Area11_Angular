@@ -25,13 +25,13 @@ export class AnimeService {
     private authService: AuthService
   ) { }
 
-  malSearch(name) {
+  // malSearch(name) {
+  //   this.createAuthenticationHeaders();
+  //   return this.http.post(this.domain + '/api/anime/malSearch', { query: name }, this.options).map(res => res.json());
+  // }
+  addAnimeToCatalog(malURL: string, category: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/anime/malSearch', { query: name }, this.options).map(res => res.json());
-  }
-  addAnimeToCatalog(anime) {
-    this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/anime/addAnimeToCatalog', { anime: anime }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/anime/addAnimeToCatalog', { malURL: malURL, category: category }, this.options).map(res => res.json());
   }
   removeAnimeFromCatalog(animeID: string) {
     this.createAuthenticationHeaders();

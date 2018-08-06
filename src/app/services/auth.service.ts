@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { tokenNotExpired } from 'angular2-jwt';
+import 'rxjs/add/Observable/of';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/delay';
+import 'rxjs/internal/Observable';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
@@ -19,7 +23,13 @@ export class AuthService {
   ) { }
 
   isLoggedIn() {
-    return tokenNotExpired();
+    return this.tokenNotExpired();
+  }
+
+  tokenNotExpired() {
+    this.loadToken();
+    const helper = new JwtHelperService();
+    return !helper.isTokenExpired(this.authToken);
   }
 
   registerUser(user) {

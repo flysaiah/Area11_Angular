@@ -68,7 +68,7 @@
   line-height: 20px;
   margin-left: 60px;
 }
-.back-to-group-button {
+.menu-right-button {
   float: right;
   margin-top: 10px;
   border-radius: 50px;
@@ -83,25 +83,76 @@
   margin-right: auto;
   text-align: center;
 }
+.toptens-top-navigator {
+  width: 1000px;
+  padding: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  border-radius: 2px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.toptens-select-all-or-none {
+  height: 25px;
+  line-height: 25px;
+  min-width: 80px !important;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.toptens-top-navigator-options {
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: left;
+}
+.toptens-top-navigator-controls {
+  margin-top: -20px;
+}
+.category-checkbox-batch-options {
+  text-align: center;
+}
+.category-checkbox-options-container {
+  width: 850px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .new-category-button {
   margin-left: 5px;
   height: 32px;
   line-height: 32px;
   min-width: 0px;
   width: 70px;
+  margin-right: 30px;
 }
-.select-category-label {
-  margin-left: 20px;
-  font-size: 18px !important;
+
+.category-radio-option {
+  width: 200px;
+  height: 20px;
+  margin-right: 10px;
+  overflow-x: hidden;
+  font-size: 12px;
 }
-.select-category {
-  height: 30px;
-  width: 150px;
-  font-size: 14px;
+.category-checkbox-option {
+  display: inline-block;
+  width: 200px;
+  margin-right: 10px;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 12px;
+}
+/deep/ .mat-checkbox-layout {
+  display: inline-block !important;
 }
 .total-order-mode-enable {
   display: inline;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 .total-order-control-button {
   height: 32px;
@@ -114,14 +165,28 @@
   margin-right: auto;
   text-align: center;
 }
+.loading-bar {
+  text-align: left;
+}
 .toptens-card {
   margin-top: 10px;
   width: 750px;
   margin-left: auto;
   margin-right: auto;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+  border-radius: 2px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 .category-header {
   text-align: center;
+}
+.last-edited-date {
+  text-align: center;
+  margin-top: -10px;
+  font-size: 11pt;
+  margin-bottom: 10px;
 }
 .category-controls {
   display: flex;
@@ -134,7 +199,7 @@
 .category-control-button {
   height: 28px;
   min-width: 70px;
-  line-height: 27px;
+  line-height: 28px;
 }
 #member-select {
   height: 28px;
@@ -149,11 +214,16 @@
 .tenth-item {
   margin-left: -9px;
 }
+.hundredth-item {
+  margin-left: -19px;
+}
 .ordering-button {
   justify-content: center;
   padding: 0px;
   min-width: 30px;
   width: 30px;
+  margin-left: 2px;
+  margin-right: 2px;
   height: 20px;
   line-height: 20px;
   border-radius: 5px;

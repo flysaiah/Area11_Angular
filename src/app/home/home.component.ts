@@ -27,7 +27,9 @@ export class HomeComponent {
   finalistList: Anime[];
   showAddAnimePrompt: boolean;   // If true, "Add anime" prompt is visible
   linkAnimeSuggestions: Anime[];
-  animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
+  // animeToAdd: Anime;   // This is the anime the user is in the process of adding, if any
+  newAnimeMALURL: string;   // This replaces animeToAdd due to MAL API being down
+  newAnimeCategory: string;   // This replaces animeToAdd due to MAL API being down
   selectedAnime: Anime;   // Currently selected anime that we show details for
   canSelectAsFinalist: boolean;
   showFinalistStats: boolean;
@@ -45,8 +47,13 @@ export class HomeComponent {
   allGenres: string[];
   selectedGenre: string;
 
+  allTypes: string[];
+  selectedType: string;
+
   refreshHeader: number;
   isLoading: boolean;
+  catalogIsLoading: boolean;   // for when we just need the animation on left panel
+  currentlyAddingAnime: boolean;
   scrollTop: number;
 
   searchAnimeCtl: FormControl;
@@ -77,7 +84,7 @@ export class HomeComponent {
   }
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime(this.currentUser, "");
+    // this.animeToAdd = new Anime(this.currentUser, "");
   }
   showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
@@ -150,80 +157,82 @@ export class HomeComponent {
     }
   }
 
-  malSearch() {
-    this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
-      if (!res["success"]) {
-        // MAL API is weird because if there are no results it yields a parse error
-        if (res["message"] == "Error: Parse Error") {
-          this.displayToast("No results found.", true)
-          return;
-        } else if (res["message"] == "Token") {
-          this.displayToast("Your session has expired. Please refresh and log back in.", true);
-        } else {
-          this.displayToast("There was a problem.", true)
-          console.log(res["message"]);
-        }
-      } else {
-        const animeList = res["data"];
 
-        // Display the top 30 suggestions
-        // IDEA: In the future, it would be nice to have user preferences for how many
-        // anime they would like to have show up during the link step
-        const numSuggestions = Math.min(30, animeList.length);
-        // Special case is where there is only 1 entry, in which case it is not an array
-        if (animeList.hasOwnProperty("title")) {
-          let newAnime:Anime = {
-            user: this.currentUser,
-            name: (typeof animeList["title"] == "string" ? animeList["title"] : "Unknown").toString(),
-            description: (typeof animeList["synopsis"] == "string" ? animeList["synopsis"] : "").toString(),
-            rating: (typeof animeList["score"] == "string" ? animeList["score"] : "").toString(),
-            thumbnail: (typeof animeList["image"] == "string" ? animeList["image"] : "").toString(),
-            malID: (typeof animeList["id"] == "string" ? animeList["id"] : -1).toString(),
-            startDate: (new Date(animeList["start_date"])).toLocaleDateString(),
-            endDate: (new Date(animeList["end_date"])).toLocaleDateString(),
-            type: (typeof animeList["type"] == "string" ? animeList["type"] : "").toString(),
-            englishTitle: (typeof animeList["english"] == "string" ? animeList["english"] : "").toString(),
-            status: (typeof animeList["status"] == "string" ? animeList["status"] : "").toString()
-          }
-          this.linkAnimeSuggestions.push(newAnime);
-        }
-        for (let i=0; i<numSuggestions; i++) {
-          // IDEA: Option in user settings for specifying English vs Japanese title when linked
-          // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
-          // We use all these conditionals because the MAL API is really weird and sometimes returns weird non-string results
-          let newAnime:Anime = {
-            user: this.currentUser,
-            name: (typeof animeList[i]["title"] == "string" ? animeList[i]["title"] : "Unknown").toString(),
-            description: (typeof animeList[i]["synopsis"] == "string" ? animeList[i]["synopsis"] : "").toString(),
-            rating: (typeof animeList[i]["score"] == "string" ? animeList[i]["score"] : "").toString(),
-            thumbnail: (typeof animeList[i]["image"] == "string" ? animeList[i]["image"] : "").toString(),
-            malID: (typeof animeList[i]["id"] == "string" ? animeList[i]["id"] : -1).toString(),
-            startDate: (new Date(animeList[i]["start_date"])).toLocaleDateString(),
-            endDate: (new Date(animeList[i]["end_date"])).toLocaleDateString(),
-            type: (typeof animeList[i]["type"] == "string" ? animeList[i]["type"] : "").toString(),
-            englishTitle: (typeof animeList[i]["english"] == "string" ? animeList[i]["english"] : "").toString(),
-            status: (typeof animeList[i]["status"] == "string" ? animeList[i]["status"] : "").toString()
-          }
-          this.linkAnimeSuggestions.push(newAnime);
-        }
-        // Open dialog
-        let dialogRef = this.dialog.open(LinkAnimeDialog, {
-          width: '515px',
-          data: {suggestions: this.linkAnimeSuggestions}
-        });
-
-        dialogRef.afterClosed().subscribe((result) => {
-          // Result is the index of the anime they chose to link, if they chose to link one
-          if (result || result == 0) {
-            this.animeToAdd = this.linkAnimeSuggestions[result];
-            this.displayToast("Anime successfully linked!")
-          }
-          // Make sure to reset suggestion list
-          this.linkAnimeSuggestions = [];
-        });
-      }
-    });
-  }
+  // NOTE: This isn't working for now, as MAL's API is down
+  // malSearch() {
+  //   this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
+  //     if (!res["success"]) {
+  //       // MAL API is weird because if there are no results it yields a parse error
+  //       if (res["message"] == "Error: Parse Error") {
+  //         this.displayToast("No results found.", true)
+  //         return;
+  //       } else if (res["message"] == "Token") {
+  //         this.displayToast("Your session has expired. Please refresh and log back in.", true);
+  //       } else {
+  //         this.displayToast("There was a problem.", true)
+  //         console.log(res);
+  //       }
+  //     } else {
+  //       const animeList = res["data"];
+  //
+  //       // Display the top 30 suggestions
+  //       // IDEA: In the future, it would be nice to have user preferences for how many
+  //       // anime they would like to have show up during the link step
+  //       const numSuggestions = Math.min(30, animeList.length);
+  //       // Special case is where there is only 1 entry, in which case it is not an array
+  //       if (animeList.hasOwnProperty("title")) {
+  //         let newAnime:Anime = {
+  //           user: this.currentUser,
+  //           name: (typeof animeList["title"] == "string" ? animeList["title"] : "Unknown").toString(),
+  //           description: (typeof animeList["synopsis"] == "string" ? animeList["synopsis"] : "").toString(),
+  //           rating: (typeof animeList["score"] == "string" ? animeList["score"] : "").toString(),
+  //           thumbnail: (typeof animeList["image"] == "string" ? animeList["image"] : "").toString(),
+  //           malID: (typeof animeList["id"] == "string" ? animeList["id"] : -1).toString(),
+  //           startDate: (new Date(animeList["start_date"])).toLocaleDateString(),
+  //           endDate: (new Date(animeList["end_date"])).toLocaleDateString(),
+  //           type: (typeof animeList["type"] == "string" ? animeList["type"] : "").toString(),
+  //           englishTitle: (typeof animeList["english"] == "string" ? animeList["english"] : "").toString(),
+  //           status: (typeof animeList["status"] == "string" ? animeList["status"] : "").toString()
+  //         }
+  //         this.linkAnimeSuggestions.push(newAnime);
+  //       }
+  //       for (let i=0; i<numSuggestions; i++) {
+  //         // IDEA: Option in user settings for specifying English vs Japanese title when linked
+  //         // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
+  //         // We use all these conditionals because the MAL API is really weird and sometimes returns weird non-string results
+  //         let newAnime:Anime = {
+  //           user: this.currentUser,
+  //           name: (typeof animeList[i]["title"] == "string" ? animeList[i]["title"] : "Unknown").toString(),
+  //           description: (typeof animeList[i]["synopsis"] == "string" ? animeList[i]["synopsis"] : "").toString(),
+  //           rating: (typeof animeList[i]["score"] == "string" ? animeList[i]["score"] : "").toString(),
+  //           thumbnail: (typeof animeList[i]["image"] == "string" ? animeList[i]["image"] : "").toString(),
+  //           malID: (typeof animeList[i]["id"] == "string" ? animeList[i]["id"] : -1).toString(),
+  //           startDate: (new Date(animeList[i]["start_date"])).toLocaleDateString(),
+  //           endDate: (new Date(animeList[i]["end_date"])).toLocaleDateString(),
+  //           type: (typeof animeList[i]["type"] == "string" ? animeList[i]["type"] : "").toString(),
+  //           englishTitle: (typeof animeList[i]["english"] == "string" ? animeList[i]["english"] : "").toString(),
+  //           status: (typeof animeList[i]["status"] == "string" ? animeList[i]["status"] : "").toString()
+  //         }
+  //         this.linkAnimeSuggestions.push(newAnime);
+  //       }
+  //       // Open dialog
+  //       let dialogRef = this.dialog.open(LinkAnimeDialog, {
+  //         width: '515px',
+  //         data: {suggestions: this.linkAnimeSuggestions}
+  //       });
+  //
+  //       dialogRef.afterClosed().subscribe((result) => {
+  //         // Result is the index of the anime they chose to link, if they chose to link one
+  //         if (result || result == 0) {
+  //           // this.animeToAdd = this.linkAnimeSuggestions[result];
+  //           this.displayToast("Anime successfully linked!")
+  //         }
+  //         // Make sure to reset suggestion list
+  //         this.linkAnimeSuggestions = [];
+  //       });
+  //     }
+  //   });
+  // }
 
   private randomSort(animeArr) {
     // Uses Fisher-Yates algorithm to randomly sort array
@@ -265,6 +274,10 @@ export class HomeComponent {
     return false;
   }
 
+  private typeFilter(anime) {
+    return (this.selectedType == anime["type"])
+  }
+
   filterAnimeByGenre(criteria) {
     if (criteria == "All Genres") {
       this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
@@ -280,6 +293,20 @@ export class HomeComponent {
 
   }
 
+  filterAnimeByType(criteria) {
+    if (criteria == "All Types") {
+      this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
+      this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
+      this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
+    } else {
+      this.wantToWatchList = this.newWantToWatch.filter(this.typeFilter.bind(this));
+      this.consideringList = this.newConsidering.filter(this.typeFilter.bind(this));
+      this.completedList = this.newCompleted.filter(this.typeFilter.bind(this));
+    }
+    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
+    this.sortAnime(this.sortCriteria);
+  }
+
   private getGenres() {
     let allGenres = new Set<string>();
     // NOTE: This could be a little costly eventually, so make sure to minimize when we call refresh()
@@ -293,13 +320,38 @@ export class HomeComponent {
     this.allGenres = Array.from(allGenres);
   }
 
-  addAnimeToCatalog(category?: string) {
-    // category parameter is for when we're changin categories
-    if (category) {
-      this.animeToAdd['category'] = category;
+  private getTypes() {
+    let allTypes = new Set<string>();
+    for (let anime of this.searchAnime) {
+      if (!allTypes.has(anime["type"])) {
+        allTypes.add(anime["type"])
+      }
     }
-    this.animeService.addAnimeToCatalog(this.animeToAdd).subscribe(res => {
+    this.allTypes = Array.from(allTypes);
+  }
+
+  formatDate(date: string) {
+    let dObj = new Date(date);
+    return dObj.toLocaleDateString();
+  }
+
+  addAnimeToCatalog(category?: string) {
+    // category parameter is for when we're changing categories
+    // if (category) {
+    //   this.animeToAdd['category'] = category;
+    // }
+
+    this.currentlyAddingAnime = true;
+
+    let cat = this.newAnimeCategory;
+    if (category) {
+      cat = category;
+    }
+
+    this.animeService.addAnimeToCatalog(this.newAnimeMALURL, cat).subscribe(res => {
       if (res["success"]) {
+        this.newAnimeCategory = "";
+        this.displayToast("Successfully added anime to catalog!");
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
           this.displayToast(res["message"], true);
@@ -307,8 +359,9 @@ export class HomeComponent {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
+      this.currentlyAddingAnime = false;
     });
   }
 
@@ -375,7 +428,7 @@ export class HomeComponent {
         this.selectedAnime.hasNewSeason = true;
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
     });
   }
@@ -387,7 +440,7 @@ export class HomeComponent {
         this.selectedAnime.hasNewSeason = false;
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
     });
   }
@@ -406,7 +459,7 @@ export class HomeComponent {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
     });
   }
@@ -425,7 +478,7 @@ export class HomeComponent {
               this.displayToast("You haven't started your timeline yet.", true);
             } else {
               this.displayToast("There was a problem.", true);
-              console.log(res["message"]);
+              console.log(res);
             }
             this.refresh();
           });
@@ -436,7 +489,7 @@ export class HomeComponent {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
     });
   }
@@ -611,10 +664,13 @@ export class HomeComponent {
     });
   }
 
-  refresh(scrollTop?: boolean) {
+  refresh(fromCategoryChange?: boolean) {
     // Fetch all anime stored in database and update our lists
+    if (fromCategoryChange) {
+    this.catalogIsLoading = true;
+  }
     this.showAddAnimePrompt = false;
-    this.animeToAdd = new Anime(this.currentUser, "");
+    // this.animeToAdd = new Anime(this.currentUser, "");
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
       if (res["success"]) {
@@ -645,22 +701,26 @@ export class HomeComponent {
         this.finalistList = newFinalistList;
         this.searchAnime = newSearchAnimeList;
         this.getGenres();
+        this.getTypes();
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
         }
         this.filterAnimeByGenre(this.selectedGenre);
+        this.filterAnimeByType(this.selectedType);
         this.sortAnime(this.sortCriteria);
         this.isLoading = false;
-        if (scrollTop) {
+        this.catalogIsLoading = false;
+        if (fromCategoryChange) {
           // Scroll to top of catalog; this happens when category is changed
           this.scrollTop = Math.random();
+
         }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
-        console.log(res["message"]);
+        console.log(res);
       }
 
     });
@@ -678,6 +738,8 @@ export class HomeComponent {
     // Use refreshHeader to force header to refresh
     this.refreshHeader = Math.random();
     this.isLoading = true;
+    this.currentlyAddingAnime = false;
+    this.catalogIsLoading = false;
     this.scrollTop = 0;
 
     this.autoTimelineAdd = false;
@@ -700,9 +762,14 @@ export class HomeComponent {
     this.selectedGenre = "All Genres";
     this.allGenres = [];
 
+    this.selectedType = "All Types";
+    this.allTypes = []
+
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
-    this.animeToAdd = new Anime("", "");
+    // this.animeToAdd = new Anime("", "");
+    this.newAnimeMALURL = "";
+    this.newAnimeCategory = "";
     this.selectedAnime = new Anime("", "");
     this.sortCriteria = "_id,ascending"
     this.showCategory = "All Categories";
@@ -717,7 +784,7 @@ export class HomeComponent {
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
-        this.animeToAdd["user"] = this.currentUser;
+        // this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
 
         this.userService.getUserInfo().subscribe((res) => {
@@ -736,7 +803,7 @@ export class HomeComponent {
       } else {
         // If there was a problem we need to have them log in again
         this.authService.logout();
-        console.log(res["message"]);
+        console.log(res);
       }
     });
   }

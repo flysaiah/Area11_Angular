@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { Era } from '../timeline/era';
+import { Infolist } from '../infolists/infolist';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class TimelineService {
+export class InfolistService {
 
   options;
   domain = environment.domain;
@@ -26,23 +26,24 @@ export class TimelineService {
     private authService: AuthService
   ) { }
 
-  createTimeline() {
+  addNewInfolist(infolist: Infolist) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/timeline/createTimeline', { }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/infolist/addNewInfolist', { infolist: infolist }, this.options).map(res => res.json());
   }
 
-  saveTimeline(eras: Era[]) {
+  saveInfolist(infolist: Infolist) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/timeline/saveTimeline', { eras: eras }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/infolist/saveInfolist', { infolist: infolist }, this.options).map(res => res.json());
   }
 
-  fetchTimeline(user: string) {
+  deleteInfolist(infolist: Infolist) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/timeline/fetchTimeline', { user: user }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/infolist/deleteInfolist', { infolist: infolist }, this.options).map(res => res.json());
   }
 
-  addAnimeToTimeline(name: string, index: number) {
+  fetchInfolists() {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/timeline/addAnimeToTimeline', { name: name, index: index }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/infolist/fetchInfolists', { }, this.options).map(res => res.json());
   }
+
 }

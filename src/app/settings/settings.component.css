@@ -81,6 +81,7 @@
   width: 80%;
 }
 .save-changes-button {
+  display: block;
   width: 50%;
   min-width: 40px !important;;
   margin-bottom: 20px;

@@ -14,9 +14,9 @@ const Horseman = require('node-horseman');
 var async = require("async");
 let malIDs = new Set();
 let allAnime = [];
-let genreList = [];
+let updateList = [];
 
-Anime.find({}, (err, animeList) => {
+Anime.find({"name": "Yuru Camp△"}, (err, animeList) => {
   if (err) {
     mongoose.disconnect();
     console.log(err);
@@ -43,15 +43,73 @@ Anime.find({}, (err, animeList) => {
             injectJquery: false,
           });
           horseman.open("http://myanimelist.net/anime/" + someAnime.id).html().then((stuff) => {
-            // HACK: This is pretty ugly but I'm not sure how else to do it right now
             try {
-              let tmpArr = [];
+              // Description
+              const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
+              console.log("---DESC---");
+              console.log(description)
+              // Rating
+              let rating;
+              let r = stuff.split('<span itemprop="ratingValue">');
+              if (r.length > 1) {
+                rating = r[1].split("</span>")[0].trim();
+              }
+              console.log("---RATING---");
+              console.log(rating);
+              // Thumbnail
+              const thumbnail = stuff.split('<meta property="og:image" content="')[1].split('">')[0].trim();
+              console.log("---THUMBNAIL---")
+              console.log(thumbnail);
+              // Genres
+              let genreArr = [];
               const foo = stuff.split("Genres:")[1].split("</div>")[0].replace(/["]+/g, '').split("title=");
               for (let i=1; i<foo.length; i++) {
-                let tmp = foo[i]
-                tmpArr.push(tmp.split("<a")[0].split(">")[0])
+                let tmp = foo[i];
+                genreArr.push(tmp.split("<a")[0].split(">")[0]);
               }
-              genreList.push({name: someAnime.name, malID: someAnime.id, genres: tmpArr});
+              console.log("---GENRES---");
+              console.log(genreArr);
+              // Start Date
+              const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
+              let startDate = "Unknown";
+              let endDate = "Unknown";
+              if (airing.split(" to ").length > 1) {
+                let start = new Date(airing.split(" to ")[0]);
+                let end = new Date(airing.split(" to ")[1]);
+                if (start.toLocaleDateString() == "Invalid Date") {
+                  startDate = airing.split(" to ")[0];
+                } else {
+                  startDate = start.toLocaleDateString();
+                }
+                if (end.toLocaleDateString() == "Invalid Date") {
+                  endDate = airing.split(" to ")[1];
+                } else {
+                  endDate = end.toLocaleDateString();
+                }
+              }
+              console.log("---STARTDATE---");
+              console.log(startDate);
+              // End Date
+              console.log("---ENDDATE---");
+              console.log(endDate);
+              // Type
+              const type = stuff.split('<span class="dark_text">Type:</span>')[1].split('</a></div>')[0].split(">")[1].trim();
+              console.log("---TYPE---");
+              console.log(type);
+              // English Title
+              let englishTitle = "Unknown";
+              let et = stuff.split('English:</span>');
+              if (et.length > 1) {
+                englishTitle = et[1].split('</div>')[0].trim();
+              }
+              console.log("---ENGLISH_TITLE---");
+              console.log(englishTitle);
+              // Status
+              const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
+              console.log("---STATUS---");
+              console.log(status);
+
+              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");
@@ -62,14 +120,14 @@ Anime.find({}, (err, animeList) => {
           }).close();
         }
         if (arr.length == 1) {
-          // Done populating genreList
+          // Done populating updateList
           // Give enough time for final iteration to finish
           setTimeout(() => {
             console.log("Happening");
-            async.eachSeries(genreList, function updateAnime (genreObj, done) {
-              Anime.update({ malID: genreObj.malID }, { $set: {
-                genres: genreObj.genres,
-              } }, {multi: true}, done);
+            async.eachSeries(updateList, function updateAnime (updateObj, done) {
+              // console.log("---UDATE_OBJ---");
+              // console.log(updateObj)
+              Anime.update({ malID: updateObj.malID }, { $set: updateObj }, {multi: true}, done);
             }, function allDone (err) {
               if (err) {
                 console.log(err);

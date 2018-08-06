@@ -142,7 +142,20 @@
   margin-bottom: 0px;
 }
 .group-member-bestgirl {
-  margin-top: 5px;
+  margin-top: 10px !important;
+  margin-bottom: 0px !important;
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.group-member-current-show {
+  margin-top: 0px !important;
+  margin-bottom: 10px !important;
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .group-settings-left {
   width: 50%;
@@ -188,10 +201,12 @@
 .find-or-create-button {
   width: 120px;
 }
-.import-or-leave-button {
-  width: 125px;
+.group-member-button {
+  min-width: 80px;
   height: 30px;
   line-height: 30px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 .find-or-create-input {
   margin-left: 5px;

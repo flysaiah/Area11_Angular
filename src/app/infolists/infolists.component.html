@@ -1,0 +1,70 @@
+<app-header [refreshHeader]="refreshHeader"></app-header>
+<div class="search-toolbar">
+  <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
+  <button mat-raised-button class="back-to-timeline-button" routerLink="/timeline">Back to Timeline</button>
+</div>
+<div class="area11-infolists-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
+<div class="infolists-flex-container">
+  <mat-card class="infolists-left-container">
+    <h2>My Lists</h2>
+    <div class="infolists-left-button-container">
+      <button [disabled]="!allInfolists.length" class="infolists-left-button" mat-raised-button color="primary" (click)="viewAll()">View All</button>
+      <button [disabled]="!allInfolists.length" class="infolists-left-button" mat-raised-button color="primary" (click)="hideAll()">Hide All</button>
+    </div>
+    <div class="add-new-infolist-container">
+      <mat-form-field color="accent">
+        <input matInput placeholder="New List Name" [(ngModel)]="newInfolistName">
+      </mat-form-field>
+      <button [disabled]="!newInfolistName || currentlyAddingNewInfolist || allInfolistNames.indexOf(newInfolistName) !== -1" class="add-new-infolist-button" mat-raised-button color="accent" (click)="addNewInfolist()">Add New</button>
+    </div>
+    <hr>
+    <div class="infolists-list">
+      <div class="infolists-list-item" *ngFor="let infolist of allInfolists; let i = index;">
+        <mat-checkbox [(ngModel)]="infolist.isSelected">
+          {{ infolist["name"] }}
+        </mat-checkbox>
+        <button mat-raised-button color="warn" class="delete-infolist-button" (click)="deleteInfolist(infolist, i)">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="!allInfolists.length">
+      <h3><strong>-- No lists --</strong></h3>
+      <p>Add a new info list to get started!</p>
+    </div>
+  </mat-card>
+
+  <div class="infolists-right-container">
+    <div *ngFor="let infolist of allInfolists">
+      <mat-card *ngIf="infolist.isSelected" class="infolists-right-card" >
+        <h2>{{ infolist["name"] }}</h2>
+
+        <div class="allInfolists-add-save-container">
+          <button class="infolists-right-button" mat-raised-button color="accent" (click)="addNewEntry(infolist)">New Entry</button>
+          <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="primary" (click)="saveChanges(infolist)">Save</button>
+          <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="warn" (click)="deleteEmptyRows(infolist)">Delete Empty Rows</button>
+        </div>
+
+        <div class="empty-list-placeholder" *ngIf="!infolist.entries || !infolist.entries.length">
+          <h3><strong>-- Empty list --</strong></h3>
+          <p>Click 'New Entry' to start creating your info list!</p>
+        </div>
+
+        <table class="infolists-table" *ngIf="infolist.entries && infolist.entries.length">
+          <tr>
+            <th *ngIf="!infolist.animeColumnUnlocked" class="table-cell-anime">Anime Name <button class="lock-unlock-button" (click)="unlockAnimeColumn(infolist)"><img class="lock-svg" src="../assets/locked2.svg"/></button></th>
+            <th *ngIf="infolist.animeColumnUnlocked" class="table-cell-anime">Anime Name <button class="lock-unlock-button" (click)="lockAnimeColumn(infolist)"><img class="lock-svg" src="../assets/unlocked2.svg"/></button></th>
+            <th *ngIf="!infolist.infoColumnUnlocked" class="table-cell-info">Info <button class="lock-unlock-button" (click)="unlockInfoColumn(infolist)"><img class="lock-svg" src="../assets/locked2.svg"/></button></th>
+            <th *ngIf="infolist.infoColumnUnlocked" class="table-cell-info">Info <button class="lock-unlock-button" (click)="lockInfoColumn(infolist)"><img class="lock-svg" src="../assets/unlocked2.svg"/></button></th>
+          </tr>
+          <tbody>
+          <tr *ngFor="let entry of infolist.entries">
+            <td *ngIf="infolist.animeColumnUnlocked" class="table-cell-anime" [textContent]="entry.anime" contenteditable="true" (input)="entry.anime=$event.target.textContent">{{ entry.anime }}</td>
+            <td [ngClass]="{ 'td-fixed-height': !entry.anime && !entry.info }" *ngIf="!infolist.animeColumnUnlocked" class="table-cell-anime" [textContent]="entry.anime" contenteditable="false">{{ entry.anime }}</td>
+            <td *ngIf="infolist.infoColumnUnlocked" class="table-cell-info" [textContent]="entry.info" contenteditable="true" (input)="entry.info=$event.target.textContent">{{ entry.info }}</td>
+            <td [ngClass]="{ 'td-fixed-height': !entry.anime && !entry.info }" *ngIf="!infolist.infoColumnUnlocked" class="table-cell-info" [textContent]="entry.info" contenteditable="false">{{ entry.info }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-card>
+    </div>
+  </div>
+</div>

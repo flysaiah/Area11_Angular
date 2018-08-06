@@ -1,27 +1,45 @@
 
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <div class="search-toolbar">
-  <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
+  <button *ngIf="isTimelineOwner" mat-raised-button class="home-button" routerLink="/">Back to Home</button>
+  <button *ngIf="!isTimelineOwner" mat-raised-button class="home-button" routerLink="/group">Back to Group</button>
+  <button mat-raised-button class="infolists-button" routerLink="infolists">Info Lists</button>
 </div>
 
 <div class="area11-group-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
-<div *ngIf="!eraList.length && isLoading">
+<div *ngIf="!eraList.length && isLoading && !unauthorizedError">
   <mat-card class="placeholder-card">
     <mat-card-content>
       <p>Loading timeline information...<p>
-      <mat-progress-bar mode="buffer"></mat-progress-bar>
+      <mat-progress-bar class="loading-bar" mode="buffer"></mat-progress-bar>
     </mat-card-content>
   </mat-card>
 </div>
 
-<div *ngIf="!eraList.length && !isLoading">
+<div *ngIf="!eraList.length && !isLoading && isTimelineOwner && !unauthorizedError">
   <mat-card class="placeholder-card">
     <mat-card-content>
       Keep track of your anime history by making a timeline! Start by adding an era here!
       <br>
       <br>
       <button mat-raised-button color="primary" (click)="createTimeline()">Create First Era</button>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="!eraList.length && !isLoading && !isTimelineOwner && !unauthorizedError">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      It looks like this person hasn't created a timeline yet.
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="unauthorizedError">
+  <mat-card class="placeholder-card">
+    <mat-card-content>
+      You do not have permission to access this person's timeline. You are only allowed to view the timelines of people in your group.
     </mat-card-content>
   </mat-card>
 </div>
@@ -36,9 +54,9 @@
         <h4 *ngIf="era['startDate'] && era['endDate'] &&era['startDate'] != era['endDate'] " class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
         <h4 *ngIf="era['startDate'] && era['endDate'] && era['startDate'] == era['endDate']" class="era-date">{{ era["startDate"] }}</h4>
         <h4 *ngIf="era['startDate'] && !era['endDate']" class="era-date">{{ era["startDate"] }} - Present</h4>
-        <button class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
-        <button [disabled]="editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
-        <button [disabled]="i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
+        <button [disabled]="!isTimelineOwner" class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
+        <button [disabled]="!isTimelineOwner || editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
+        <button [disabled]="!isTimelineOwner || i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
       </div>
       <!-- EDIT -->
       <span class="era-horizontal-line"></span>
@@ -49,7 +67,7 @@
     </mat-card>
 
 
-    <mat-card *ngIf="editingEra == i">
+    <mat-card *ngIf="editingEra == i && isTimelineOwner">
       <div class="era-container">
         <mat-form-field color="accent">
           <input matInput placeholder="Era Name" [(ngModel)]="era['name']" name="eraName">

@@ -25,7 +25,7 @@ export class TopTensComponent implements OnInit {
 
   // Used for keeping track of editing as well as whose lists are being viewed AND whether it's in total order mode or not
   categoryLogistics: {member: string, isEditing: boolean}[];
-  editingMap: Map<string, boolean>;   // Need array for HTML template and map for refresh logic
+  statusMap: Map<string, boolean>;   // Need array for HTML template and map for refresh logic
 
   totalOrderMode: boolean;   // True when we are viewing total order for any 1 category (only 1 can be viewed at a time like this)
 
@@ -36,7 +36,8 @@ export class TopTensComponent implements OnInit {
   allCategories: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
-  currentCategory: string;
+  currentCategory: string;   // Used only for total ordering mode
+  hideSelectorPanel: boolean;
 
   isLoading: boolean;
 
@@ -81,17 +82,39 @@ export class TopTensComponent implements OnInit {
     });
   }
 
+  selectAll() {
+    this.allCategories.map((ttObj) => {
+      ttObj.isSelected = true;
+      return ttObj;
+    })
+  }
+
+  selectNone() {
+    this.allCategories.map((ttObj) => {
+      ttObj.isSelected = false;
+      return ttObj;
+    })
+  }
+
   enterEditMode(index: number, category: string) {
     this.categoryLogistics[index].isEditing = true;
-    this.editingMap.set(category, true);
+    this.statusMap.set(category + "-edit", true);
   }
 
   viewTotalOrdering() {
-    // Only show this category so as not to confuse visuall w/all the cards
-    if (this.currentCategory == "All Categories") {
-      this.currentCategory = this.allCategories[0]["category"];
-    }
+    // Only show this category so as not to confuse visual w/all the cards
     this.totalOrderMode = true;
+    // Default to the first category that is already showing
+    this.currentCategory = "";
+    for (let category of this.allCategories) {
+      if (category.isSelected) {
+        this.currentCategory = category.category;
+        break;
+      }
+    }
+    if (!this.currentCategory) {
+      this.currentCategory = this.allCategories[0].category
+    }
   }
 
   leaveTotalOrdering() {
@@ -99,11 +122,13 @@ export class TopTensComponent implements OnInit {
   }
 
   saveChanges(category: string, index: number) {
+    // This isn't very nice but for now it's the simplest way to avoid putting isSelected into database
+    delete this.topTensMap.get(category).get(this.currentUser).isSelected;
     this.toptensService.saveChanges(this.currentGroup.name, this.topTensMap.get(category).get(this.currentUser)).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Your changes have been saved!");
         this.categoryLogistics[index].isEditing = false;
-        this.editingMap.set(category, false);
+        this.statusMap.set(category + "-edit", false);
         this.refresh();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
@@ -154,7 +179,7 @@ export class TopTensComponent implements OnInit {
     this.categoryLogistics = [];
     for (let category of this.allCategories) {
       let isEditing = false;
-      if (this.editingMap.get(category.category)) {
+      if (this.statusMap.get(category.category + "-edit")) {
         isEditing = true;
       }
       this.categoryLogistics.push({member: this.currentUser, isEditing: isEditing});
@@ -175,7 +200,7 @@ export class TopTensComponent implements OnInit {
         let newMap = new Map<string, TopTens>();
         newMap.set(toptensObj.user, toptensObj);
         this.topTensMap.set(toptensObj.category, newMap);
-      } else if (!this.topTensMap.get(toptensObj.category).get(toptensObj.user) || !this.editingMap.get(toptensObj.category)) {
+      } else if (!this.topTensMap.get(toptensObj.category).get(toptensObj.user) || !this.statusMap.get(toptensObj.category + "-edit")) {
         this.topTensMap.get(toptensObj.category).set(toptensObj.user, toptensObj);
       }
     }
@@ -221,9 +246,6 @@ export class TopTensComponent implements OnInit {
         this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
           if (res["success"]) {
             this.displayToast("Category deleted successfully!");
-            if (this.currentCategory == category) {
-              this.currentCategory = "All Categories";
-            }
             this.refresh();
           } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
             this.displayToast("There is a problem with your group membership.", true)
@@ -250,13 +272,42 @@ export class TopTensComponent implements OnInit {
     return false;
   }
 
+  getDateString(datestr: string) {
+    let date = new Date(datestr);
+    return date.toDateString();
+  }
+
+  private cacheSelectedAnime() {
+    // Remember which anime were selected
+    for (let category of this.allCategories) {
+      if (category.isSelected) {
+        this.statusMap.set(category.category + "-selected", true);
+      }
+    }
+  }
+
+  private rememberSelectedAnime() {
+    // See cacheSelectedAnime -- this is the opposite side
+    for (let category of this.allCategories) {
+      if (this.statusMap.get(category.category + "-selected")) {
+        category.isSelected = true;
+      }
+    }
+  }
+
   private refresh() {
     this.refreshHeader = Math.random();
+
+    // Make sure we remember which top tens were open
+    if (this.allCategories.length && !this.totalOrderMode) {
+      this.cacheSelectedAnime();
+    }
 
     this.toptensService.getTopTensInfo(this.currentGroup.name).subscribe((res) => {
       if (res["success"]) {
         this.allCategories = res["allCategories"];
         this.allTopTens = res["allTopTens"];
+        this.rememberSelectedAnime();
         this.generateLogistics();
         this.organizeTopTens();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
@@ -286,10 +337,10 @@ export class TopTensComponent implements OnInit {
     this.topTensMap = new Map();
     this.allCategories = [];
     this.categoryLogistics = [];
-    this.editingMap = new Map<string, boolean>();
-    this.currentCategory = "All Categories";
+    this.statusMap = new Map<string, boolean>();
     this.totalOrderMode = false;
     this.isLoading = true;
+    this.hideSelectorPanel = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

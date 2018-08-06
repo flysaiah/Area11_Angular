@@ -1,11 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
+import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule } from '@angular/material';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -19,6 +18,7 @@ import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { TopTensService } from './services/toptens.service';
 import { TimelineService } from './services/timeline.service';
+import { InfolistService } from './services/infolist.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
@@ -26,6 +26,7 @@ import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
 import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.component';
+import { InfolistsComponent } from './infolists/infolists.component';
 
 @NgModule({
   declarations: [
@@ -43,13 +44,14 @@ import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.componen
     ImportAnimeDialog,
     HeaderComponent,
     TopTensComponent,
-    TimelineComponent
+    TimelineComponent,
+    InfolistsComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    HttpModule,
     MatInputModule,
     MatDialogModule,
     FormsModule,
@@ -57,7 +59,6 @@ import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.componen
     MatCardModule,
     MatChipsModule,
     AppRoutingModule,
-    HttpModule,
     MatFormFieldModule,
     MatMenuModule,
     MatSelectModule,
@@ -66,9 +67,10 @@ import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.componen
     ReactiveFormsModule,
     MatCheckboxModule,
     MatProgressBarModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatRadioModule
   ],
-  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, AuthGuard, NotAuthGuard],
+  providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, InfolistService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog]
 })
