@@ -131,14 +131,6 @@
   margin-right: 30px;
 }
 
-.category-radio-option {
-  width: 200px;
-  height: 20px;
-  margin-right: 10px;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  font-size: 12px;
-}
 .category-checkbox-option {
   display: inline-block;
   width: 200px;
