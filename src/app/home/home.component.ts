@@ -346,6 +346,7 @@ export class HomeComponent {
     this.animeService.addAnimeToCatalog(this.newAnimeMALURL, cat).subscribe(res => {
       if (res["success"]) {
         this.newAnimeCategory = "";
+        this.newAnimeMALURL = "";
         this.displayToast("Successfully added anime to catalog!");
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
@@ -673,7 +674,6 @@ export class HomeComponent {
     if (fromCategoryChange) {
     this.catalogIsLoading = true;
   }
-    this.showAddAnimePrompt = false;
     // this.animeToAdd = new Anime(this.currentUser, "");
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
