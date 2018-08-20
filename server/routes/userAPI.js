@@ -11,7 +11,7 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public')
+    cb(null, 'dist')
   },
   filename: function (req, file, cb) {
     // Distinguish between group & user uploads
@@ -54,7 +54,7 @@ module.exports = (router) => {
           res.json({ success: false, message: "Invalid username" })
         } else if (!user.group) {
           User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-          fs.unlink('./public/' + req.decoded.userId, (err) => {
+          fs.unlink('./dist/' + req.decoded.userId, (err) => {
             if (err) {
               // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
               console.log(err);
@@ -69,7 +69,7 @@ module.exports = (router) => {
               res.json({ success: false, message: err });
             } else if (!group) {
               User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-              fs.unlink('./public/' + req.decoded.userId, (err) => {
+              fs.unlink('./dist/' + req.decoded.userId, (err) => {
                 if (err) {
                   // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                   console.log(err);
@@ -93,7 +93,7 @@ module.exports = (router) => {
                 Group.findOne({ "name": group.name }).remove().exec();
                 // If deleting group, also delete all top tens associated with group
                 TopTens.find({ "group": group.name }).remove().exec();
-                fs.unlink('./public/' + group.name, (err) => {
+                fs.unlink('./dist/' + group.name, (err) => {
                   if (err) {
                     // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                     console.log(err);
@@ -135,7 +135,7 @@ module.exports = (router) => {
                                 res.json({ success: false, message: err });
                               } else if (!ttList) {
                                 User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                                fs.unlink('./public/' + req.decoded.userId, (err) => {
+                                fs.unlink('./dist/' + req.decoded.userId, (err) => {
                                   if (err) {
                                     // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                                     console.log(err);
@@ -167,7 +167,7 @@ module.exports = (router) => {
                                     res.json({ success: false, message: err });
                                   } else {
                                     User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                                    fs.unlink('./public/' + req.decoded.userId, (err) => {
+                                    fs.unlink('./dist/' + req.decoded.userId, (err) => {
                                       if (err) {
                                         // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                                         console.log(err);

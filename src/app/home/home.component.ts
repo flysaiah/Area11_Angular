@@ -330,11 +330,6 @@ export class HomeComponent {
     this.allTypes = Array.from(allTypes);
   }
 
-  formatDate(date: string) {
-    let dObj = new Date(date);
-    return dObj.toLocaleDateString();
-  }
-
   addAnimeToCatalog(category?: string) {
     // category parameter is for when we're changing categories
     // if (category) {
@@ -351,6 +346,7 @@ export class HomeComponent {
     this.animeService.addAnimeToCatalog(this.newAnimeMALURL, cat).subscribe(res => {
       if (res["success"]) {
         this.newAnimeCategory = "";
+        this.newAnimeMALURL = "";
         this.displayToast("Successfully added anime to catalog!");
         this.refresh();
       } else if (res["message"] == "Anime already in catalog") {
@@ -618,8 +614,34 @@ export class HomeComponent {
   }
 
   filterAnime(name: string) {
-    return this.searchAnime.filter(anime =>
-      anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    // Simple fuzzy search
+    const case1 = this.searchAnime.filter(anime => {
+      if (anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        return true;
+      }
+      const titleWords = anime.name.split(" ");
+      for (let word of titleWords) {
+        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+          return true;
+        }
+      }
+      return false;
+    });
+    const case2 = this.searchAnime.filter(anime => {
+      if (!anime.englishTitle || case1.indexOf(anime) !== -1) {
+        return false;
+      }
+      if (anime.englishTitle.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        return true;
+      }
+      const titleWords = anime.englishTitle.split(" ");
+      for (let word of titleWords) {
+        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+          return true;
+        }
+      }
+      return false;    });
+    return case1.concat(case2);
   }
 
   recommendAnime() {
@@ -664,12 +686,20 @@ export class HomeComponent {
     });
   }
 
+  getFormattedDate(date: string) {
+    return date ? ((date == "Invalid Date" || date == "Unknown") ? "Unknown" : this.formatDate(date)) : "Unknown";
+  }
+
+  private formatDate(date: string) {
+    let dObj = new Date(date);
+    return dObj.toLocaleDateString();
+  }
+
   refresh(fromCategoryChange?: boolean) {
     // Fetch all anime stored in database and update our lists
     if (fromCategoryChange) {
     this.catalogIsLoading = true;
   }
-    this.showAddAnimePrompt = false;
     // this.animeToAdd = new Anime(this.currentUser, "");
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {

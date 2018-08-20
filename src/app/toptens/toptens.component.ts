@@ -36,7 +36,6 @@ export class TopTensComponent implements OnInit {
   allCategories: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
-  currentCategory: string;   // Used only for total ordering mode
   hideSelectorPanel: boolean;
 
   isLoading: boolean;
@@ -102,19 +101,7 @@ export class TopTensComponent implements OnInit {
   }
 
   viewTotalOrdering() {
-    // Only show this category so as not to confuse visual w/all the cards
     this.totalOrderMode = true;
-    // Default to the first category that is already showing
-    this.currentCategory = "";
-    for (let category of this.allCategories) {
-      if (category.isSelected) {
-        this.currentCategory = category.category;
-        break;
-      }
-    }
-    if (!this.currentCategory) {
-      this.currentCategory = this.allCategories[0].category
-    }
   }
 
   leaveTotalOrdering() {
@@ -299,7 +286,7 @@ export class TopTensComponent implements OnInit {
     this.refreshHeader = Math.random();
 
     // Make sure we remember which top tens were open
-    if (this.allCategories.length && !this.totalOrderMode) {
+    if (this.allCategories.length) {
       this.cacheSelectedAnime();
     }
 

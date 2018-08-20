@@ -22,7 +22,6 @@
       </div>
     </div>
     <div class="toptens-top-navigator-options">
-      <div *ngIf="!totalOrderMode">
         <div class="category-checkbox-batch-options">
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectAll()">Select All</button>
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectNone()">Select None</button>
@@ -33,19 +32,11 @@
             <mat-checkbox [(ngModel)]="category['isSelected']" [value]="category['category']">{{ category["category"] }}</mat-checkbox>
           </div>
         </div>
-      </div>
-      <div *ngIf="totalOrderMode">
-        <hr>
-        <mat-radio-group [(ngModel)]="currentCategory">
-          <mat-radio-button class="category-radio-option" *ngFor="let category of allCategories" [value]="category['category']" title="{{category['category']}}">{{ category["category"] }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
     </div>
   </mat-card>
   <div *ngIf="allCategories.length && !isLoading">
     <div *ngFor="let category of allCategories; let i = index;">
-      <mat-card class="toptens-card" *ngIf="(!totalOrderMode && category['isSelected']) || (totalOrderMode && currentCategory == category['category'])">
+      <mat-card class="toptens-card" *ngIf="(category['isSelected'])">
         <h1 class="category-header">Top {{ totalOrderMode ? "" : "Ten" }} {{ category["category"] }}</h1>
         <div *ngIf="topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['lastEditedDate']" class="last-edited-date">
           <p>Last edited: {{ getDateString(topTensMap.get(category['category']).get(categoryLogistics[i]['member'])['lastEditedDate']) }}</p>
