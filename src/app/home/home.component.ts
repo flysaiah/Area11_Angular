@@ -614,8 +614,34 @@ export class HomeComponent {
   }
 
   filterAnime(name: string) {
-    return this.searchAnime.filter(anime =>
-      anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    // Simple fuzzy search
+    const case1 = this.searchAnime.filter(anime => {
+      if (anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        return true;
+      }
+      const titleWords = anime.name.split(" ");
+      for (let word of titleWords) {
+        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+          return true;
+        }
+      }
+      return false;
+    });
+    const case2 = this.searchAnime.filter(anime => {
+      if (!anime.englishTitle || case1.indexOf(anime) !== -1) {
+        return false;
+      }
+      if (anime.englishTitle.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        return true;
+      }
+      const titleWords = anime.englishTitle.split(" ");
+      for (let word of titleWords) {
+        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+          return true;
+        }
+      }
+      return false;    });
+    return case1.concat(case2);
   }
 
   recommendAnime() {
