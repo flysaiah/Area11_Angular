@@ -130,7 +130,6 @@
   width: 70px;
   margin-right: 30px;
 }
-
 .category-checkbox-option {
   display: inline-block;
   width: 200px;
@@ -139,6 +138,17 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   font-size: 12px;
+}
+@media screen and (max-width: 850px) {
+  .toptens-top-navigator {
+    width: 750px;
+  }
+  .category-checkbox-options-container {
+    width: 700px;
+  }
+  .category-checkbox-option {
+    width: 150px;
+  }
 }
 /deep/ .mat-checkbox-layout {
   display: inline-block !important;
