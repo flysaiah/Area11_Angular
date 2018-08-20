@@ -330,11 +330,6 @@ export class HomeComponent {
     this.allTypes = Array.from(allTypes);
   }
 
-  formatDate(date: string) {
-    let dObj = new Date(date);
-    return dObj.toLocaleDateString();
-  }
-
   addAnimeToCatalog(category?: string) {
     // category parameter is for when we're changing categories
     // if (category) {
@@ -662,6 +657,15 @@ export class HomeComponent {
       }
       this.refresh();
     });
+  }
+
+  getFormattedDate(date: string) {
+    return date ? ((date == "Invalid Date" || date == "Unknown") ? "Unknown" : this.formatDate(date)) : "Unknown";
+  }
+
+  private formatDate(date: string) {
+    let dObj = new Date(date);
+    return dObj.toLocaleDateString();
   }
 
   refresh(fromCategoryChange?: boolean) {
