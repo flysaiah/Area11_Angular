@@ -9,9 +9,14 @@ const multer = require('multer');
 const async = require('async');
 const fs = require('fs');
 
+// Make sure Area11/public exists; if not then create it
+if (!fs.existsSync('Area11/public') ){
+    fs.mkdirSync('Area11/public/');
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'dist')
+    cb(null, 'Area11/public/')
   },
   filename: function (req, file, cb) {
     // Distinguish between group & user uploads
@@ -54,7 +59,7 @@ module.exports = (router) => {
           res.json({ success: false, message: "Invalid username" })
         } else if (!user.group) {
           User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-          fs.unlink('./dist/' + req.decoded.userId, (err) => {
+          fs.unlink('Area11/public/' + req.decoded.userId, (err) => {
             if (err) {
               // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
               console.log(err);
@@ -69,7 +74,7 @@ module.exports = (router) => {
               res.json({ success: false, message: err });
             } else if (!group) {
               User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-              fs.unlink('./dist/' + req.decoded.userId, (err) => {
+              fs.unlink('Area11/public/' + req.decoded.userId, (err) => {
                 if (err) {
                   // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                   console.log(err);
@@ -93,7 +98,7 @@ module.exports = (router) => {
                 Group.findOne({ "name": group.name }).remove().exec();
                 // If deleting group, also delete all top tens associated with group
                 TopTens.find({ "group": group.name }).remove().exec();
-                fs.unlink('./dist/' + group.name, (err) => {
+                fs.unlink('Area11/public/' + group.name, (err) => {
                   if (err) {
                     // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                     console.log(err);
@@ -135,7 +140,7 @@ module.exports = (router) => {
                                 res.json({ success: false, message: err });
                               } else if (!ttList) {
                                 User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                                fs.unlink('./dist/' + req.decoded.userId, (err) => {
+                                fs.unlink('Area11/public/' + req.decoded.userId, (err) => {
                                   if (err) {
                                     // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                                     console.log(err);
@@ -167,7 +172,7 @@ module.exports = (router) => {
                                     res.json({ success: false, message: err });
                                   } else {
                                     User.findOne({ "_id": ObjectID(req.decoded.userId) }).remove().exec();
-                                    fs.unlink('./dist/' + req.decoded.userId, (err) => {
+                                    fs.unlink('Area11/public/' + req.decoded.userId, (err) => {
                                       if (err) {
                                         // Don't return a success: false here becuase this will always fail when they haven't uploaded an avatar
                                         console.log(err);
