@@ -29,23 +29,47 @@
 }
 
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 30px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 30px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 10px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 10px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 .search-toolbar {
@@ -104,7 +128,8 @@
   padding-bottom: 40%;
   background: no-repeat center/cover;
   border-radius: 50%;
-  border: 1px solid black;}
+  border: 1px solid black;
+}
 .group-name {
   margin-top: 0px;
 }

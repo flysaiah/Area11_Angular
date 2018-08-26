@@ -19,7 +19,8 @@
       </mat-checkbox>
       <br>
       <br>
-      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !autoTimelineAdd.dirty && !fireworks.dirty" (click)="saveChanges()">Save Changes</button>
+      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !autoTimelineAdd.dirty && !fireworks.dirty"
+        (click)="saveChanges()">Save Changes</button>
       <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
@@ -27,7 +28,7 @@
       <h3 class="settings-avatar-name">{{ currentUser }}</h3>
       <div class="change-avatar">
         <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
-        <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)"/>
+        <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)" />
         <button *ngIf="showUploadOptions" [disabled]="!this.avatarUpload.length" type="button" (click)="upload()">Upload</button>
         <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
       </div>
@@ -36,7 +37,8 @@
 </mat-card>
 <mat-card class="settings-loading-placeholder" *ngIf="isLoading">
   <mat-card-content>
-    <p>Loading settings information...<p>
-    <mat-progress-bar mode="buffer"></mat-progress-bar>
+    <p>Loading settings information...
+      <p>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
   </mat-card-content>
 </mat-card>

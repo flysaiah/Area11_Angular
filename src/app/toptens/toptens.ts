@@ -4,10 +4,10 @@ export class TopTens {
     public category: string,
     public user?: string,
     public entries?: {
-      name: string,
-      viewerPrefs: {member: string, shouldHide: boolean}[]
+      name: string
+      viewerPrefs: { member: string; shouldHide: boolean }[]
     }[],
     public hasNoContent?: boolean,
-    public isSelected?: boolean
+    public isSelected?: boolean,
   ) {}
 }

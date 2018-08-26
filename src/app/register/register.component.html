@@ -2,24 +2,26 @@
 <div class="area11-register-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <!-- IDEA: Add some vertical banners on either side or something -->
 <div class="registration-container">
-    <form #userForm="ngForm" class="register-form" (ngSubmit)="onSubmit()">
-      <mat-form-field class="register-input">
-        <input matInput placeholder="Username" [(ngModel)]="model.username" type="text" id="name" name="name" #name="ngModel" required>
-        <mat-error *ngIf="name.invalid"> Username is required </mat-error>
-      </mat-form-field>
+  <form #userForm="ngForm" class="register-form" (ngSubmit)="onSubmit()">
+    <mat-form-field class="register-input">
+      <input matInput placeholder="Username" [(ngModel)]="model.username" type="text" id="name" name="name" #name="ngModel" required>
+      <mat-error *ngIf="name.invalid"> Username is required </mat-error>
+    </mat-form-field>
 
-      <mat-form-field class="register-input">
-        <input matInput placeholder="Password" [(ngModel)]="model.password" type="password" id="pass" name="pass" #pass="ngModel" required>
-        <mat-error *ngIf="pass.invalid && (pass.dirty || pass.touched)"> Password is required </mat-error>
-      </mat-form-field>
+    <mat-form-field class="register-input">
+      <input matInput placeholder="Password" [(ngModel)]="model.password" type="password" id="pass" name="pass" #pass="ngModel"
+        required>
+      <mat-error *ngIf="pass.invalid && (pass.dirty || pass.touched)"> Password is required </mat-error>
+    </mat-form-field>
 
-      <mat-form-field class="register-input">
-        <input matInput placeholder="Best Girl" [(ngModel)]="model.bestgirl" type="text" id="bestgirl" name="bestgirl" #bestgirl="ngModel" required>
-        <mat-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Best girl is required </mat-error>
-      </mat-form-field>
+    <mat-form-field class="register-input">
+      <input matInput placeholder="Best Girl" [(ngModel)]="model.bestgirl" type="text" id="bestgirl" name="bestgirl" #bestgirl="ngModel"
+        required>
+      <mat-error *ngIf="bestgirl.invalid && (bestgirl.dirty || bestgirl.touched)"> Best girl is required </mat-error>
+    </mat-form-field>
 
-      <button mat-raised-button color="primary" [disabled]="name.invalid || pass.invalid || bestgirl.invalid || submitted" type="submit">Register</button>
+    <button mat-raised-button color="primary" [disabled]="name.invalid || pass.invalid || bestgirl.invalid || submitted" type="submit">Register</button>
 
-    </form>
-    <p class="back-to-login">Remember your username/password? <a routerLink="/login">Log in</a></p>
+  </form>
+  <p class="back-to-login">Remember your username/password? <a routerLink="/login">Log in</a></p>
 </div>

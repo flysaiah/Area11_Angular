@@ -29,23 +29,47 @@
 }
 
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 30px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 30px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 10px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 10px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 .search-toolbar {
@@ -83,7 +107,7 @@
 .save-changes-button {
   display: block;
   width: 50%;
-  min-width: 40px !important;;
+  min-width: 40px !important;
   margin-bottom: 20px;
 }
 .delete-account-button {

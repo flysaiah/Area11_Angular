@@ -10,7 +10,7 @@
           <h3>{{ anime["name"] }}</h3>
         </div>
         <div>
-          Air date: {{  anime["startDate"] ? (anime["startDate"] == "Invalid Date" ? "Unknown" : anime["startDate"]) : "Unknown"  }}
+          Air date: {{ anime["startDate"] ? (anime["startDate"] == "Invalid Date" ? "Unknown" : anime["startDate"]) : "Unknown" }}
         </div>
         <div>
           Type: {{ anime["type"] }}
