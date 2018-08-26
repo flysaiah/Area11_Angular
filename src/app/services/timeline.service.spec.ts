@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing'
 
-import { TimelineService } from './timeline.service';
+import { TimelineService } from './timeline.service'
 
 describe('TimelineService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TimelineService]
-    });
-  });
+      providers: [TimelineService],
+    })
+  })
 
   it('should be created', inject([TimelineService], (service: TimelineService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+    expect(service).toBeTruthy()
+  }))
+})

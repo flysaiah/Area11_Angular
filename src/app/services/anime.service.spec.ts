@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing'
 
-import { AnimeServiceService } from './anime-service.service';
+import { AnimeService } from './anime.service'
 
 describe('AnimeServiceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AnimeServiceService]
-    });
-  });
+      providers: [AnimeService],
+    })
+  })
 
-  it('should be created', inject([AnimeServiceService], (service: AnimeServiceService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+  it('should be created', inject([AnimeService], (service: AnimeService) => {
+    expect(service).toBeTruthy()
+  }))
+})

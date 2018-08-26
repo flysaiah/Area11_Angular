@@ -18,6 +18,6 @@ export class Anime {
     public status?: string,
     public recommenders?: Object[],
     public ownerIsRecommender?: boolean,
-    public hasNewSeason?: boolean
+    public hasNewSeason?: boolean,
   ) {}
 }

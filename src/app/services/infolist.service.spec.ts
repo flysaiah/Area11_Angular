@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing'
 
-import { InfolistService } from './infolist.service';
+import { InfolistService } from './infolist.service'
 
 describe('InfolistService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [InfolistService]
-    });
-  });
+      providers: [InfolistService],
+    })
+  })
 
   it('should be created', inject([InfolistService], (service: InfolistService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+    expect(service).toBeTruthy()
+  }))
+})

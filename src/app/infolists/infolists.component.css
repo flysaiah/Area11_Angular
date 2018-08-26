@@ -29,23 +29,47 @@
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 15px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 15px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 15px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 15px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 15px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 15px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {top: 15px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 15px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 .search-toolbar {
   width: 100%;
@@ -106,7 +130,7 @@ p {
   border-style: double;
   border-width: 5px;
   border-radius: 2px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   min-width: 400px;
   text-align: center;
 }
@@ -141,7 +165,7 @@ p {
   margin-right: 20px;
   height: 30px;
   min-width: 50px !important;
-  line-height: 30px
+  line-height: 30px;
 }
 .infolists-right-container {
   float: left;
@@ -153,7 +177,7 @@ p {
   border-style: double;
   border-width: 5px;
   border-radius: 2px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   margin-bottom: 20px;
 }
 .infolists-add-save-container {
@@ -188,10 +212,11 @@ p {
   background-color: #f2f2f2;
 }
 
-.infolists-table td, .infolists-table th {
-    border: 1px solid #ddd;
-    padding: 5px;
-    text-align: left;
+.infolists-table td,
+.infolists-table th {
+  border: 1px solid #ddd;
+  padding: 5px;
+  text-align: left;
 }
 .lock-svg {
   height: 20px;

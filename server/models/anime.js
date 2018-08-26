@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 const animeSchema = new Schema({
-  name: { type: String, required: true, unique: false, lowercase: false},
+  name: { type: String, required: true, unique: false, lowercase: false },
   description: String,
   rating: Number,
   thumbnail: String,
-  malID: String,   // myanimelist ID
+  malID: String, // myanimelist ID
   category: String,
-  user: String,   // username, not ID
+  user: String, // username, not ID
   comments: [String],
   isFinalist: Boolean,
   genres: [String],
@@ -20,7 +20,7 @@ const animeSchema = new Schema({
   status: String,
   recommenders: [{ name: String }],
   ownerIsRecommender: Boolean,
-  hasNewSeason: Boolean
+  hasNewSeason: Boolean,
 })
 
-module.exports = mongoose.model('Anime', animeSchema);
+module.exports = mongoose.model('Anime', animeSchema)

@@ -19,11 +19,19 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
-                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
-                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
-                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
+                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl']
+                  }}
+                </p>
+                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{
+                  groupMember['currentlyWatching'] }}</p>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import
+                  Anime
+                </button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline"
+                  [queryParams]="{user: groupMember['username']}">Timeline</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave
+                  Group
+                </button>
               </div>
             </div>
           </div>
@@ -32,33 +40,45 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
-                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
-                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
-                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
-                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave Group</button>
+                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl']
+                  }}
+                </p>
+                <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{
+                  groupMember['currentlyWatching'] }}</p>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import
+                  Anime
+                </button>
+                <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline"
+                  [queryParams]="{user: groupMember['username']}">Timeline</button>
+                <button class="group-member-button" *ngIf="groupMember['username'] == currentUser" mat-raised-button color="warn" (click)="leaveGroup()">Leave
+                  Group
+                </button>
               </div>
             </div>
           </div>
         </div>
         <!-- "Find/create group" tab -->
-      <div class="group-settings-tab" *ngIf="!currentGroup['name']">
-        You're not currently in a group. Find or create one here!
-        <div class="find-or-create-group">
-          Request to join a group:
-          <mat-form-field class="find-or-create-input" color="accent">
-            <input matInput [(ngModel)]="joinGroupName" placeholder="Group Name">
-          </mat-form-field>
-          <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send Request</button>
+        <div class="group-settings-tab" *ngIf="!currentGroup['name']">
+          You're not currently in a group. Find or create one here!
+          <div class="find-or-create-group">
+            Request to join a group:
+            <mat-form-field class="find-or-create-input" color="accent">
+              <input matInput [(ngModel)]="joinGroupName" placeholder="Group Name">
+            </mat-form-field>
+            <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!joinGroupName" (click)="joinGroupRequest()">Send
+              Request
+            </button>
+          </div>
+          <div class="find-or-create-group">
+            <span class="create-group-input-label"> Create your own group:</span>
+            <mat-form-field class="find-or-create-input" color="accent">
+              <input matInput [(ngModel)]="newGroupName" placeholder="New Group Name">
+            </mat-form-field>
+            <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create
+              Group
+            </button>
+          </div>
         </div>
-        <div class="find-or-create-group">
-        <span class="create-group-input-label"> Create your own group:</span>
-          <mat-form-field class="find-or-create-input" color="accent">
-            <input matInput [(ngModel)]="newGroupName" placeholder="New Group Name">
-          </mat-form-field>
-          <button mat-raised-button class="find-or-create-button" color="accent" [disabled]="!newGroupName" (click)="createGroup()">Create Group</button>
-        </div>
-      </div>
       </mat-tab>
       <!-- Group invites tab -->
       <mat-tab ng label="Pending Requests">
@@ -109,13 +129,14 @@
           <div class="group-settings-left">
             <form #groupForm="ngForm">
               <mat-form-field class="group-settings-name" color="accent">
-                <input matInput name="name" placeholder="Group Name" [(ngModel)]="changesModel.name"  #name="ngModel">
+                <input matInput name="name" placeholder="Group Name" [(ngModel)]="changesModel.name" #name="ngModel">
               </mat-form-field>
               <br>
-              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty" (click)="saveChanges()">Save Changes</button>
+              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty" (click)="saveChanges()">Save
+                Changes
+              </button>
             </form>
-            <br><br>
-            More group features and settings will be available in future updates!
+            <br><br> More group features and settings will be available in future updates!
             <br><br>
             <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
           </div>
@@ -123,8 +144,10 @@
             <div class="group-settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
             <h3 class="group-settings-avatar-name">{{ currentGroup['name'] }}</h3>
             <div class="change-avatar">
-              <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
-              <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)"/>
+              <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change
+                Avatar
+              </button>
+              <input class="upload-input" *ngIf="showUploadOptions" type="file" (change)="fileChangeEvent($event)" />
               <button *ngIf="showUploadOptions" [disabled]="!this.groupAvatarUpload.length" type="button" (click)="upload()">Upload</button>
               <button *ngIf="showUploadOptions" (click)="toggleUploadOptions()">Cancel</button>
             </div>
@@ -139,7 +162,8 @@
 </mat-card>
 <mat-card class="group-loading-placeholder" *ngIf="isLoading">
   <mat-card-content>
-    <p>Loading group information...<p>
-    <mat-progress-bar mode="buffer"></mat-progress-bar>
+    <p>Loading group information...
+      <p>
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
   </mat-card-content>
 </mat-card>

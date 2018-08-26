@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing'
 
-import { TopTensService } from './toptens.service';
+import { TopTensService } from './toptens.service'
 
 describe('ToptensService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TopTensService]
-    });
-  });
+      providers: [TopTensService],
+    })
+  })
 
   it('should be created', inject([TopTensService], (service: TopTensService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+    expect(service).toBeTruthy()
+  }))
+})

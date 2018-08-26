@@ -17,17 +17,20 @@
             MAL Rating: {{ anime["rating"] }}
           </div>
           <div class="recommended-message-container" *ngIf="anime.recommenders && anime.recommenders.length">
-            <mat-chip class="recommended-message">Recommended by <span *ngFor="let recommender of anime.recommenders; let i = index">{{ recommender.name + (i == anime.recommenders.length - 1 ? "" : ", ") }}</span></mat-chip>
+            <mat-chip class="recommended-message">Recommended by <span *ngFor="let recommender of anime.recommenders; let i = index">{{
+                recommender.name + (i == anime.recommenders.length - 1 ? "" : ", ") }}</span></mat-chip>
           </div>
           <div class="import-checkbox">
-            Import this anime: <mat-checkbox type="checkbox" [(ngModel)]="anime.selected"></mat-checkbox>
+            Import this anime:
+            <mat-checkbox type="checkbox" [(ngModel)]="anime.selected"></mat-checkbox>
           </div>
         </div>
       </div>
     </mat-card>
   </div>
   <div class="import-action-button-container">
-    <button class="import-action-button" mat-raised-button color="accent" [matDialogClose]="data.importableAnime">Import Selected Anime</button>
+    <button class="import-action-button" mat-raised-button color="accent" [matDialogClose]="data.importableAnime">Import
+      Selected Anime</button>
     <button class="import-action-button" mat-raised-button color="primary" [matDialogClose]="data.importAll">Import All</button>
   </div>
 </div>

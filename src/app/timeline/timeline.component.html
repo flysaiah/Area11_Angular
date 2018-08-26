@@ -1,5 +1,5 @@
-
-<app-header [refreshHeader]="refreshHeader"></app-header>
+<app-header [refreshHeader]="refreshHeader">
+</app-header>
 <div class="search-toolbar">
   <button *ngIf="isTimelineOwner" mat-raised-button class="home-button" routerLink="/">Back to Home</button>
   <button *ngIf="!isTimelineOwner" mat-raised-button class="home-button" routerLink="/group">Back to Group</button>
@@ -11,8 +11,9 @@
 <div *ngIf="!eraList.length && isLoading && !unauthorizedError">
   <mat-card class="placeholder-card">
     <mat-card-content>
-      <p>Loading timeline information...<p>
-      <mat-progress-bar class="loading-bar" mode="buffer"></mat-progress-bar>
+      <p>Loading timeline information...
+        <p>
+          <mat-progress-bar class="loading-bar" mode="buffer"></mat-progress-bar>
     </mat-card-content>
   </mat-card>
 </div>
@@ -39,7 +40,8 @@
 <div *ngIf="unauthorizedError">
   <mat-card class="placeholder-card">
     <mat-card-content>
-      You do not have permission to access this person's timeline. You are only allowed to view the timelines of people in your group.
+      You do not have permission to access this person's timeline. You are only allowed to view the timelines of people in your
+      group.
     </mat-card-content>
   </mat-card>
 </div>
@@ -51,12 +53,16 @@
       <div class="era-container" [ngClass]="{'era-white': era['whiteText']}">
         <h1 class="era-header era-title">{{ era["name"] }}</h1>
         <p *ngIf="era['subHeader']" class="era-title era-subheader"><i>{{ era["subHeader"] }}</i></p>
-        <h4 *ngIf="era['startDate'] && era['endDate'] &&era['startDate'] != era['endDate'] " class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
-        <h4 *ngIf="era['startDate'] && era['endDate'] && era['startDate'] == era['endDate']" class="era-date">{{ era["startDate"] }}</h4>
+        <h4 *ngIf="era['startDate'] && era['endDate'] &&era['startDate'] != era['endDate'] " class="era-date">{{ era["startDate"]
+          }} - {{ era["endDate"] }}</h4>
+        <h4 *ngIf="era['startDate'] && era['endDate'] && era['startDate'] == era['endDate']" class="era-date">{{ era["startDate"]
+          }}</h4>
         <h4 *ngIf="era['startDate'] && !era['endDate']" class="era-date">{{ era["startDate"] }} - Present</h4>
         <button [disabled]="!isTimelineOwner" class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
-        <button [disabled]="!isTimelineOwner || editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
-        <button [disabled]="!isTimelineOwner || i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
+        <button [disabled]="!isTimelineOwner || editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add
+          New Era</button>
+        <button [disabled]="!isTimelineOwner || i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn"
+          (click)="deleteEra(i)">Delete Era</button>
       </div>
       <!-- EDIT -->
       <span class="era-horizontal-line"></span>
@@ -86,7 +92,7 @@
         <br>
         <mat-form-field color="accent">
           <input matInput placeholder="Background color" [(colorPicker)]="era['backgroundColor']" [style.background]="era['backgroundColor']"
-          [value]="era['backgroundColor']" [cpPosition]="'bottom'"/>
+            [value]="era['backgroundColor']" [cpPosition]="'bottom'" />
         </mat-form-field>
         <br>
         <mat-checkbox matInput labelPosition="before" [(ngModel)]="era['whiteText']">

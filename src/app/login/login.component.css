@@ -1,6 +1,6 @@
 .register-logo {
   font-size: 75px;
-  font-family: "Syncopate";
+  font-family: 'Syncopate';
   color: #800015;
   text-align: center;
   margin-bottom: 25px;
@@ -60,21 +60,45 @@
 }
 
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 30px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 30px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 10px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 10px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {top: 10px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 10px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }

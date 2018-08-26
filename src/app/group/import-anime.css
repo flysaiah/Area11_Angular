@@ -24,7 +24,7 @@
 .import-container {
   height: 600px;
   overflow: auto;
-  font-family: "Roboto";
+  font-family: 'Roboto';
   padding-bottom: 0px;
 }
 .recommended-message-container {

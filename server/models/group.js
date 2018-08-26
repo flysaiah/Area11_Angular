@@ -1,11 +1,9 @@
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt-nodejs');
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 const groupSchema = new Schema({
-  name: { type: String, required: true, unique: true, lowercase: false},
-  members: { type: [{ id: String, isPending: Boolean }], required: true, unique: false, lowercase: false}
-});
+  name: { type: String, required: true, unique: true, lowercase: false },
+  members: { type: [{ id: String, isPending: Boolean }], required: true, unique: false, lowercase: false },
+})
 
-
-module.exports = mongoose.model('Group', groupSchema);
+module.exports = mongoose.model('Group', groupSchema)

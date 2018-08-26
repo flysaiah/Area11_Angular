@@ -8,6 +8,6 @@ export class Era {
     public metadata?: string,
     public subHeader?: string,
     public backgroundColor?: string,
-    public whiteText?: boolean
+    public whiteText?: boolean,
   ) {}
 }
