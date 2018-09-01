@@ -12,8 +12,10 @@ Area 11 is a web application for keeping track of anime you have watched or are 
 
 4. Start a MongoDB server with `mongod`
 
-5. Build the project with `ng build`. Use the --prod` flag for a production build.
+5. If running in dev mode, you need to create a folder called "Area11" inside your root directory (this is an issue and will be fixed later so you don't have to manually do this).
 
-6. Start the local server with `nodemon server.js`.
+6. Build the project with `ng build`. Use the --prod` flag for a production build.
+
+7. Start the local server with `nodemon server.js`.
 
 Now navigate to `localhost:3000` and your application should be running!
