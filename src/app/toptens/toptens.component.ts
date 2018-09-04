@@ -267,6 +267,8 @@ export class TopTensComponent implements OnInit {
     for (let category of this.allCategories) {
       if (category.isSelected) {
         this.statusMap.set(category.category + "-selected", true);
+      } else {
+        this.statusMap.set(category.category + "-selected", false);
       }
     }
   }
