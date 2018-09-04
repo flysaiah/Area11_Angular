@@ -5,7 +5,13 @@
 </div>
 <div class="area11-infolists-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <div class="infolists-flex-container">
-  <mat-card class="infolists-left-container">
+  <mat-card *ngIf="isLoading" class="infolists-left-container">
+    <p>Loading infolists...<p>
+    <div class="loading-bar">
+      <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
+  </mat-card>
+  <mat-card class="infolists-left-container" *ngIf="!isLoading">
     <h2>My Lists</h2>
     <div class="infolists-left-button-container">
       <button [disabled]="!allInfolists.length" class="infolists-left-button" mat-raised-button color="primary" (click)="viewAll()">View All</button>

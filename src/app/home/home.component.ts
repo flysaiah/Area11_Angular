@@ -687,12 +687,16 @@ export class HomeComponent {
   }
 
   getFormattedDate(date: string) {
-    return date ? ((date == "Invalid Date" || date == "Unknown") ? "Unknown" : this.formatDate(date)) : "Unknown";
+    return date ? this.formatDate(date) : "Unknown";
   }
 
   private formatDate(date: string) {
-    let dObj = new Date(date);
-    return dObj.toLocaleDateString();
+    const dObj = new Date(date);
+    const res = dObj.toLocaleDateString();
+    if (res == "Invalid Date") {
+      return "Unkown";
+    }
+    return res;
   }
 
   refresh(fromCategoryChange?: boolean) {

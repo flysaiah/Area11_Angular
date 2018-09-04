@@ -150,12 +150,12 @@ export class InfolistsComponent implements OnInit {
       if (res["success"] && res["infolists"]) {
         this.allInfolists = res["infolists"]
         this.generateInfolistNames();
+        this.isLoading = false;
       } else if (!res["success"]) {
         this.displayToast("There was a problem getting your info lists.", true);
         console.log(res);
       }
     });
-    this.isLoading = false;
   }
 
   constructor(

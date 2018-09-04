@@ -110,6 +110,12 @@ p {
   min-width: 400px;
   text-align: center;
 }
+.loading-bar {
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: left;
+}
 .infolists-left-button-container {
   margin-bottom: 10px;
   margin-top: 5px;
