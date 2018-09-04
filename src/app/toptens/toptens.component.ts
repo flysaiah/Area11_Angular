@@ -145,20 +145,18 @@ export class TopTensComponent implements OnInit {
   }
 
   addNewEntry(category: string, catIndex: number, entryIndex: number) {
-    // Swap entry with the entry below it
+    // Add new entry to top tens category
     let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
     let newViewerPrefs = [];
-    for (let gMemb of this.currentGroupMembers) {
-      if (gMemb.username != this.currentUser) {
-        newViewerPrefs.push({ member: gMemb.username, shouldHide: false });
-      }
+    for (let viewerPref of entries[0].viewerPrefs) {
+      newViewerPrefs.push({ member: viewerPref.member, shouldHide: false });
     }
     let newEntry = {name: "", viewerPrefs: newViewerPrefs}
     entries = entries.splice(entryIndex + 1, 0, newEntry)
   }
 
   removeEntry(category: string, catIndex: number, entryIndex: number) {
-    // Swap entry with the entry below it
+    // Remove entry from top tens category
     let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
     entries = entries.splice(entryIndex , 1)
   }
