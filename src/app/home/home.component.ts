@@ -624,13 +624,20 @@ export class HomeComponent {
     return res;
   }
 
+  nostalgiaButton() {
+    // Randomly select anime from completed list to view
+    if (!this.completedList.length) {
+      this.displayToast("You've filtered out all of your completed anime!", true);
+    } else {
+      this.selectedAnime = this.completedList[Math.floor(Math.random() * this.completedList.length)]
+    }
+  }
+
   filterWatch(type: string, newValue: string) {
     // Change model and refresh
     // TODO: This doesn't seem very Angular-like, investiage how we could use models instead
-    let shouldRefresh = true;
     switch(type) {
       case "Category":
-        if (newValue === this.showCategory) shouldRefresh = false;
         this.showCategory = newValue;
         this.refresh(true);
         break;

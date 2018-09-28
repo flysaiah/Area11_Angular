@@ -198,11 +198,13 @@ export class GroupComponent implements OnInit {
           anime["selected"] = false;
         }
 
+        let filteredAnime = importableAnime.filter(anime => anime.category === "Completed");
+
         if (!importableAnime.length) {
           this.displayToast(username + " doesn't have any anime you can import!", true)
         } else {
           let dialogRef = this.dialog.open(ImportAnimeDialog, {
-            data: { importableAnime: importableAnime, importAll: "Import All"}
+            data: { importableAnime: importableAnime, allAnime: importableAnime, filteredAnime: filteredAnime, importAll: "Import All", filtered: false},
           });
           dialogRef.afterClosed().subscribe((result) => {
             // Result is the index of the anime they chose to link, if they chose to link one

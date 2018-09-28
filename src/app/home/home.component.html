@@ -17,6 +17,9 @@
       <a *ngIf="showAddAnimePrompt" class="search-toolbar-submenu" mat-menu-item (click)="closeAddAnimePrompt()" >
         <span>Stop Adding Anime</span>
       </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="nostalgiaButton()" >
+        <span>Nostalgia Button</span>
+      </a>
     </mat-menu>
 
     <div [matMenuTriggerFor]="filterSortMenu" class="search-toolbar-menu-minicontainer">
@@ -127,14 +130,11 @@
     <mat-card *ngIf="showAddAnimePrompt && !currentlyAddingAnime" class="add-anime-prompt">
       <div>
         <mat-form-field color="accent" class="add-anime-name">
-          <!-- <input matInput placeholder="Title of Anime" [(ngModel)]="animeToAdd['name']" name="animeName"> -->
           <input matInput placeholder="MAL URL of Anime" [(ngModel)]="newAnimeMALURL" name="animeURL">
         </mat-form-field>
-        <!-- <button mat-raised-button [disabled]="!animeToAdd['name']" class="link-button" color="accent" type=button (click)="malSearch()">{{ (animeToAdd['malID'] ? 'Relink' : 'Link') }}</button> -->
         <div class="add-anime-normal">
           <mat-form-field class="add-to-category">
             <mat-select placeholder="Add to..." name="addAnimeCat" [(ngModel)]="newAnimeCategory">
-              <!-- <option value="" disabled selected>Select a Category</option> -->
               <mat-option *ngFor="let category of possibleCategories" [value]="category">{{ category }}</mat-option>
             </mat-select>
           </mat-form-field>
