@@ -134,8 +134,9 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div [ngClass]="{'details-misc': !hideFinalistsPanel, 'details-misc-2col': hideFinalistsPanel}">
-            <p><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
-            <p><strong>Ended: </strong> {{ getFormattedDate(selectedAnime["endDate"]) }}</p>
+            <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
+            <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(selectedAnime["endDate"]) }}</p>
+            <p *ngIf="selectedAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
             <p><strong>MAL rating: </strong> {{ selectedAnime["rating"] ? selectedAnime["rating"] : "Unknown" }}</p>
             <p><strong>Type: </strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
             <p><strong>English: </strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>

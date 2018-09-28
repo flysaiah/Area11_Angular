@@ -16,7 +16,7 @@ let malIDs = new Set();
 let allAnime = [];
 let updateList = [];
 
-Anime.find({}, (err, animeList) => {
+Anime.find({"type": "Movie"}, (err, animeList) => {
   if (err) {
     mongoose.disconnect();
     console.log(err);
@@ -86,6 +86,14 @@ Anime.find({}, (err, animeList) => {
                 } else {
                   endDate = end.toLocaleDateString();
                 }
+              } else {
+                let start = new Date(airing);
+                if (start.toLocaleDateString() == "Invalid Date") {
+                  startDate = airing;
+                } else {
+                  startDate = start.toLocaleDateString();
+                }
+                endDate = "OneAiredDate";
               }
               console.log("---STARTDATE---");
               console.log(startDate);
