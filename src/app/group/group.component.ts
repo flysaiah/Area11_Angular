@@ -335,10 +335,10 @@ export class GroupComponent implements OnInit {
     this.refreshHeader = Math.random();
 
     this.newGroupName = "";
-    this.changesModel = new Group("", []);
+    this.changesModel = new Group("", [], { name: "", date: null });
     this.joinGroupName = "";
     this.showUploadOptions = false;
-    this.currentGroup = new Group("", []);
+    this.currentGroup = new Group("", [], { name: "", date: null });
     this.currentGroupAvatar = "";
     this.currentGroupMembersCol1 = [];
     this.currentGroupMembersCol2 = [];
@@ -355,6 +355,10 @@ export class GroupComponent implements OnInit {
                 if (res["success"]) {
                   this.currentGroup = res["group"];
                   this.changesModel = JSON.parse(JSON.stringify(this.currentGroup));
+                  // backwards compatibility
+                  if (!this.changesModel.countdown) {
+                    this.changesModel.countdown = { name: "", date: null }
+                  }
                   // Force refresh of image
                   this.currentGroupAvatar = "/" + res["group"]["name"].split(" ").join("-") + "?xxx=" + Math.random();
                   this.generateUserRequests();

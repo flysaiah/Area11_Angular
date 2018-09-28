@@ -515,6 +515,7 @@ module.exports = (router) => {
                 let groupObj = {
                   name: group.name,
                   members: newMembers,
+                  countdown: group.countdown
                 }
                 res.json({ success: true, group: groupObj, currentlyWatching: currentShowsMap})
               }
@@ -528,7 +529,8 @@ module.exports = (router) => {
   });
 
   router.post('/saveGroupChanges', (req, res) => {
-    Group.findOneAndUpdate({ name: req.body.groupName }, { $set: { name: req.body.groupChangesModel.name } }, (err, group) => {
+    console.log(req.body);
+    Group.findOneAndUpdate({ name: req.body.groupName }, { $set: { name: req.body.groupChangesModel.name, countdown: req.body.groupChangesModel.countdown } }, (err, group) => {
       if (err) {
         res.json({ success: false, message: err });
       } else if (req.body.groupName != req.body.groupChangesModel.name) {

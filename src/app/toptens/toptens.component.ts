@@ -318,7 +318,7 @@ export class TopTensComponent implements OnInit {
 
   ngOnInit() {
     this.currentGroupMembers = [];
-    this.currentGroup = new Group("",[]);
+    this.currentGroup = new Group("",[], { name: "", date: null });
     this.newCategoryName = "";
     this.allTopTens = [];
     this.topTensMap = new Map();

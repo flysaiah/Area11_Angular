@@ -8,6 +8,7 @@ export class Group {
       isPending: boolean,
       avatar: string
     }[],
+    public countdown: { name: string, date: Date },
     public avatar?: string
   ) {}
 }

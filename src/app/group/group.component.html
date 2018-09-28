@@ -111,8 +111,16 @@
               <mat-form-field class="group-settings-name" color="accent">
                 <input matInput name="name" placeholder="Group Name" [(ngModel)]="changesModel.name"  #name="ngModel">
               </mat-form-field>
+              <mat-form-field class="group-settings-name" color="accent">
+                <input matInput name="countdownName" placeholder="Countdown Event Name" [(ngModel)]="changesModel.countdown.name"  #countdownName="ngModel">
+              </mat-form-field>
+              <mat-form-field class="group-settings-name" color="accent">
+                <input matInput name="countdownDate" [(ngModel)]="changesModel.countdown.date" [matDatepicker]="picker" placeholder="Countdown Event Date" #countdownDate="ngModel">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
               <br>
-              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty" (click)="saveChanges()">Save Changes</button>
+              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty && !countdownName.dirty && !countdownDate.dirty || countdownDate.invalid || ((changesModel.countdown.date && !changesModel.countdown.name) ? true : false) || ((changesModel.countdown.name && !changesModel.countdown.date) ? true : false)" (click)="saveChanges()">Save Changes</button>
             </form>
             <br><br>
             More group features and settings will be available in future updates!
