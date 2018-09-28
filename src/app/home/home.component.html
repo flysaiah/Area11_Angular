@@ -6,55 +6,119 @@
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <!-- Search assistant toolbar -->
 <div class="search-toolbar">
-  <button mat-raised-button class="add-anime-button" *ngIf="!showAddAnimePrompt" (click)="openAddAnimePrompt()">Add Anime</button>
-  <button mat-raised-button class="add-anime-button" *ngIf="showAddAnimePrompt" (click)="closeAddAnimePrompt()">Stop Adding Anime</button>
-  <!-- Filtering/sorting -->
-  <div class="search-toolbar-minicontainer">
-    <label class="filter-label" for="catalogCategoryFilter">Filter by Category: </label>
-    <select id="catalogCategoryFilter" [(ngModel)]="showCategory" (ngModelChange)="refresh(true)" class="catalog-sort">
-      <option value="All Categories">All Categories</option>
-      <option value="Want to Watch">Want to Watch</option>
-      <option value="Considering">Considering</option>
-      <option value="Completed">Completed</option>
-    </select>
+  <div class="search-toolbar-inner-container">
+    <div [matMenuTriggerFor]="catalogActionsMenu" class="search-toolbar-menu-minicontainer">
+      Catalog Actions<span class="down-icon">▾</span>
+    </div>
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #catalogActionsMenu="matMenu">
+      <a *ngIf="!showAddAnimePrompt" class="search-toolbar-submenu" mat-menu-item (click)="openAddAnimePrompt()" >
+        <span>Add Anime</span>
+      </a>
+      <a *ngIf="showAddAnimePrompt" class="search-toolbar-submenu" mat-menu-item (click)="closeAddAnimePrompt()" >
+        <span>Stop Adding Anime</span>
+      </a>
+    </mat-menu>
+
+    <div [matMenuTriggerFor]="filterSortMenu" class="search-toolbar-menu-minicontainer">
+      Filter/Sort<span class="down-icon">▾</span>
+    </div>
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #filterSortMenu="matMenu">
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="categoryFilterMenu" >
+        <span>Filter by Category ({{ showCategory }})</span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="genreFilterMenu" >
+        <span>Filter by Genre ({{ selectedGenre }})</span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="typeFilterMenu" >
+        <span>Filter by Type ({{ selectedType }})</span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
+        <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
+      </a>
+    </mat-menu>
+
+    <!-- Category filter -->
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #categoryFilterMenu="matMenu">
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Category', 'All Categories');">
+        <span>All Categories <span *ngIf="showCategory === 'All Categories'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Category', 'Want to Watch');">
+        <span>Want to Watch <span *ngIf="showCategory === 'Want to Watch'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Category', 'Considering');">
+        <span>Considering <span *ngIf="showCategory === 'Considering'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Category', 'Completed');">
+        <span>Completed <span *ngIf="showCategory === 'Completed'" class="submenu-checkmark">✓</span></span>
+      </a>
+    </mat-menu>
+
+    <!-- Genre filter -->
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #genreFilterMenu="matMenu">
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Genre', 'All Genres');">
+        <span>All Genres <span *ngIf="selectedGenres === 'All Genres'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a *ngFor="let genre of allGenres" class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Genre', genre);">
+        <span>{{ genre }} <span *ngIf="selectedGenres === genre" class="submenu-checkmark">✓</span></span>
+      </a>
+    </mat-menu>
+
+    <!-- Type filter -->
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #typeFilterMenu="matMenu">
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Type', 'All Types');">
+        <span>All Types <span *ngIf="selectedType === 'All Types'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a *ngFor="let type of allTypes" class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Type', type);">
+        <span>{{ type }} <span *ngIf="selectedType === type" class="submenu-checkmark">✓</span></span>
+      </a>
+    </mat-menu>
+
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
+        <span>Default Sorting <span *ngIf="sortCriteria === '_id,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'name,ascending');">
+        <span>Alphabetical <span *ngIf="sortCriteria === 'name,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,descending');">
+        <span>Rating (High to Low) <span *ngIf="sortCriteria === 'rating,descending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,ascending');">
+        <span>Rating (Low to High) <span *ngIf="sortCriteria === 'rating,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,ascending');">
+        <span>Air Date (Old to New) <span *ngIf="sortCriteria === 'startDate,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,descending');">
+        <span>Air Date (New to Old) <span *ngIf="sortCriteria === 'startDate,descending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'random,_');">
+        <span>Random <span *ngIf="sortCriteria === 'random,_'" class="submenu-checkmark">✓</span></span>
+      </a>
+    </mat-menu>
+
+    <div class="search-toolbar-minicontainer">
+      <input class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
+          <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
+          <span class="search-anime-name">{{ anime["name"] }}</span>
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <div [matMenuTriggerFor]="finalistActionsMenu" class="search-toolbar-menu-minicontainer">
+      Finalists Actions<span class="down-icon">▾</span>
+    </div>
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #finalistActionsMenu="matMenu">
+      <a *ngIf="!hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideFinalists()" >
+        <span>Hide Finalists Panel</span>
+      </a>
+      <a *ngIf="hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="showFinalists()" >
+        <span>Show Finalists Panel</span>
+      </a>
+    </mat-menu>
   </div>
-  <div class="search-toolbar-minicontainer">
-    <label class="filter-label" for="catalogSort">Sort by: </label>
-    <select id="catalogSort" [(ngModel)]="sortCriteria" (ngModelChange)="sortAnime($event)" class="catalog-sort">
-      <option value="_id,ascending">Default Sorting</option>
-      <option value="name,ascending">Alphabetical</option>
-      <option value="rating,descending">Rating (High to Low)</option>
-      <option value="rating,ascending">Rating (Low to High)</option>
-      <option value="startDate,ascending">Air Date (Old to New)</option>
-      <option value="startDate,descending">Air Date (New to Old)</option>
-      <option value="random,_">Random</option>
-    </select>
-  </div>
-  <div class="search-toolbar-minicontainer">
-    <label class="filter-label" for="catalogFilterByType">Filter by Type: </label>
-    <select id="catalogFilterByType" [(ngModel)]="selectedType" (ngModelChange)="filterAnimeByType($event)" class="catalog-sort">
-      <option value="All Types">All Types</option>
-      <option *ngFor="let type of allTypes" [value]="type">{{ type }}</option>
-    </select>
-  </div>
-  <div class="search-toolbar-minicontainer">
-    <label class="filter-label" for="catalogGenreFilter">View by Genre: </label>
-    <select id="catalogGenreFilter" [(ngModel)]="selectedGenre" (ngModelChange)="filterAnimeByGenre($event)" class="catalog-sort">
-      <option value="All Genres">All Genres</option>
-      <option *ngFor="let genre of allGenres" [value]="genre">{{ genre }}</option>
-    </select>
-  </div>
-  <div class="search-toolbar-minicontainer">
-    <input class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
-        <img class="search-anime-thumbnail" [src]="anime['thumbnail']" />
-        <span class="search-anime-name">{{ anime["name"] }}</span>
-      </mat-option>
-    </mat-autocomplete>
-  </div>
-  <button *ngIf="!hideFinalistsPanel" mat-raised-button class="hide-finalists-button" (click)="hideFinalists()">Hide Finalists Panel</button>
-  <button *ngIf="hideFinalistsPanel" mat-raised-button class="hide-finalists-button" (click)="showFinalists()">Show Finalists Panel</button>
 </div>
 
 <div class="home-container">

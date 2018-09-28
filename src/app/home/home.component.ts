@@ -40,6 +40,7 @@ export class HomeComponent {
   toastMessage: string;
   toastError: boolean;
   sortCriteria: string;
+  sortScheme: Map<string, string>;
   showCategory: string;
   currentUser: string;
   autoTimelineAdd: boolean;   // If true, then automatically add completed anime to timeline
@@ -158,82 +159,6 @@ export class HomeComponent {
   }
 
 
-  // NOTE: This isn't working for now, as MAL's API is down
-  // malSearch() {
-  //   this.animeService.malSearch(this.animeToAdd["name"]).subscribe(res => {
-  //     if (!res["success"]) {
-  //       // MAL API is weird because if there are no results it yields a parse error
-  //       if (res["message"] == "Error: Parse Error") {
-  //         this.displayToast("No results found.", true)
-  //         return;
-  //       } else if (res["message"] == "Token") {
-  //         this.displayToast("Your session has expired. Please refresh and log back in.", true);
-  //       } else {
-  //         this.displayToast("There was a problem.", true)
-  //         console.log(res);
-  //       }
-  //     } else {
-  //       const animeList = res["data"];
-  //
-  //       // Display the top 30 suggestions
-  //       // IDEA: In the future, it would be nice to have user preferences for how many
-  //       // anime they would like to have show up during the link step
-  //       const numSuggestions = Math.min(30, animeList.length);
-  //       // Special case is where there is only 1 entry, in which case it is not an array
-  //       if (animeList.hasOwnProperty("title")) {
-  //         let newAnime:Anime = {
-  //           user: this.currentUser,
-  //           name: (typeof animeList["title"] == "string" ? animeList["title"] : "Unknown").toString(),
-  //           description: (typeof animeList["synopsis"] == "string" ? animeList["synopsis"] : "").toString(),
-  //           rating: (typeof animeList["score"] == "string" ? animeList["score"] : "").toString(),
-  //           thumbnail: (typeof animeList["image"] == "string" ? animeList["image"] : "").toString(),
-  //           malID: (typeof animeList["id"] == "string" ? animeList["id"] : -1).toString(),
-  //           startDate: (new Date(animeList["start_date"])).toLocaleDateString(),
-  //           endDate: (new Date(animeList["end_date"])).toLocaleDateString(),
-  //           type: (typeof animeList["type"] == "string" ? animeList["type"] : "").toString(),
-  //           englishTitle: (typeof animeList["english"] == "string" ? animeList["english"] : "").toString(),
-  //           status: (typeof animeList["status"] == "string" ? animeList["status"] : "").toString()
-  //         }
-  //         this.linkAnimeSuggestions.push(newAnime);
-  //       }
-  //       for (let i=0; i<numSuggestions; i++) {
-  //         // IDEA: Option in user settings for specifying English vs Japanese title when linked
-  //         // NOTE: I thought I saw that sometimes the "score" property is an array for MAL API, so watch for an error with that
-  //         // We use all these conditionals because the MAL API is really weird and sometimes returns weird non-string results
-  //         let newAnime:Anime = {
-  //           user: this.currentUser,
-  //           name: (typeof animeList[i]["title"] == "string" ? animeList[i]["title"] : "Unknown").toString(),
-  //           description: (typeof animeList[i]["synopsis"] == "string" ? animeList[i]["synopsis"] : "").toString(),
-  //           rating: (typeof animeList[i]["score"] == "string" ? animeList[i]["score"] : "").toString(),
-  //           thumbnail: (typeof animeList[i]["image"] == "string" ? animeList[i]["image"] : "").toString(),
-  //           malID: (typeof animeList[i]["id"] == "string" ? animeList[i]["id"] : -1).toString(),
-  //           startDate: (new Date(animeList[i]["start_date"])).toLocaleDateString(),
-  //           endDate: (new Date(animeList[i]["end_date"])).toLocaleDateString(),
-  //           type: (typeof animeList[i]["type"] == "string" ? animeList[i]["type"] : "").toString(),
-  //           englishTitle: (typeof animeList[i]["english"] == "string" ? animeList[i]["english"] : "").toString(),
-  //           status: (typeof animeList[i]["status"] == "string" ? animeList[i]["status"] : "").toString()
-  //         }
-  //         this.linkAnimeSuggestions.push(newAnime);
-  //       }
-  //       // Open dialog
-  //       let dialogRef = this.dialog.open(LinkAnimeDialog, {
-  //         width: '515px',
-  //         data: {suggestions: this.linkAnimeSuggestions}
-  //       });
-  //
-  //       dialogRef.afterClosed().subscribe((result) => {
-  //         // Result is the index of the anime they chose to link, if they chose to link one
-  //         if (result || result == 0) {
-  //           // this.animeToAdd = this.linkAnimeSuggestions[result];
-  //           this.displayToast("Anime successfully linked!")
-  //         }
-  //         // Make sure to reset suggestion list
-  //         this.linkAnimeSuggestions = [];
-  //       });
-  //     }
-  //   });
-  // }
-
   private randomSort(animeArr) {
     // Uses Fisher-Yates algorithm to randomly sort array
     let a = JSON.parse(JSON.stringify(animeArr));
@@ -313,11 +238,11 @@ export class HomeComponent {
     for (let anime of this.searchAnime) {
       for (let genre of anime["genres"]) {
         if (!allGenres.has(genre)) {
-          allGenres.add(genre)
+          allGenres.add(genre);
         }
       }
     }
-    this.allGenres = Array.from(allGenres);
+    this.allGenres = Array.from(allGenres).sort();
   }
 
   private getTypes() {
@@ -699,6 +624,31 @@ export class HomeComponent {
     return res;
   }
 
+  filterWatch(type: string, newValue: string) {
+    // Change model and refresh
+    // TODO: This doesn't seem very Angular-like, investiage how we could use models instead
+    let shouldRefresh = true;
+    switch(type) {
+      case "Category":
+        if (newValue === this.showCategory) shouldRefresh = false;
+        this.showCategory = newValue;
+        this.refresh(true);
+        break;
+      case "Type":
+        this.selectedType = newValue;
+        this.filterAnimeByType(this.selectedType);
+        break;
+      case "Genre":
+        this.selectedGenre = newValue;
+        this.filterAnimeByGenre(this.selectedGenre);
+        break;
+      case "Sort":
+        this.sortCriteria = newValue;
+        this.sortAnime(this.sortCriteria);
+        break;
+    }
+  }
+
   refresh(fromCategoryChange?: boolean) {
     // Fetch all anime stored in database and update our lists
     if (fromCategoryChange) {
@@ -805,7 +755,16 @@ export class HomeComponent {
     this.newAnimeMALURL = "";
     this.newAnimeCategory = "";
     this.selectedAnime = new Anime("", "");
-    this.sortCriteria = "_id,ascending"
+    this.sortCriteria = "_id,ascending";
+    this.sortScheme = new Map<string,string>();
+    this.sortScheme.set("_id,ascending", "Default Sorting");
+    this.sortScheme.set("name,ascending", "Alphabetical");
+    this.sortScheme.set("rating,descending", "Rating (High to Low)");
+    this.sortScheme.set("rating,ascending", "Rating (Low to High)");
+    this.sortScheme.set("startDate,ascending", "Air Date (Old to New)");
+    this.sortScheme.set("startDate,descending", "Air Date (New to Old)");
+    this.sortScheme.set("random,_", "Random");
+
     this.showCategory = "All Categories";
     this.possibleCategories = ["Want to Watch", "Considering", "Completed"];
     this.showToast = false;
