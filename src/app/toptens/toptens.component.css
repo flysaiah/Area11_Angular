@@ -113,8 +113,12 @@
 .toptens-top-navigator-controls {
   margin-top: -20px;
 }
+.toptens-category-search {
+  margin-left: 20px;
+}
 .category-checkbox-batch-options {
   text-align: center;
+  height: 50px;
 }
 .category-checkbox-options-container {
   width: 850px;

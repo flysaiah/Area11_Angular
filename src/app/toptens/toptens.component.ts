@@ -34,6 +34,7 @@ export class TopTensComponent implements OnInit {
 
   allTopTens: TopTens[];
   allCategories: TopTens[];
+  allCategoriesFull: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
   hideSelectorPanel: boolean;
@@ -262,6 +263,19 @@ export class TopTensComponent implements OnInit {
     return date.toDateString();
   }
 
+  updateCategorySearch(filterText: string) {
+    // Filter out categories that don't match our search text
+    this.allCategories = this.allCategoriesFull.filter(category => {
+      // fuzzy
+      for (let word of category.category.toLowerCase().split(" ")) {
+        if (word.startsWith(filterText.toLowerCase())) {
+          return true;
+        }
+      }
+      return false;
+  });
+  }
+
   private cacheSelectedAnime() {
     // Remember which anime were selected
     for (let category of this.allCategories) {
@@ -293,6 +307,7 @@ export class TopTensComponent implements OnInit {
     this.toptensService.getTopTensInfo(this.currentGroup.name).subscribe((res) => {
       if (res["success"]) {
         this.allCategories = res["allCategories"];
+        this.allCategoriesFull = res["allCategories"];
         this.allTopTens = res["allTopTens"];
         this.rememberSelectedAnime();
         this.generateLogistics();
