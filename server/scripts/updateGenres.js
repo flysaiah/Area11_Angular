@@ -28,7 +28,6 @@ Anime.find({}, (err, animeList) => {
         malIDs.add(anime.malID);
       }
     }
-
     let getGenres = function (arr) {
       setTimeout(() => {
         if (arr.length == 0) {
