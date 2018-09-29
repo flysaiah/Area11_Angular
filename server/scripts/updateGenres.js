@@ -16,7 +16,7 @@ let malIDs = new Set();
 let allAnime = [];
 let updateList = [];
 
-Anime.find({"type": "Movie"}, (err, animeList) => {
+Anime.find({}, (err, animeList) => {
   if (err) {
     mongoose.disconnect();
     console.log(err);
@@ -70,6 +70,7 @@ Anime.find({"type": "Movie"}, (err, animeList) => {
               console.log("---GENRES---");
               console.log(genreArr);
               // Start Date
+              let runtime = "";
               const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
               let startDate = "Unknown";
               let endDate = "Unknown";
@@ -94,6 +95,7 @@ Anime.find({"type": "Movie"}, (err, animeList) => {
                   startDate = start.toLocaleDateString();
                 }
                 endDate = "OneAiredDate";
+                runtime = stuff.split('<span class="dark_text">Duration:</span>')[1].split('</div>')[0].trim();
               }
               console.log("---STARTDATE---");
               console.log(startDate);
@@ -117,7 +119,7 @@ Anime.find({"type": "Movie"}, (err, animeList) => {
               console.log("---STATUS---");
               console.log(status);
 
-              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status });
+              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");

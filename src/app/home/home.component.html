@@ -205,6 +205,7 @@
             <p><strong>Type: </strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
             <p><strong>English: </strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
             <p><strong>Status: </strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+            <p *ngIf="selectedAnime['runtime']"><strong>Runtime: </strong> {{ selectedAnime["runtime"] }}</p>
             <p><strong>Genres: </strong>
               <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
                 <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>

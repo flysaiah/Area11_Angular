@@ -20,7 +20,8 @@ const animeSchema = new Schema({
   status: String,
   recommenders: [{ name: String }],
   ownerIsRecommender: Boolean,
-  hasNewSeason: Boolean
+  hasNewSeason: Boolean,
+  runtime: String
 })
 
 module.exports = mongoose.model('Anime', animeSchema);
