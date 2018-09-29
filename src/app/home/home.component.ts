@@ -1,10 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Anime } from '../anime';
+import { Group } from '../group/group';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { AnimeService } from '../services/anime.service';
 import { AuthService } from '../services/auth.service';
 import { TimelineService } from '../services/timeline.service';
 import { UserService } from '../services/user.service';
+import { GroupService } from '../services/group.service';
 
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -62,6 +64,11 @@ export class HomeComponent {
   searchText: string;
   filteredSearchAnime: Observable<any[]>;
 
+  currentGroup: Group;
+  groupFilterTypes: string[];   // Used to filter by what anime other group members have completed
+  groupFilterAnime: string[][];
+  groupFilterIndex: number;
+
   hideFinalistsPanel: boolean;
   enableFireworks: boolean;
   fireworks: boolean;   // If true, then fireworks animation plays
@@ -85,7 +92,6 @@ export class HomeComponent {
   }
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
-    // this.animeToAdd = new Anime(this.currentUser, "");
   }
   showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
@@ -199,37 +205,56 @@ export class HomeComponent {
     return false;
   }
 
+  private categoryFilter(anime: Anime) {
+    return (this.showCategory === anime.category);
+  }
+
   private typeFilter(anime) {
     return (this.selectedType == anime["type"])
   }
 
-  filterAnimeByGenre(criteria) {
-    if (criteria == "All Genres") {
-      this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
-      this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
-      this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
-    } else {
-      this.wantToWatchList = this.newWantToWatch.filter(this.genreFilter.bind(this));
-      this.consideringList = this.newConsidering.filter(this.genreFilter.bind(this));
-      this.completedList = this.newCompleted.filter(this.genreFilter.bind(this));
-    }
-    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
-    this.sortAnime(this.sortCriteria);
-
+  private groupFilter(anime: Anime) {
+    let filterList = this.groupFilterAnime[this.groupFilterIndex];
+    return (filterList.indexOf(anime.name) !== -1);
   }
 
-  filterAnimeByType(criteria) {
-    if (criteria == "All Types") {
-      this.wantToWatchList = JSON.parse(JSON.stringify(this.newWantToWatch));
-      this.consideringList = JSON.parse(JSON.stringify(this.newConsidering));
-      this.completedList = JSON.parse(JSON.stringify(this.newCompleted));
-    } else {
-      this.wantToWatchList = this.newWantToWatch.filter(this.typeFilter.bind(this));
-      this.consideringList = this.newConsidering.filter(this.typeFilter.bind(this));
-      this.completedList = this.newCompleted.filter(this.typeFilter.bind(this));
+  applyFilters() {
+    this.catalogIsLoading = true;
+    let wantToWatch = JSON.parse(JSON.stringify(this.newWantToWatch));
+    let considering = JSON.parse(JSON.stringify(this.newConsidering));
+    let completed = JSON.parse(JSON.stringify(this.newCompleted));
+
+    if (this.showCategory !== "All Categories") {
+      wantToWatch = wantToWatch.filter(this.categoryFilter.bind(this));
+      considering = considering.filter(this.categoryFilter.bind(this));
+      completed = completed.filter(this.categoryFilter.bind(this));
     }
-    // Need to sort afterwards in case we applied criteria that didn't affect anime not shown / shown in this filter
+
+    if (this.selectedGenre !== "All Genres") {
+      wantToWatch = wantToWatch.filter(this.genreFilter.bind(this));
+      considering = considering.filter(this.genreFilter.bind(this));
+      completed = completed.filter(this.genreFilter.bind(this));
+    }
+
+    if (this.selectedType !== "All Types") {
+      wantToWatch = wantToWatch.filter(this.typeFilter.bind(this));
+      considering = considering.filter(this.typeFilter.bind(this));
+      completed = completed.filter(this.typeFilter.bind(this));
+    }
+
+    if (this.groupFilterTypes.length && this.groupFilterIndex !== -1) {
+      wantToWatch = wantToWatch.filter(this.groupFilter.bind(this));
+      considering = considering.filter(this.groupFilter.bind(this));
+      completed = completed.filter(this.groupFilter.bind(this));
+    }
+
+    this.wantToWatchList = wantToWatch;
+    this.consideringList = considering;
+    this.completedList = completed;
+
     this.sortAnime(this.sortCriteria);
+    this.catalogIsLoading = false;
+
   }
 
   private getGenres() {
@@ -257,9 +282,6 @@ export class HomeComponent {
 
   addAnimeToCatalog(category?: string) {
     // category parameter is for when we're changing categories
-    // if (category) {
-    //   this.animeToAdd['category'] = category;
-    // }
 
     this.currentlyAddingAnime = true;
 
@@ -633,35 +655,83 @@ export class HomeComponent {
     }
   }
 
-  filterWatch(type: string, newValue: string) {
+  filterWatch(type: string, newValue: string, newValueNumber?: number) {
     // Change model and refresh
     // TODO: This doesn't seem very Angular-like, investiage how we could use models instead
     switch(type) {
       case "Category":
         this.showCategory = newValue;
-        this.refresh(true);
         break;
       case "Type":
         this.selectedType = newValue;
-        this.filterAnimeByType(this.selectedType);
         break;
       case "Genre":
         this.selectedGenre = newValue;
-        this.filterAnimeByGenre(this.selectedGenre);
         break;
       case "Sort":
         this.sortCriteria = newValue;
-        this.sortAnime(this.sortCriteria);
         break;
+      case "Group":
+        this.groupFilterIndex = newValueNumber;
+        break;
+      default:
+        console.log("This should never happen");
     }
+    this.applyFilters();
+    this.scrollTop = Math.random();
   }
 
-  refresh(fromCategoryChange?: boolean) {
-    // Fetch all anime stored in database and update our lists
-    if (fromCategoryChange) {
-    this.catalogIsLoading = true;
+  private populateGroupFilterLists() {
+    // Get list of anime watched by group members for group filters
+    let groupFilterTypes = [];
+    let groupFilterAnime = [];
+
+    this.groupService.getGroupMemberAnime(this.currentGroup.name).subscribe(res => {
+      if (res["success"]) {
+        // First populate filter types
+        let memberAnimeMap = new Map<string, Anime[]>();
+        for (let anime of res["anime"]) {
+          if (!memberAnimeMap.has(anime.user)) {
+            memberAnimeMap.set(anime.user, [anime.name]);
+          } else {
+            memberAnimeMap.get(anime.user).push(anime.name);
+          }
+          if (groupFilterTypes.indexOf(anime.user) === -1) {
+            let newFilterTypes = [anime.user];
+            for (let i=0; i<groupFilterTypes.length; i++) {
+              newFilterTypes.push(groupFilterTypes[i] + " + " + anime.user);
+            }
+            groupFilterTypes = groupFilterTypes.concat(newFilterTypes);
+          }
+        }
+        // Now generate completed lists for each filter combo
+        for (let filterType of groupFilterTypes) {
+          let filterList = [];
+          let members = filterType.split(" + ");
+          for (let anime of res["anime"]) {
+            let valid = true;
+            for (let member of members) {
+              if (memberAnimeMap.get(member).indexOf(anime.name) === -1) {
+                valid = false;
+              }
+            }
+            if (valid && filterList.indexOf(anime.name) === -1) {
+              filterList.push(anime.name);
+            }
+          }
+          groupFilterAnime.push(filterList);
+        }
+        this.groupFilterTypes = groupFilterTypes;
+        this.groupFilterAnime = groupFilterAnime;
+      } else {
+        console.log(res);
+        this.displayToast("There was a problem getting your group info.", true);
+      }
+    });
   }
-    // this.animeToAdd = new Anime(this.currentUser, "");
+
+  refresh() {
+    // Fetch all anime stored in database and update our lists
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
       if (res["success"]) {
@@ -672,13 +742,13 @@ export class HomeComponent {
         const newFinalistList = [];
         const newSearchAnimeList = [];
         for (let anime of animeList) {
-          if (anime["category"] == "Want to Watch" && (this.showCategory == "All Categories" || this.showCategory == "Want to Watch")) {
+          if (anime["category"] == "Want to Watch") {
             this.newWantToWatch.push(anime);
             newSearchAnimeList.push(anime);
-          } else if (anime["category"] == "Considering" && (this.showCategory == "All Categories" || this.showCategory == "Considering")) {
+          } else if (anime["category"] == "Considering") {
             this.newConsidering.push(anime);
             newSearchAnimeList.push(anime);
-          } else if (anime["category"] == "Completed" && (this.showCategory == "All Categories" || this.showCategory == "Completed")) {
+          } else if (anime["category"] == "Completed") {
             this.newCompleted.push(anime);
             newSearchAnimeList.push(anime);
           }
@@ -697,16 +767,9 @@ export class HomeComponent {
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
         }
-        this.filterAnimeByGenre(this.selectedGenre);
-        this.filterAnimeByType(this.selectedType);
-        this.sortAnime(this.sortCriteria);
-        this.isLoading = false;
-        this.catalogIsLoading = false;
-        if (fromCategoryChange) {
-          // Scroll to top of catalog; this happens when category is changed
-          this.scrollTop = Math.random();
 
-        }
+        this.applyFilters();
+        this.isLoading = false;
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -721,6 +784,7 @@ export class HomeComponent {
     private dialog: MatDialog,
     private animeService: AnimeService,
     private authService: AuthService,
+    private groupService: GroupService,
     private timelineService: TimelineService,
     private userService: UserService
   ) { }
@@ -754,7 +818,11 @@ export class HomeComponent {
     this.allGenres = [];
 
     this.selectedType = "All Types";
-    this.allTypes = []
+    this.allTypes = [];
+
+    this.groupFilterTypes = [];
+    this.groupFilterAnime = [];
+    this.groupFilterIndex = -1;
 
     this.showAddAnimePrompt = false;
     this.linkAnimeSuggestions = [];
@@ -784,7 +852,6 @@ export class HomeComponent {
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.currentUser = res["user"]["username"];
-        // this.animeToAdd["user"] = this.currentUser;
         this.selectedAnime["user"] = this.currentUser;
 
         this.userService.getUserInfo().subscribe((res) => {
@@ -795,7 +862,20 @@ export class HomeComponent {
             if (res["user"]["fireworks"]) {
               this.enableFireworks = res["user"]["fireworks"];
             }
-            this.refresh();
+
+            if (res["user"]["group"]) {
+              this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
+                if (res["success"]) {
+                  this.currentGroup = res["group"];
+                  this.populateGroupFilterLists();   // Definitely don't want to do this every refresh
+                } else {
+                  console.log(res);
+                }
+                this.refresh();
+              });
+            } else {
+              this.refresh();
+            }
           } else {
             this.displayToast("There was a problem loading your settings.", true)
           }

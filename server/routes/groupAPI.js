@@ -793,5 +793,41 @@ module.exports = (router) => {
     });
   });
 
+  router.post('/getGroupMemberAnime', (req, res) => {
+    // Get completed anime of each group member
+    Group.findOne({ "name": req.body.groupName }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        // Query for group member data
+        let groupMembers = [];
+        for (let member of group.members) {
+          if (member.id !== req.decoded.userId && !member.isPending) {
+            groupMembers.push(ObjectID(member.id));
+          }
+        }
+        User.find({ "_id": { $in: groupMembers } }, (err, members) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else if (members) {
+            let memberNames = [];
+            for (let member of members) {
+              memberNames.push(member.username);
+            }
+            Anime.find({ "user": { $in: memberNames }, "category": "Completed" }, (err, anime) => {
+              if (err) {
+                res.json({ success: false, message: err });
+              } else {
+                res.json({ success: true, anime: anime });
+              }
+            });
+          } else {
+            res.json({ success: false, message: "Unknown error in /getGroupInfo" })
+          }
+        });
+      }
+    });
+  });
+
   return router;
 }
