@@ -3,8 +3,6 @@ export class Infolist {
     public name: string,
     public entries: { anime: string, info: string }[],
     public user?: string,
-    public isSelected?: boolean,
-    public animeColumnUnlocked?: boolean,
-    public infoColumnUnlocked?: boolean
+    public isSelected?: boolean
   ) {}
 }

@@ -26,6 +26,9 @@ export class InfolistsComponent implements OnInit {
   allInfolists: Infolist[];
   allInfolistNames: string[];   // Used for validation
 
+  paginatorOptionsMap: Object;
+  paginatorCurrentIndexMap: Object;
+
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
@@ -64,22 +67,6 @@ export class InfolistsComponent implements OnInit {
     });
   }
 
-  lockAnimeColumn(infolist: Infolist) {
-    infolist.animeColumnUnlocked = false;
-  }
-
-  lockInfoColumn(infolist: Infolist) {
-    infolist.infoColumnUnlocked = false;
-  }
-
-  unlockAnimeColumn(infolist: Infolist) {
-    infolist.animeColumnUnlocked = true;
-  }
-
-  unlockInfoColumn(infolist: Infolist) {
-    infolist.infoColumnUnlocked = true;
-  }
-
   addNewEntry(infolist: Infolist) {
     let newBlankEntry = {
       anime: "",
@@ -105,6 +92,33 @@ export class InfolistsComponent implements OnInit {
       }
       this.currentlyAddingNewInfolist = false;
     });
+  }
+
+  updatePaginatorInfo() {
+    for (let infolist of this.allInfolists) {
+      if (!this.paginatorOptionsMap[infolist.name]) {
+        this.paginatorOptionsMap[infolist.name] = 10;
+      }
+      if (!this.paginatorCurrentIndexMap[infolist.name]) {
+        this.paginatorCurrentIndexMap[infolist.name] = 0;
+      }
+    }
+  }
+
+  incrementPaginatorIndex(infolist: string) {
+    this.paginatorCurrentIndexMap[infolist] += 1;
+  }
+
+  decrementPaginatorIndex(infolist: string) {
+    this.paginatorCurrentIndexMap[infolist] -= 1;
+  }
+
+  getInfolistEntries(infolist: Infolist) {
+    const currentIndex = this.paginatorCurrentIndexMap[infolist.name];
+    const currentInterval = this.paginatorOptionsMap[infolist.name];
+    const startIndex = currentIndex * currentInterval;
+    const endIndex = currentInterval * (1 + currentIndex) > infolist.entries.length ? infolist.entries.length : currentInterval * (1 + currentIndex)
+    return infolist.entries.slice(startIndex, endIndex);
   }
 
   saveChanges(infolist: Infolist) {
@@ -150,12 +164,17 @@ export class InfolistsComponent implements OnInit {
       if (res["success"] && res["infolists"]) {
         this.allInfolists = res["infolists"]
         this.generateInfolistNames();
+        this.updatePaginatorInfo();
         this.isLoading = false;
       } else if (!res["success"]) {
         this.displayToast("There was a problem getting your info lists.", true);
         console.log(res);
       }
     });
+  }
+
+  testt(tt) {
+    console.log(tt);
   }
 
   constructor(
@@ -170,6 +189,10 @@ export class InfolistsComponent implements OnInit {
     this.allInfolistNames = [];
     this.currentlyAddingNewInfolist = false;
     this.newInfolistName = "";
+
+    this.paginatorOptionsMap = {};
+    this.paginatorCurrentIndexMap = {};
+
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {

@@ -39,7 +39,7 @@
   </mat-card>
 
   <div class="infolists-right-container">
-    <div *ngFor="let infolist of allInfolists">
+    <div *ngFor="let infolist of allInfolists; let idx = index">
       <mat-card *ngIf="infolist.isSelected" class="infolists-right-card" >
         <h2>{{ infolist["name"] }}</h2>
 
@@ -56,19 +56,33 @@
 
         <table class="infolists-table" *ngIf="infolist.entries && infolist.entries.length">
           <tr>
-            <th *ngIf="!infolist.animeColumnUnlocked" class="table-cell-anime">Anime Name <button class="lock-unlock-button" (click)="unlockAnimeColumn(infolist)"><img class="lock-svg" src="../assets/locked2.svg"/></button></th>
-            <th *ngIf="infolist.animeColumnUnlocked" class="table-cell-anime">Anime Name <button class="lock-unlock-button" (click)="lockAnimeColumn(infolist)"><img class="lock-svg" src="../assets/unlocked2.svg"/></button></th>
-            <th *ngIf="!infolist.infoColumnUnlocked" class="table-cell-info">Info <button class="lock-unlock-button" (click)="unlockInfoColumn(infolist)"><img class="lock-svg" src="../assets/locked2.svg"/></button></th>
-            <th *ngIf="infolist.infoColumnUnlocked" class="table-cell-info">Info <button class="lock-unlock-button" (click)="lockInfoColumn(infolist)"><img class="lock-svg" src="../assets/unlocked2.svg"/></button></th>
+            <th class="table-cell-anime">Anime Name</th>
+            <th class="table-cell-info">Info</th>
           </tr>
           <tbody>
-          <tr *ngFor="let entry of infolist.entries">
-            <td *ngIf="infolist.animeColumnUnlocked" class="table-cell-anime" [textContent]="entry.anime" contenteditable="true" (input)="entry.anime=$event.target.textContent">{{ entry.anime }}</td>
-            <td [ngClass]="{ 'td-fixed-height': !entry.anime && !entry.info }" *ngIf="!infolist.animeColumnUnlocked" class="table-cell-anime" [textContent]="entry.anime" contenteditable="false">{{ entry.anime }}</td>
-            <td *ngIf="infolist.infoColumnUnlocked" class="table-cell-info" [textContent]="entry.info" contenteditable="true" (input)="entry.info=$event.target.textContent">{{ entry.info }}</td>
-            <td [ngClass]="{ 'td-fixed-height': !entry.anime && !entry.info }" *ngIf="!infolist.infoColumnUnlocked" class="table-cell-info" [textContent]="entry.info" contenteditable="false">{{ entry.info }}</td>
-          </tr>
+            <tr *ngFor="let entry of getInfolistEntries(infolist)">
+              <td class="table-cell-anime" [textContent]="entry.anime" contenteditable="true" (input)="entry.anime=$event.target.textContent">{{ entry.anime }}</td>
+              <td class="table-cell-info" [textContent]="entry.info" contenteditable="true" (input)="entry.info=$event.target.textContent">{{ entry.info }}</td>
+            </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">
+                <span class="paginator">
+                  <label for="paginatorLabel">Items per page: </label>
+                  <select id="paginatorLabel-{{ idx }}" [(ngModel)]="paginatorOptionsMap[infolist.name]" (ngModelChange)="paginatorCurrentIndexMap[infolist.name] = 0;">
+                    <option selected="selected" value=10>10</option>
+                    <option value=25>25</option>
+                    <option value=50>50</option>
+                    <option value=100>100</option>
+                  </select>
+                  <span class="paginator-wrapper">{{ 1 + paginatorCurrentIndexMap[infolist.name] * paginatorOptionsMap[infolist.name] }}-{{ paginatorOptionsMap[infolist.name] * (1 + paginatorCurrentIndexMap[infolist.name]) > infolist.entries.length ? infolist.entries.length : paginatorOptionsMap[infolist.name] * (1 + paginatorCurrentIndexMap[infolist.name]) }} of {{ infolist.entries.length }}</span>
+                  <button class="paginator-button" [disabled]="!paginatorCurrentIndexMap[infolist.name] || paginatorCurrentIndexMap[infolist.name] === 0" (click)="decrementPaginatorIndex(infolist.name)"><</button>
+                  <button class="paginator-button" [disabled]="(paginatorCurrentIndexMap[infolist.name] + 1) * paginatorOptionsMap[infolist.name] >= infolist.entries.length" (click)="incrementPaginatorIndex(infolist.name);">></button>
+                </span>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </mat-card>
     </div>

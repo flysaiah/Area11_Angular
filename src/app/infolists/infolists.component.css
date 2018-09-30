@@ -187,9 +187,6 @@ p {
   background-color: #3d85c6;
   color: white;
 }
-.td-fixed-height {
-  height: 19px;
-}
 .infolists-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -205,17 +202,30 @@ p {
   top: 2px;
   right: 5px;
 }
-.lock-unlock-button {
-  background-color: #3d85c6;
-  width: 20px;
-  border: 0;
-}
-.lock-unlock-button:hover {
-  cursor: pointer;
-}
 .table-cell-anime {
   width: 325px;
 }
 .table-cell-info {
   width: 325px;
+}
+.paginator {
+  float: right;
+  margin-right: 20px;
+}
+.paginator-wrapper {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.paginator-button {
+  background-color: #800015;
+  color: white;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.paginator-button:hover {
+  cursor: pointer;
+}
+.paginator-button:disabled, .paginator-button:disabled:hover {
+  background-color: gray;
+  cursor:default;
 }
