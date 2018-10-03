@@ -25,6 +25,9 @@
         <div class="category-checkbox-batch-options">
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectAll()">Select All</button>
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectNone()">Select None</button>
+          <mat-form-field color="accent" class="toptens-category-search">
+            <input matInput placeholder="Search for Category" (keyup)="updateCategorySearch($event.target.value)">
+          </mat-form-field>
         </div>
         <hr>
         <div class="category-checkbox-options-container">
@@ -50,6 +53,7 @@
           </div>
           <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i, category['category'])">Edit</button>
           <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="saveChanges(category['category'], i)">Save</button>
+          <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="primary" (click)="cancelChanges(category['category'], i)">Cancel</button>
           <button class="category-control-item category-control-button" mat-raised-button color="warn" (click)="deleteCategory(category.category)">Delete category</button>
         </div>
         <div class="toptens-content">
@@ -77,10 +81,17 @@
     </div>
   </div>
 
-  <div *ngIf="!allCategories.length && !isLoading">
+  <div *ngIf="!allCategories.length && !isLoading && !allCategoriesFull.length">
     <mat-card class="placeholder-card">
       <mat-card-content>
         Create & share top ten lists here with your group members! Start by adding some categories above.
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div *ngIf="!allCategories.length && !isLoading && allCategoriesFull.length">
+    <mat-card class="placeholder-card">
+      <mat-card-content>
+        Sorry, we can't find any categories for this search!
       </mat-card-content>
     </mat-card>
   </div>

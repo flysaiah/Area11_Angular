@@ -26,7 +26,7 @@ export class TopTensComponent implements OnInit {
   // Used for keeping track of editing as well as whose lists are being viewed AND whether it's in total order mode or not
   categoryLogistics: {member: string, isEditing: boolean}[];
   statusMap: Map<string, boolean>;   // Need array for HTML template and map for refresh logic
-
+  oldVersionMap: Map<string, TopTens>;   // Cache old versions so when we edit we can cancel and undo our edits
   totalOrderMode: boolean;   // True when we are viewing total order for any 1 category (only 1 can be viewed at a time like this)
 
   currentGroup: Group;
@@ -34,6 +34,7 @@ export class TopTensComponent implements OnInit {
 
   allTopTens: TopTens[];
   allCategories: TopTens[];
+  allCategoriesFull: TopTens[];
   topTensMap: Map<string, Map<string, TopTens>>;
   newCategoryName: string;
   hideSelectorPanel: boolean;
@@ -98,6 +99,7 @@ export class TopTensComponent implements OnInit {
   enterEditMode(index: number, category: string) {
     this.categoryLogistics[index].isEditing = true;
     this.statusMap.set(category + "-edit", true);
+    this.oldVersionMap.set(category, JSON.parse(JSON.stringify(this.topTensMap.get(category).get(this.currentUser))));
   }
 
   viewTotalOrdering() {
@@ -106,6 +108,15 @@ export class TopTensComponent implements OnInit {
 
   leaveTotalOrdering() {
     this.totalOrderMode = false;
+  }
+
+  cancelChanges(category: string, index: number) {
+    // Load old version
+    let oldVersion = JSON.parse(JSON.stringify(this.oldVersionMap.get(category)));
+    this.topTensMap.get(category).set(this.currentUser, oldVersion);
+    this.oldVersionMap.set(category, null);
+    this.categoryLogistics[index].isEditing = false;
+    this.statusMap.set(category + "-edit", false);
   }
 
   saveChanges(category: string, index: number) {
@@ -262,6 +273,19 @@ export class TopTensComponent implements OnInit {
     return date.toDateString();
   }
 
+  updateCategorySearch(filterText: string) {
+    // Filter out categories that don't match our search text
+    this.allCategories = this.allCategoriesFull.filter(category => {
+      // fuzzy
+      for (let word of category.category.toLowerCase().split(" ")) {
+        if (word.startsWith(filterText.toLowerCase())) {
+          return true;
+        }
+      }
+      return false;
+  });
+  }
+
   private cacheSelectedAnime() {
     // Remember which anime were selected
     for (let category of this.allCategories) {
@@ -293,6 +317,7 @@ export class TopTensComponent implements OnInit {
     this.toptensService.getTopTensInfo(this.currentGroup.name).subscribe((res) => {
       if (res["success"]) {
         this.allCategories = res["allCategories"];
+        this.allCategoriesFull = res["allCategories"];
         this.allTopTens = res["allTopTens"];
         this.rememberSelectedAnime();
         this.generateLogistics();
@@ -318,13 +343,14 @@ export class TopTensComponent implements OnInit {
 
   ngOnInit() {
     this.currentGroupMembers = [];
-    this.currentGroup = new Group("",[]);
+    this.currentGroup = new Group("",[], { name: "", date: null });
     this.newCategoryName = "";
     this.allTopTens = [];
     this.topTensMap = new Map();
     this.allCategories = [];
     this.categoryLogistics = [];
     this.statusMap = new Map<string, boolean>();
+    this.oldVersionMap = new Map<string, TopTens>();
     this.totalOrderMode = false;
     this.isLoading = true;
     this.hideSelectorPanel = false;

@@ -200,6 +200,7 @@ module.exports = (router) => {
         genreArr.push(tmp.split("<a")[0].split(">")[0]);
       }
       // Start Date & End Date
+      let runtime = "";
       const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
       let startDate = "Unknown";
       let endDate = "Unknown";
@@ -215,6 +216,19 @@ module.exports = (router) => {
           endDate = airing.split(" to ")[1];
         } else {
           endDate = end.toLocaleDateString();
+        }
+      } else {
+        let start = new Date(airing);
+        if (start.toLocaleDateString() == "Invalid Date") {
+          startDate = airing;
+        } else {
+          startDate = start.toLocaleDateString();
+        }
+        endDate = "OneAiredDate";
+        try {
+          runtime = stuff.split('<span class="dark_text">Duration:</span>')[1].split('</div>')[0].trim();
+        } catch (err) {
+          console.log("Error getting runtime");
         }
       }
       // Type
@@ -265,7 +279,8 @@ module.exports = (router) => {
                     endDate: endDate,
                     type: type,
                     englishTitle: englishTitle,
-                    status: status
+                    status: status,
+                    runtime: runtime
                   });
 
                   // Update recommenations if user is in a group

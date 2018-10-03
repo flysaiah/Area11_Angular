@@ -515,6 +515,7 @@ module.exports = (router) => {
                 let groupObj = {
                   name: group.name,
                   members: newMembers,
+                  countdown: group.countdown
                 }
                 res.json({ success: true, group: groupObj, currentlyWatching: currentShowsMap})
               }
@@ -528,7 +529,8 @@ module.exports = (router) => {
   });
 
   router.post('/saveGroupChanges', (req, res) => {
-    Group.findOneAndUpdate({ name: req.body.groupName }, { $set: { name: req.body.groupChangesModel.name } }, (err, group) => {
+    console.log(req.body);
+    Group.findOneAndUpdate({ name: req.body.groupName }, { $set: { name: req.body.groupChangesModel.name, countdown: req.body.groupChangesModel.countdown } }, (err, group) => {
       if (err) {
         res.json({ success: false, message: err });
       } else if (req.body.groupName != req.body.groupChangesModel.name) {
@@ -787,6 +789,42 @@ module.exports = (router) => {
             }
           });
         }
+      }
+    });
+  });
+
+  router.post('/getGroupMemberAnime', (req, res) => {
+    // Get completed anime of each group member
+    Group.findOne({ "name": req.body.groupName }, (err, group) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        // Query for group member data
+        let groupMembers = [];
+        for (let member of group.members) {
+          if (member.id !== req.decoded.userId && !member.isPending) {
+            groupMembers.push(ObjectID(member.id));
+          }
+        }
+        User.find({ "_id": { $in: groupMembers } }, (err, members) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else if (members) {
+            let memberNames = [];
+            for (let member of members) {
+              memberNames.push(member.username);
+            }
+            Anime.find({ "user": { $in: memberNames }, "category": "Completed" }, (err, anime) => {
+              if (err) {
+                res.json({ success: false, message: err });
+              } else {
+                res.json({ success: true, anime: anime });
+              }
+            });
+          } else {
+            res.json({ success: false, message: "Unknown error in /getGroupInfo" })
+          }
+        });
       }
     });
   });

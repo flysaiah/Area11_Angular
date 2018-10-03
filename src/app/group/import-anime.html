@@ -29,5 +29,7 @@
   <div class="import-action-button-container">
     <button class="import-action-button" mat-raised-button color="accent" [matDialogClose]="data.importableAnime">Import Selected Anime</button>
     <button class="import-action-button" mat-raised-button color="primary" [matDialogClose]="data.importAll">Import All</button>
+    <button *ngIf="!data.filtered" class="import-action-button" mat-raised-button color="primary" (click)="data.filtered = true; data.importableAnime = data.filteredAnime;">Show Completed</button>
+    <button *ngIf="data.filtered" class="import-action-button" mat-raised-button color="primary" (click)="data.filtered = false; data.importableAnime = data.allAnime;">Show All</button>
   </div>
 </div>

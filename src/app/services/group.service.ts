@@ -63,6 +63,10 @@ export class GroupService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/group/importCatalog', { fromUserID: fromUserID, fromUser: fromUser, toUser: toUser, groupName: groupName }, this.options).map(res => res.json());
   }
+  getGroupMemberAnime(groupName: string) {
+    this.createAuthenticationHeaders();
+    return this.http.post(this.domain + '/api/group/getGroupMemberAnime', { groupName: groupName }, this.options).map(res => res.json());
+  }
 
   constructor(
     private authService: AuthService,

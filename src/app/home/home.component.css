@@ -267,15 +267,14 @@
   height: 40px;
   line-height: 40px;
   text-shadow: 1px 1px 0 #444;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
 }
-.add-anime-button {
-  border-radius: 50px;
-  height: 20px;
-  color: black;
-  line-height: 20px;
+.search-toolbar-inner-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 800px;
+  float: right;
+  margin-right: 50px;
 }
 .add-to-button {
   margin-left: 5px;
@@ -285,16 +284,56 @@
 }
 .search-toolbar-minicontainer {
   display: inline;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.search-toolbar-menu-minicontainer {
+  display: inline;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+@media screen and (max-width: 760px) {
+  .search-toolbar-minicontainer {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+  .search-toolbar-menu-minicontainer {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+}
+.search-toolbar-menu-minicontainer:hover {
+  cursor: pointer;
+  background-color: #4D0000;
+  box-shadow:0px -3px 0px white inset
+}
+.down-icon {
+  position: relative;
+  top: 5px;
+  left: 2px;
+}
+.search-toolbar-submenu {
+  width: 150px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+}
+.search-toolbar-submenu-wide {
+  width: 230px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+}
+.submenu-checkmark {
+  font-size: 20px;
+  float: right;
 }
 .search-anime-input {
-  width: 100px;
+  width: 225px;
   border: 1px solid black;
   display: inline;
-}
-@media screen and (max-width: 1300px) {
-  .filter-label {
-    display: none;
-  }
 }
 .search-option {
   font-size: 10px;
@@ -311,12 +350,13 @@
 .search-anime-name {
   display: inline !important;
 }
-.hide-finalists-button {
-  float: right;
-  border-radius: 50px;
-  height: 20px;
-  color: black;
-  line-height: 20px;
+@media screen and (max-width: 700px) {
+  .search-anime-input {
+    width: 150px;
+  }
+  .search-toolbar-inner-container {
+    margin-right: 10px;
+  }
 }
 .add-anime-prompt {
   margin-top: 5px;

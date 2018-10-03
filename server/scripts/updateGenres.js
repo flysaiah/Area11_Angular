@@ -28,7 +28,6 @@ Anime.find({}, (err, animeList) => {
         malIDs.add(anime.malID);
       }
     }
-
     let getGenres = function (arr) {
       setTimeout(() => {
         if (arr.length == 0) {
@@ -70,6 +69,7 @@ Anime.find({}, (err, animeList) => {
               console.log("---GENRES---");
               console.log(genreArr);
               // Start Date
+              let runtime = "";
               const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
               let startDate = "Unknown";
               let endDate = "Unknown";
@@ -86,6 +86,15 @@ Anime.find({}, (err, animeList) => {
                 } else {
                   endDate = end.toLocaleDateString();
                 }
+              } else {
+                let start = new Date(airing);
+                if (start.toLocaleDateString() == "Invalid Date") {
+                  startDate = airing;
+                } else {
+                  startDate = start.toLocaleDateString();
+                }
+                endDate = "OneAiredDate";
+                runtime = stuff.split('<span class="dark_text">Duration:</span>')[1].split('</div>')[0].trim();
               }
               console.log("---STARTDATE---");
               console.log(startDate);
@@ -109,7 +118,7 @@ Anime.find({}, (err, animeList) => {
               console.log("---STATUS---");
               console.log(status);
 
-              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status });
+              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");

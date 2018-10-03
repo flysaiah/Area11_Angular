@@ -1,18 +1,34 @@
 .top-wrapper {
   padding-top: 10px;
   padding-bottom: 8px;
+  height: 41px;
   vertical-align: middle;
+  display: flex;
+  justify-content: space-between;
 }
 .main-logo {
   color: #800015;
   font-family: "Syncopate";
-  margin-bottom: 10px;
   margin-left: 10px;
-  display: inline;
   font-size: 40px;
+  position: relative;
+  bottom: 27px;
 }
 .main-logo:hover {
   cursor: pointer;
+}
+.countdown-timer {
+  margin-left: auto;
+  margin-right: auto;
+  display: inline;
+  color: #800015;
+  margin-top: 8px;
+  font-size: 20px;
+}
+@media screen and (max-width: 1000px) {
+  .countdown-content {
+    display: none;
+  }
 }
 .profile-container {
   float: right;
