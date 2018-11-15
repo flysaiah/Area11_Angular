@@ -54,7 +54,7 @@
           <button *ngIf="!categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="enterEditMode(i, category['category'])">Edit</button>
           <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="accent" (click)="saveChanges(category['category'], i)">Save</button>
           <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="primary" (click)="cancelChanges(category['category'], i)">Cancel</button>
-          <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="primary" (click)="clearCategory(category['category'], i)">Clear</button>
+          <button *ngIf="categoryLogistics[i]['isEditing']"  [disabled]="categoryLogistics[i]['member'] != currentUser" class="category-control-item category-control-button" mat-raised-button color="primary" (click)="clearCategory(category['category'])">Clear</button>
           <button class="category-control-item category-control-button" mat-raised-button color="warn" (click)="deleteCategory(category.category)">Delete category</button>
         </div>
         <div class="toptens-content">

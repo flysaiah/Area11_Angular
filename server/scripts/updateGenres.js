@@ -118,7 +118,11 @@ Anime.find({}, (err, animeList) => {
               console.log("---STATUS---");
               console.log(status);
 
-              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime });
+              const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
+              console.log("---STUDIOS---");
+              console.log(studios);
+
+              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime, studios: studios });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");

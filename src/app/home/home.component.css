@@ -482,6 +482,9 @@
 .details-description {
   clear: both;
 }
+.details-top-p {
+  margin-top: 5px;
+}
 .details-misc {
   display: inline-block;
   width: 35%;

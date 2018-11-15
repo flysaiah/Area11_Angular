@@ -241,6 +241,7 @@ module.exports = (router) => {
       }
       const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
       const name = stuff.split('<h1 class="h1"><span itemprop="name">')[1].split('</span></h1>')[0].trim();
+      const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
       const malID = req.body.malURL.split("/anime/")[1].split("/")[0];
 
       User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
@@ -280,7 +281,8 @@ module.exports = (router) => {
                     type: type,
                     englishTitle: englishTitle,
                     status: status,
-                    runtime: runtime
+                    runtime: runtime,
+                    studios: studios
                   });
 
                   // Update recommenations if user is in a group

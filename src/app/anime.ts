@@ -19,6 +19,7 @@ export class Anime {
     public recommenders?: Object[],
     public ownerIsRecommender?: boolean,
     public hasNewSeason?: boolean,
-    public runtime?: string
+    public runtime?: string,
+    public studios?: string
   ) {}
 }
