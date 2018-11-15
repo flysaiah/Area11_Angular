@@ -6,10 +6,12 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true, lowercase: false},
   password: { type: String, required: true, unique: false, lowercase: false},
   bestgirl: { type: String, required: true, unique: false, lowercase: false},
+  bioDisplay: { type: String, required: true, unique: false, lowercase: false}, // What we display on group page -- ex. best girl, best boy
   avatar: String,
   group: String,   // name of the group
   autoTimelineAdd: Boolean,
-  fireworks: Boolean
+  fireworks: Boolean,
+  bestboy: String,
 });
 
 // This runs any time the user Schema is activated

@@ -5,6 +5,7 @@ export class Group {
       id: string,
       username: string,
       bestgirl: string,
+      bioDisplay: string
       isPending: boolean,
       avatar: string
     }[],

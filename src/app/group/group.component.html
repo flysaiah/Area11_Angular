@@ -19,7 +19,8 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p *ngIf="groupMember['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p *ngIf="groupMember['bioDisplay'] == 'bestboy'" class="group-member-bestgirl" title="Best boy: {{ groupMember['bestboy'] }}">Best boy: {{ groupMember['bestboy'] ? groupMember['bestboy'] : "404: No boy found"}}</p>
                 <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
                 <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
                 <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
@@ -32,7 +33,8 @@
               <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
-                <p class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p *ngIf="groupMember['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
+                <p *ngIf="groupMember['bioDisplay'] == 'bestboy'" class="group-member-bestgirl" title="Best boy: {{ groupMember['bestboy'] }}">Best boy: {{ groupMember['bestboy'] ? groupMember['bestboy'] : "404: No boy found"}}</p>
                 <p class="group-member-current-show" title="Watching: {{ groupMember['currentlyWatching'] }}">Watching: {{ groupMember['currentlyWatching'] }}</p>
                 <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="accent" (click)="importAnime(groupMember['username'], groupMember['id'])">Import Anime</button>
                 <button class="group-member-button" *ngIf="groupMember['username'] != currentUser" mat-raised-button color="primary" routerLink="/timeline" [queryParams]="{user: groupMember['username']}">Timeline</button>
@@ -79,7 +81,8 @@
                 <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
                 <div class="group-member-name-container">
                   <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
-                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <p *ngIf="pendingUser['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <p *ngIf="pendingUser['bioDisplay'] == 'bestboy'" class="group-member-bestgirl" title="Best boy: {{ pendingUser['bestboy'] }}">Best boy: {{ pendingUser['bestboy'] ? pendingUser['bestboy'] : "404: No boy found"}}</p>
                   <br>
                   <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
                   <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
@@ -91,7 +94,8 @@
                 <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
                 <div class="group-member-name-container">
                   <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
-                  <p class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <p *ngIf="pendingUser['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
+                  <p *ngIf="pendingUser['bioDisplay'] == 'bestboy'" class="group-member-bestgirl" title="Best boy: {{ pendingUser['bestboy'] }}">Best boy: {{ pendingUser['bestboy'] ? pendingUser['bestboy'] : "404: No boy found"}}</p>
                   <button mat-raised-button color="accent" (click)="acceptUserRequest(pendingUser)">Accept</button>
                   <button mat-raised-button color="warn" class="reject-button" (click)="rejectUserRequest(pendingUser)">Reject</button>
                 </div>
