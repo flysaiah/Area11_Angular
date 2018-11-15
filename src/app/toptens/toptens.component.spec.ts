@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TopTensComponent } from './toptens.component';
 
 describe('TopTensComponent', () => {
-  let component: ToptensComponent;
-  let fixture: ComponentFixture<ToptensComponent>;
+  let component: TopTensComponent;
+  let fixture: ComponentFixture<TopTensComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

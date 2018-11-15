@@ -119,6 +119,18 @@ export class TopTensComponent implements OnInit {
     this.statusMap.set(category + "-edit", false);
   }
 
+  clearCategory(category: string) {
+    // Reset this top tens object with 10 empty entries
+    let currentTTO = this.topTensMap.get(category).get(this.currentUser);
+    currentTTO.entries = currentTTO.entries.slice(0, 10);
+    for (let entry of currentTTO.entries) {
+      entry.name = "";
+      for (let viewerPref of entry.viewerPrefs) {
+        viewerPref.shouldHide = false;
+      }
+    }
+  }
+
   saveChanges(category: string, index: number) {
     // This isn't very nice but for now it's the simplest way to avoid putting isSelected into database
     delete this.topTensMap.get(category).get(this.currentUser).isSelected;
