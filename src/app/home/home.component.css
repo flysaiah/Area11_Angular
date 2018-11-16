@@ -414,6 +414,10 @@
     margin-left: 2%;
     margin-right: 2%;
   }
+  .flex-item-2col, .details-panel-2col, .details-panel-placeholder-2col {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
 }
 .catalog {
   border: 1px solid #c3c3c3;
