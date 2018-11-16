@@ -65,6 +65,10 @@ export class InfolistsComponent implements OnInit {
       }
       return true;
     });
+    // Guard against paginator becoming inconsistent
+    if (1 + this.paginatorCurrentIndexMap[infolist.name] * this.paginatorOptionsMap[infolist.name] > (this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]) > infolist.entries.length ? infolist.entries.length : this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]))) {
+      this.paginatorCurrentIndexMap[infolist.name] -= 1;
+    }
   }
 
   addNewEntry(infolist: Infolist) {
