@@ -54,7 +54,7 @@ export class LoginComponent {
 
   ngOnInit() {
     this.submitted = false;
-    this.model = new User("","","");
+    this.model = new User("","","","");
     this.showToast = false;
     this.toastError = false;
     this.toastMessage = "";

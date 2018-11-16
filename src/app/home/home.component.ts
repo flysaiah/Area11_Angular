@@ -53,6 +53,9 @@ export class HomeComponent {
   allTypes: string[];
   selectedType: string;
 
+  allStudios: string[];
+  selectedStudio: string;
+
   refreshHeader: number;
   isLoading: boolean;
   catalogIsLoading: boolean;   // for when we just need the animation on left panel
@@ -70,6 +73,7 @@ export class HomeComponent {
   groupFilterIndex: number;
 
   hideFinalistsPanel: boolean;
+  hideCatalogPanel: boolean;
   enableFireworks: boolean;
   fireworks: boolean;   // If true, then fireworks animation plays
 
@@ -157,6 +161,14 @@ export class HomeComponent {
     this.hideFinalistsPanel = false;
   }
 
+  hideCatalog() {
+    this.hideCatalogPanel = true;
+  }
+
+  showCatalog() {
+    this.hideCatalogPanel = false;
+  }
+
   watchOPs() {
     // Open youtube searches of each finalist in new tabs
     for (let anime of this.finalistList) {
@@ -213,6 +225,10 @@ export class HomeComponent {
     return (this.selectedType == anime["type"])
   }
 
+  private studioFilter(anime) {
+    return (this.selectedStudio == anime["studios"]);
+  }
+
   private groupFilter(anime: Anime) {
     let filterList = this.groupFilterAnime[this.groupFilterIndex];
     return (filterList.indexOf(anime.name) !== -1);
@@ -240,6 +256,12 @@ export class HomeComponent {
       wantToWatch = wantToWatch.filter(this.typeFilter.bind(this));
       considering = considering.filter(this.typeFilter.bind(this));
       completed = completed.filter(this.typeFilter.bind(this));
+    }
+
+    if (this.selectedStudio !== "All Studios") {
+      wantToWatch = wantToWatch.filter(this.studioFilter.bind(this));
+      considering = considering.filter(this.studioFilter.bind(this));
+      completed = completed.filter(this.studioFilter.bind(this));
     }
 
     if (this.groupFilterTypes.length && this.groupFilterIndex !== -1) {
@@ -278,6 +300,16 @@ export class HomeComponent {
       }
     }
     this.allTypes = Array.from(allTypes);
+  }
+
+  private getStudios() {
+    let allStudios = new Set<string>();
+    for (let anime of this.searchAnime) {
+      if (!allStudios.has(anime["studios"])) {
+        allStudios.add(anime["studios"]);
+      }
+    }
+    this.allStudios = Array.from(allStudios);
   }
 
   addAnimeToCatalog(category?: string) {
@@ -407,8 +439,49 @@ export class HomeComponent {
     });
   }
 
+  private updateCategoryChangeUI(anime: Anime, oldCat: string, newCat: string) {
+    let idx;
+    switch (oldCat) {
+      case "Want to Watch":
+        idx = this.wantToWatchList.indexOf(anime);
+        this.wantToWatchList.splice(idx, 1);
+        break;
+      case "Considering":
+        idx = this.consideringList.indexOf(anime);
+        this.consideringList.splice(idx, 1);
+        break;
+      case "Completed":
+        idx = this.completedList.indexOf(anime);
+        this.completedList.splice(idx, 1);
+        break;
+      default:
+        console.log("WARNING: THIS SHOULD NOT BE HAPPENING");
+    }
+    // NOTE: We only add if the categories have a length; otherwise those are probably filtered out
+    switch (newCat) {
+      case "Want to Watch":
+        if (this.wantToWatchList.length) {
+          this.wantToWatchList.push(anime);
+        }
+        break;
+      case "Considering":
+        if (this.consideringList.length) {
+          this.consideringList.push(anime);
+        }
+        break;
+      case "Completed":
+        if (this.completedList.length) {
+          this.completedList.push(anime);
+        }
+        break;
+      default:
+        console.log("WARNING: THIS SHOULD NOT BE HAPPENING");
+    }
+  }
+
   changeCategory(newCategory: string) {
     // Update database entry to reflect category change of anime
+    let oldCategory = this.selectedAnime["category"];
     this.animeService.changeCategory(this.selectedAnime["_id"], newCategory).subscribe(res => {
       if (res["success"]) {
         // Have to manually update currently selected anime's category
@@ -423,10 +496,10 @@ export class HomeComponent {
               this.displayToast("There was a problem.", true);
               console.log(res);
             }
-            this.refresh();
+            this.updateCategoryChangeUI(this.selectedAnime, oldCategory, newCategory);
           });
         } else {
-          this.refresh();
+          this.updateCategoryChangeUI(this.selectedAnime, oldCategory, newCategory);
         }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
@@ -665,6 +738,9 @@ export class HomeComponent {
       case "Type":
         this.selectedType = newValue;
         break;
+      case "Studio":
+        this.selectedStudio = newValue;
+        break;
       case "Genre":
         this.selectedGenre = newValue;
         break;
@@ -763,6 +839,7 @@ export class HomeComponent {
         this.searchAnime = newSearchAnimeList;
         this.getGenres();
         this.getTypes();
+        this.getStudios();
         // If we have finalists, make sure we disable the "Add as Finalist" button for those
         if (this.finalistList.length) {
           this.validateSelectAsFinalistButton();
@@ -820,6 +897,9 @@ export class HomeComponent {
     this.selectedType = "All Types";
     this.allTypes = [];
 
+    this.selectedStudio = "All Studios";
+    this.allStudios = [];
+
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];
     this.groupFilterIndex = -1;
@@ -846,6 +926,7 @@ export class HomeComponent {
     this.toastMessage = "";
 
     this.hideFinalistsPanel = false;
+    this.hideCatalogPanel = false;
     this.fireworks = false;
     this.enableFireworks = false;
 

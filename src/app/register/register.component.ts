@@ -71,7 +71,7 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.model = new User("","","");
+    this.model = new User("","","","");
     this.submitted = false;
     this.showToast = false;
     this.toastError = false;

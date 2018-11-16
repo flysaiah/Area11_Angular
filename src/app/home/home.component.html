@@ -17,8 +17,14 @@
       <a *ngIf="showAddAnimePrompt" class="search-toolbar-submenu" mat-menu-item (click)="closeAddAnimePrompt()" >
         <span>Stop Adding Anime</span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="nostalgiaButton()" >
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); nostalgiaButton()" >
         <span>Nostalgia Button</span>
+      </a>
+      <a *ngIf="!hideCatalogPanel && !hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideCatalog()" >
+        <span>Hide Catalog</span>
+      </a>
+      <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item (click)="showCatalog()" >
+        <span>Show Catalog</span>
       </a>
     </mat-menu>
 
@@ -35,6 +41,9 @@
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="typeFilterMenu" >
         <span>Filter by Type ({{ selectedType }})</span>
       </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="studioFilterMenu" >
+          <span>Filter by Studio ({{ selectedStudio }})</span>
+        </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
@@ -62,10 +71,10 @@
     <!-- Genre filter -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #genreFilterMenu="matMenu">
       <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Genre', 'All Genres');">
-        <span>All Genres <span *ngIf="selectedGenres === 'All Genres'" class="submenu-checkmark">✓</span></span>
+        <span>All Genres <span *ngIf="selectedGenre === 'All Genres'" class="submenu-checkmark">✓</span></span>
       </a>
       <a *ngFor="let genre of allGenres" class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Genre', genre);">
-        <span>{{ genre }} <span *ngIf="selectedGenres === genre" class="submenu-checkmark">✓</span></span>
+        <span>{{ genre }} <span *ngIf="selectedGenre === genre" class="submenu-checkmark">✓</span></span>
       </a>
     </mat-menu>
 
@@ -77,6 +86,16 @@
       <a *ngFor="let type of allTypes" class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Type', type);">
         <span>{{ type }} <span *ngIf="selectedType === type" class="submenu-checkmark">✓</span></span>
       </a>
+    </mat-menu>
+
+    <!-- Studio filter -->
+    <mat-menu class="catalog-actions" [overlapTrigger]="false" #studioFilterMenu="matMenu">
+        <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Studio', 'All Studios');">
+          <span>All Studios <span *ngIf="selectedStudio === 'All Studios'" class="submenu-checkmark">✓</span></span>
+        </a>
+        <a *ngFor="let studio of allStudios" class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Studio', studio);">
+          <span [innerHTML]="studio"><span *ngIf="selectedStudio === studio" class="submenu-checkmark">✓</span></span>
+        </a>
     </mat-menu>
 
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
@@ -105,7 +124,7 @@
 
     <!-- Group filter -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #groupFilterMenu="matMenu">
-      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', -1, -1);">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', '', -1);">
         <span>No Filter <span *ngIf="groupFilterIndex === -1" class="submenu-checkmark">✓</span></span>
       </a>
       <a *ngFor="let groupFilterType of groupFilterTypes; let i = index;" class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', -1, i);">
@@ -127,11 +146,14 @@
       Finalists Actions<span class="down-icon">▾</span>
     </div>
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #finalistActionsMenu="matMenu">
-      <a *ngIf="!hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideFinalists()" >
+      <a *ngIf="!hideFinalistsPanel && !hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideFinalists()" >
         <span>Hide Finalists Panel</span>
       </a>
       <a *ngIf="hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="showFinalists()" >
         <span>Show Finalists Panel</span>
+      </a>
+      <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item>
+        <span>No Actions Available</span>
       </a>
     </mat-menu>
   </div>
@@ -139,7 +161,7 @@
 
 <div class="home-container">
   <!-- Add anime prompt -->
-  <div [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
+  <div *ngIf="!hideCatalogPanel" [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
     <mat-card *ngIf="showAddAnimePrompt && !currentlyAddingAnime" class="add-anime-prompt">
       <div>
         <mat-form-field color="accent" class="add-anime-name">
@@ -199,7 +221,7 @@
     Click on anime in any of your lists to see details from MAL here!
   </mat-card>
 
-  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
+  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
     <div *ngIf="selectedAnime['name']">
       <div [ngClass]="{'details-panel-content': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
        'details-panel-content-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'],
@@ -211,10 +233,11 @@
             <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
           </div>
           <div [ngClass]="{'details-misc': !hideFinalistsPanel, 'details-misc-2col': hideFinalistsPanel}">
-            <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
+            <p class="details-top-p" *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
             <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(selectedAnime["endDate"]) }}</p>
             <p *ngIf="selectedAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
             <p><strong>MAL rating: </strong> {{ selectedAnime["rating"] ? selectedAnime["rating"] : "Unknown" }}</p>
+            <p><strong>Studios: </strong> <span [innerHTML]="selectedAnime['studios'] ? selectedAnime['studios'] : 'Unknown'"></span></p>
             <p><strong>Type: </strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
             <p><strong>English: </strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
             <p><strong>Status: </strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
@@ -263,7 +286,7 @@
     </div>
   </mat-card>
 
-  <div *ngIf="!hideFinalistsPanel" class="flex-item">
+  <div *ngIf="!hideFinalistsPanel" [ngClass]="{'flex-item-2col': hideCatalogPanel, 'flex-item': !hideCatalogPanel}">
     <div class="area11-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
     <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length && !isLoading">
@@ -301,12 +324,12 @@
               <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
             </mat-chip-list>
           </div>
-          <div class="finalist-button-container">
+          <div [ngClass]="{'finalist-button-container': !hideCatalogPanel, 'finalist-button-container-2col': hideCatalogPanel}">
             <button (click)="viewFinalist(i)" class="finalist-button" mat-raised-button color="primary">View</button>
             <button (click)="editComments(i)" class="finalist-button" mat-raised-button color="accent">Edit Comments</button>
             <button (click)="removeFinalist(i)" class="finalist-button" mat-raised-button color="warn">Remove</button>
           </div>
-          <div class="finalist-button-container-smallscreen">
+          <div [ngClass]="{'finalist-button-container-smallscreen': !hideCatalogPanel, 'finalist-button-container-2col-smallscreen': hideCatalogPanel}">
             <button class="finalist-smallscreen-action" mat-raised-button color="accent" [matMenuTriggerFor]="finalistMenu">Action</button>
             <mat-menu #finalistMenu="matMenu">
               <button class="finalist-button-smallscreen" (click)="viewFinalist(i)">View</button>

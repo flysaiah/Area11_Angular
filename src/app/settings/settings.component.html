@@ -9,6 +9,17 @@
       <mat-form-field class="settings-input" color="accent">
         <input matInput name="bestgirl" [(ngModel)]="model.bestgirl" placeholder="Best Girl" #bestgirl="ngModel">
       </mat-form-field>
+      <mat-form-field class="settings-input" color="accent">
+        <input matInput name="bestboy" [(ngModel)]="model.bestboy" placeholder="Best Boy" #bestboy="ngModel">
+      </mat-form-field>
+      <div class="settings-input">
+        <label for="bio-display">Display on group page: </label>
+        <select class="bio-display" matInput name="bioDisplay" id="display-bio" [(ngModel)]="model.bioDisplay" #bioDisplay="ngModel">
+          <option default value="bestgirl">Best Girl</option>
+          <option value="bestboy">Best Boy</option>
+        </select>
+      </div>
+      <br>
       <mat-checkbox matInput labelPosition="before" name="autoTimelineAdd" [(ngModel)]="model.autoTimelineAdd" #autoTimelineAdd="ngModel">
         Auto-add completed shows to timeline
       </mat-checkbox>
@@ -19,7 +30,7 @@
       </mat-checkbox>
       <br>
       <br>
-      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !autoTimelineAdd.dirty && !fireworks.dirty" (click)="saveChanges()">Save Changes</button>
+      <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!bestgirl.dirty && !bestboy.dirty && !bioDisplay.dirty && !autoTimelineAdd.dirty && !fireworks.dirty" (click)="saveChanges()">Save Changes</button>
       <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">

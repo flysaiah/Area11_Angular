@@ -497,7 +497,9 @@ module.exports = (router) => {
                     id: member.id,
                     username: member.username,
                     bestgirl: member.bestgirl,
+                    bioDisplay: member.bioDisplay,
                     avatar: (member.avatar ? member.avatar : ""),
+                    bestboy: (member.bestboy ? member.bestboy : ""),
                     isPending: groupMemberMap.get(member.id)
                   });
                   if (animeList && animeList.length && animeList.length == 1) {

@@ -65,6 +65,10 @@ export class InfolistsComponent implements OnInit {
       }
       return true;
     });
+    // Guard against paginator becoming inconsistent
+    if (1 + this.paginatorCurrentIndexMap[infolist.name] * this.paginatorOptionsMap[infolist.name] > (this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]) > infolist.entries.length ? infolist.entries.length : this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]))) {
+      this.paginatorCurrentIndexMap[infolist.name] -= 1;
+    }
   }
 
   addNewEntry(infolist: Infolist) {
@@ -111,6 +115,14 @@ export class InfolistsComponent implements OnInit {
 
   decrementPaginatorIndex(infolist: string) {
     this.paginatorCurrentIndexMap[infolist] -= 1;
+  }
+
+  rightmostPaginatorIndex(infolist: Infolist) {
+    this.paginatorCurrentIndexMap[infolist.name] = Math.floor((infolist.entries.length - 1) / this.paginatorOptionsMap[infolist.name]);
+  }
+
+  leftmostPaginatorIndex(infolist: Infolist) {
+    this.paginatorCurrentIndexMap[infolist.name] = 0;
   }
 
   getInfolistEntries(infolist: Infolist) {

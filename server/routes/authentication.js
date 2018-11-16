@@ -13,7 +13,8 @@ module.exports = (router) => {
       let user = new User({
         username: req.body.username.toLowerCase(),
         password: req.body.password,
-        bestgirl: req.body.bestgirl
+        bestgirl: req.body.bestgirl,
+        bioDisplay: "bestgirl"
       });
       user.save((err) => {
         if (err) {

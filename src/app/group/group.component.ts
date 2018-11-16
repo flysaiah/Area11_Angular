@@ -28,11 +28,11 @@ export class GroupComponent implements OnInit {
   currentGroupAvatar: string;
   changesModel: Group;
   // Use these arrays so we can iterate through isPending=true vs isPending=false easier in the HTML
-  currentGroupMembersCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean, currentlyWatching?: string}[];
-  currentGroupMembersCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean, currentlyWatching?: string}[];
-  pendingGroupRequests: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
-  pendingUserRequestsCol1: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
-  pendingUserRequestsCol2: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
+  currentGroupMembersCol1: {id: string, username: string, avatar: string, bioDisplay: string, bestgirl: string, isPending: boolean, currentlyWatching?: string, bestboy?: string}[];
+  currentGroupMembersCol2: {id: string, username: string, avatar: string, bioDisplay: string, bestgirl: string, isPending: boolean, currentlyWatching?: string, bestboy?: string}[];
+  pendingGroupRequests: {id: string, username: string, avatar: string, bioDisplay: string, bestgirl: string, isPending: boolean, bestboy?: string}[];
+  pendingUserRequestsCol1: {id: string, username: string, avatar: string, bioDisplay: string, bestgirl: string, isPending: boolean, bestboy?: string}[];
+  pendingUserRequestsCol2: {id: string, username: string, avatar: string, bioDisplay: string, bestgirl: string, isPending: boolean, bestboy?: string}[];
 
   currentUser: string;
 

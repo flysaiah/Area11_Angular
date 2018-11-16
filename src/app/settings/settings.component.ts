@@ -11,7 +11,7 @@ import { User } from '../register/user';
 })
 export class SettingsComponent implements OnInit {
 
-  model: User = new User("","","");
+  model: User = new User("","","","");
   showUploadOptions: boolean;
 
   refreshHeader: number;
@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
   avatarUpload: Array<File> = [];
 
   upload() {
+    // Used for uploading user avatar
     let formData : any = new FormData();
     for(var i = 0; i < this.avatarUpload.length; i++) {
       formData.append("uploadAvatar", this.avatarUpload[i], "area11-user-avatar");
@@ -122,11 +123,15 @@ export class SettingsComponent implements OnInit {
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
             this.model["bestgirl"] = res["user"]["bestgirl"];
+            this.model["bioDisplay"] = res["user"]["bioDisplay"];
             if (res["user"]["autoTimelineAdd"]) {
               this.model["autoTimelineAdd"] = res["user"]["autoTimelineAdd"];
             }
             if (res["user"]["fireworks"]) {
               this.model["fireworks"] = res["user"]["fireworks"];
+            }
+            if (res["user"]["bestboy"]) {
+              this.model["bestboy"] = res["user"]["bestboy"];
             }
             this.isLoading = false;
           } else {
