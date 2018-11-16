@@ -77,8 +77,10 @@
                     <option value=100>100</option>
                   </select>
                   <span class="paginator-wrapper">{{ 1 + paginatorCurrentIndexMap[infolist.name] * paginatorOptionsMap[infolist.name] }}-{{ paginatorOptionsMap[infolist.name] * (1 + paginatorCurrentIndexMap[infolist.name]) > infolist.entries.length ? infolist.entries.length : paginatorOptionsMap[infolist.name] * (1 + paginatorCurrentIndexMap[infolist.name]) }} of {{ infolist.entries.length }}</span>
-                  <button class="paginator-button" [disabled]="!paginatorCurrentIndexMap[infolist.name] || paginatorCurrentIndexMap[infolist.name] === 0" (click)="decrementPaginatorIndex(infolist.name)"><</button>
-                  <button class="paginator-button" [disabled]="(paginatorCurrentIndexMap[infolist.name] + 1) * paginatorOptionsMap[infolist.name] >= infolist.entries.length" (click)="incrementPaginatorIndex(infolist.name);">></button>
+                  <button class="paginator-button" [disabled]="!paginatorCurrentIndexMap[infolist.name] || paginatorCurrentIndexMap[infolist.name] === 0" (click)="leftmostPaginatorIndex(infolist)"><strong>≤</strong></button>
+                  <button class="paginator-button" [disabled]="!paginatorCurrentIndexMap[infolist.name] || paginatorCurrentIndexMap[infolist.name] === 0" (click)="decrementPaginatorIndex(infolist.name)"><strong><</strong></button>
+                  <button class="paginator-button" [disabled]="(paginatorCurrentIndexMap[infolist.name] + 1) * paginatorOptionsMap[infolist.name] >= infolist.entries.length" (click)="incrementPaginatorIndex(infolist.name);"><strong>></strong></button>
+                  <button class="paginator-button" [disabled]="(paginatorCurrentIndexMap[infolist.name] + 1) * paginatorOptionsMap[infolist.name] >= infolist.entries.length" (click)="rightmostPaginatorIndex(infolist);"><strong>≥</strong></button>
                 </span>
               </td>
             </tr>

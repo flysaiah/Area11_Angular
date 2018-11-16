@@ -113,6 +113,14 @@ export class InfolistsComponent implements OnInit {
     this.paginatorCurrentIndexMap[infolist] -= 1;
   }
 
+  rightmostPaginatorIndex(infolist: Infolist) {
+    this.paginatorCurrentIndexMap[infolist.name] = Math.floor((infolist.entries.length - 1) / this.paginatorOptionsMap[infolist.name]);
+  }
+
+  leftmostPaginatorIndex(infolist: Infolist) {
+    this.paginatorCurrentIndexMap[infolist.name] = 0;
+  }
+
   getInfolistEntries(infolist: Infolist) {
     const currentIndex = this.paginatorCurrentIndexMap[infolist.name];
     const currentInterval = this.paginatorOptionsMap[infolist.name];
