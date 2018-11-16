@@ -17,7 +17,7 @@
       <a *ngIf="showAddAnimePrompt" class="search-toolbar-submenu" mat-menu-item (click)="closeAddAnimePrompt()" >
         <span>Stop Adding Anime</span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="nostalgiaButton()" >
+      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); nostalgiaButton()" >
         <span>Nostalgia Button</span>
       </a>
     </mat-menu>
