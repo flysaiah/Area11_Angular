@@ -73,6 +73,7 @@ export class HomeComponent {
   groupFilterIndex: number;
 
   hideFinalistsPanel: boolean;
+  hideCatalogPanel: boolean;
   enableFireworks: boolean;
   fireworks: boolean;   // If true, then fireworks animation plays
 
@@ -158,6 +159,14 @@ export class HomeComponent {
 
   showFinalists() {
     this.hideFinalistsPanel = false;
+  }
+
+  hideCatalog() {
+    this.hideCatalogPanel = true;
+  }
+
+  showCatalog() {
+    this.hideCatalogPanel = false;
   }
 
   watchOPs() {
@@ -917,6 +926,7 @@ export class HomeComponent {
     this.toastMessage = "";
 
     this.hideFinalistsPanel = false;
+    this.hideCatalogPanel = false;
     this.fireworks = false;
     this.enableFireworks = false;
 

@@ -20,6 +20,12 @@
       <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); nostalgiaButton()" >
         <span>Nostalgia Button</span>
       </a>
+      <a *ngIf="!hideCatalogPanel && !hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideCatalog()" >
+        <span>Hide Catalog</span>
+      </a>
+      <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item (click)="showCatalog()" >
+        <span>Show Catalog</span>
+      </a>
     </mat-menu>
 
     <div [matMenuTriggerFor]="filterSortMenu" class="search-toolbar-menu-minicontainer">
@@ -140,11 +146,14 @@
       Finalists Actions<span class="down-icon">▾</span>
     </div>
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #finalistActionsMenu="matMenu">
-      <a *ngIf="!hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideFinalists()" >
+      <a *ngIf="!hideFinalistsPanel && !hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item (click)="hideFinalists()" >
         <span>Hide Finalists Panel</span>
       </a>
       <a *ngIf="hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="showFinalists()" >
         <span>Show Finalists Panel</span>
+      </a>
+      <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item>
+        <span>No Actions Available</span>
       </a>
     </mat-menu>
   </div>
@@ -152,7 +161,7 @@
 
 <div class="home-container">
   <!-- Add anime prompt -->
-  <div [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
+  <div *ngIf="!hideCatalogPanel" [ngClass]="{'flex-item-2col': hideFinalistsPanel, 'flex-item': !hideFinalistsPanel}">
     <mat-card *ngIf="showAddAnimePrompt && !currentlyAddingAnime" class="add-anime-prompt">
       <div>
         <mat-form-field color="accent" class="add-anime-name">
@@ -212,7 +221,7 @@
     Click on anime in any of your lists to see details from MAL here!
   </mat-card>
 
-  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
+  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
     <div *ngIf="selectedAnime['name']">
       <div [ngClass]="{'details-panel-content': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
        'details-panel-content-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'],
@@ -277,7 +286,7 @@
     </div>
   </mat-card>
 
-  <div *ngIf="!hideFinalistsPanel" class="flex-item">
+  <div *ngIf="!hideFinalistsPanel" [ngClass]="{'flex-item-2col': hideCatalogPanel, 'flex-item': !hideCatalogPanel}">
     <div class="area11-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 
     <mat-card class="chooser-tool-placeholder" *ngIf="!finalistList.length && !isLoading">
@@ -315,12 +324,12 @@
               <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
             </mat-chip-list>
           </div>
-          <div class="finalist-button-container">
+          <div [ngClass]="{'finalist-button-container': !hideCatalogPanel, 'finalist-button-container-2col': hideCatalogPanel}">
             <button (click)="viewFinalist(i)" class="finalist-button" mat-raised-button color="primary">View</button>
             <button (click)="editComments(i)" class="finalist-button" mat-raised-button color="accent">Edit Comments</button>
             <button (click)="removeFinalist(i)" class="finalist-button" mat-raised-button color="warn">Remove</button>
           </div>
-          <div class="finalist-button-container-smallscreen">
+          <div [ngClass]="{'finalist-button-container-smallscreen': !hideCatalogPanel, 'finalist-button-container-2col-smallscreen': hideCatalogPanel}">
             <button class="finalist-smallscreen-action" mat-raised-button color="accent" [matMenuTriggerFor]="finalistMenu">Action</button>
             <mat-menu #finalistMenu="matMenu">
               <button class="finalist-button-smallscreen" (click)="viewFinalist(i)">View</button>

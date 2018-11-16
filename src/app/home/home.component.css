@@ -620,6 +620,28 @@
 .finalist-button-container-smallscreen {
   display: none;
 }
+.finalist-button-container-2col {
+  float: right;
+  margin-top: 13px;
+  margin-bottom: 10px;
+  margin-right: 2%;
+  white-space: nowrap;
+}
+.finalist-button-container-2col-smallscreen {
+  display: none;
+}
+@media screen and (max-width: 735px) {
+  .finalist-button-container-2col-smallscreen {
+    display: block;
+    margin-right: 2%;
+    float: right;
+    margin-top: 13px;
+    margin-bottom: 5px;
+  }
+  .finalist-button-container-2col {
+    display: none;
+  }
+}
 @media screen and (min-width: 1409px) {
   .details-button-container {
     height: 50px;
