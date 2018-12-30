@@ -309,7 +309,7 @@ export class HomeComponent {
         allStudios.add(anime["studios"]);
       }
     }
-    this.allStudios = Array.from(allStudios);
+    this.allStudios = Array.from(allStudios).sort();
   }
 
   addAnimeToCatalog(category?: string) {
