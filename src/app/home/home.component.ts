@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewChecked } from '@angular/core';
 import { Anime } from '../anime';
 import { Group } from '../group/group';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -16,9 +16,10 @@ import 'rxjs/add/operator/map';
 @Component({
   selector: 'home-page',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  inputs: ['selectedAnime']
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewChecked {
   wantToWatchList: Anime[];
   consideringList: Anime[];
   completedList: Anime[];
@@ -89,6 +90,20 @@ export class HomeComponent {
       this.toastMessage = "";
       this.toastError = false;
     }, 3000);
+  }
+
+  ngAfterViewChecked() {
+    // Dynamically set height of description depending on button container height
+    // We have to do this because we use absolute positioning for button container
+    // Not really the Angular way but much simpler than using Observables / etc
+    let dbc = document.getElementById("details-button-container");
+    let dpc = document.getElementById("details-panel-content");
+    if (dbc && dpc) {
+      let newHeight = JSON.stringify(656 - dbc.offsetHeight) + "px";
+      if (dpc.style.height != newHeight) {
+        dpc.style.height = newHeight;
+      }
+    }
   }
 
   openAddAnimePrompt() {
