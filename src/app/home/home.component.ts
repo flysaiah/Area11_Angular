@@ -57,6 +57,8 @@ export class HomeComponent implements AfterViewChecked {
   allStudios: string[];
   selectedStudio: string;
 
+  recommendationPreference: string;
+
   refreshHeader: number;
   isLoading: boolean;
   catalogIsLoading: boolean;   // for when we just need the animation on left panel
@@ -249,6 +251,10 @@ export class HomeComponent implements AfterViewChecked {
     return (filterList.indexOf(anime.name) !== -1);
   }
 
+  private recommendationFilter(anime: Anime) {
+    return (this.recommendationPreference === "Recommended") ? (anime.recommenders.length > 0) : (anime.recommenders.length === 0);
+  }
+
   applyFilters() {
     this.catalogIsLoading = true;
     let wantToWatch = JSON.parse(JSON.stringify(this.newWantToWatch));
@@ -283,6 +289,12 @@ export class HomeComponent implements AfterViewChecked {
       wantToWatch = wantToWatch.filter(this.groupFilter.bind(this));
       considering = considering.filter(this.groupFilter.bind(this));
       completed = completed.filter(this.groupFilter.bind(this));
+    }
+
+    if (this.recommendationPreference !== "No Filter") {
+      wantToWatch = wantToWatch.filter(this.recommendationFilter.bind(this));
+      considering = considering.filter(this.recommendationFilter.bind(this));
+      completed = completed.filter(this.recommendationFilter.bind(this));
     }
 
     this.wantToWatchList = wantToWatch;
@@ -765,6 +777,9 @@ export class HomeComponent implements AfterViewChecked {
       case "Group":
         this.groupFilterIndex = newValueNumber;
         break;
+      case "Recommendation":
+        this.recommendationPreference = newValue;
+        break;
       default:
         console.log("This should never happen");
     }
@@ -914,6 +929,8 @@ export class HomeComponent implements AfterViewChecked {
 
     this.selectedStudio = "All Studios";
     this.allStudios = [];
+
+    this.recommendationPreference = "No Filter";
 
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];

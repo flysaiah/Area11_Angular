@@ -43,7 +43,10 @@
       </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="studioFilterMenu" >
           <span>Filter by Studio ({{ selectedStudio }})</span>
-        </a>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
+        <span>Filter by Recommendation</span>
+      </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
@@ -98,6 +101,20 @@
         </a>
     </mat-menu>
 
+        <!-- Recommendation filter -->
+        <mat-menu class="catalog-actions" [overlapTrigger]="false" #recommendationFilterMenu="matMenu">
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'No Filter');">
+            <span>No Filter<span *ngIf="recommendationPreference === 'No Filter'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'Recommended');">
+            <span>Only Recommended <span *ngIf="recommendationPreference === 'Recommended'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'Not Recommended');">
+            <span>Only Not Recommended <span *ngIf="recommendationPreference === 'Not Recommended'" class="submenu-checkmark">✓</span></span>
+          </a>
+        </mat-menu>
+
+    <!-- Sort menu -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
       <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
         <span>Default Sorting <span *ngIf="sortCriteria === '_id,ascending'" class="submenu-checkmark">✓</span></span>
