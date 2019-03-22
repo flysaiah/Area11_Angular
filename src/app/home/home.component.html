@@ -45,13 +45,13 @@
           <span>Filter by Studio ({{ selectedStudio }})</span>
       </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
-        <span>Filter by Recommendation</span>
+        <span>Filter by Recommendation ({{ recommendationPreference }})</span>
       </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
       <a *ngIf="groupFilterTypes.length" class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="groupFilterMenu" >
-        <span>Filter by Group Member ({{ (groupFilterIndex === -1) ? "No Filter" : groupFilterTypes[groupFilterIndex] }})</span>
+        <span>Filter by Group Member ({{ (groupFilterIndex === -1) ? "No Filter" : (groupFilterIndex === -2 ? "At Least One Member" : groupFilterTypes[groupFilterIndex]) }})</span>
       </a>
     </mat-menu>
 
@@ -146,6 +146,9 @@
       </a>
       <a *ngFor="let groupFilterType of groupFilterTypes; let i = index;" class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', -1, i);">
         <span>{{ groupFilterTypes[i] }} <span *ngIf="groupFilterIndex === i" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', '', -2);">
+        <span>At Least One Member <span *ngIf="groupFilterIndex === -2" class="submenu-checkmark">✓</span></span>
       </a>
     </mat-menu>
 

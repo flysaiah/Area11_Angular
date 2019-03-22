@@ -247,8 +247,18 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   private groupFilter(anime: Anime) {
-    let filterList = this.groupFilterAnime[this.groupFilterIndex];
-    return (filterList.indexOf(anime.name) !== -1);
+    // Special case is -2 => at least one group member, so check all lists
+    if (this.groupFilterIndex === -2) {
+      for (let filterList of this.groupFilterAnime) {
+        if (filterList.indexOf(anime.name) !== -1) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      let filterList = this.groupFilterAnime[this.groupFilterIndex];
+      return (filterList.indexOf(anime.name) !== -1);
+    }
   }
 
   private recommendationFilter(anime: Anime) {
