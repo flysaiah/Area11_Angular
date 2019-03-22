@@ -447,8 +447,9 @@
   right: 10px;
   top: 15px;
 }
-.details-panel, .details-panel-completed, .details-panel-newseason {
+.details-panel, .details-panel-2col {
   width: 34%;
+  height: 656px;
   text-align: center;
   border: 1px solid #c3c3c3;
   border-style: double;
@@ -515,20 +516,26 @@
   border: 1px solid #c3c3c3;
   border-style: double;
   border-width: 5px;
-  margin-top: 10px;}
-.details-panel-content, .details-panel-content-completed, .details-panel-content-newseason, .details-panel-content-2col, .details-panel-content-completed-2col, .details-panel-content-newseason-2col {
+  margin-top: 10px;
+}
+.details-panel-content, .details-panel-content-2col {
   overflow: auto;
-  max-height: 550px;
   padding-right: 24px;
 }
 .no-padding-bottom {
   padding-bottom: 0px !important;
 }
-.details-button-container, .details-button-container-completed, .details-button-container-newseason, .details-button-container-2col, .details-button-container-completed-2col, .details-button-container-newseason-2col {
+.details-button-container, .details-button-container-2col {
   border-top: 1px solid #c3c3c3;
   padding-top: 5px;
-  height: 100px;
+  padding-bottom: 5px;
   overflow: auto;
+  background-color: white;
+  position: absolute;
+  bottom: 0;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .details-button {
   margin: 5px !important;
@@ -640,56 +647,6 @@
   }
   .finalist-button-container-2col {
     display: none;
-  }
-}
-@media screen and (min-width: 1409px) {
-  .details-button-container {
-    height: 50px;
-  }
-  .details-panel-content {
-    max-height: 600px;
-  }
-}
-@media screen and (min-width: 1352px) {
-  .details-button-container-completed {
-    height: 50px;
-  }
-  .details-panel-content-completed {
-    max-height: 600px;
-  }
-}
-@media screen and (min-width: 1872px) {
-  .details-button-container-newseason {
-    height: 50px;
-  }
-  .details-panel-content-newseason {
-    max-height: 600px;
-  }
-}
-@media screen and (min-width: 961px) {
-  .details-button-container-2col {
-    height: 50px;
-  }
-  .details-panel-content-2col {
-    max-height: 600px;
-  }
-}
-/* 2 */
-@media screen and (min-width: 924px) {
-  .details-button-container-completed-2col {
-    height: 50px;
-  }
-  .details-panel-content-completed-2col {
-    max-height: 600px;
-  }
-}
-/* 3 */
-@media screen and (min-width: 1271px) {
-  .details-button-container-newseason-2col {
-    height: 50px;
-  }
-  .details-panel-content-newseason-2col {
-    max-height: 600px;
   }
 }
 @media screen and (max-width: 1150px) {

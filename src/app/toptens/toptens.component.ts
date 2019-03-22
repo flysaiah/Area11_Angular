@@ -134,6 +134,23 @@ export class TopTensComponent implements OnInit {
   saveChanges(category: string, index: number) {
     // This isn't very nice but for now it's the simplest way to avoid putting isSelected into database
     delete this.topTensMap.get(category).get(this.currentUser).isSelected;
+    // If no real content changes then don't update the "Last Edited Date" field
+    let noRealChanges = true;
+    let topTensObj = this.topTensMap.get(category).get(this.currentUser);
+    let oldVersion = this.oldVersionMap.get(category);
+    if (topTensObj.entries.length !== oldVersion.entries.length) {
+      noRealChanges = false;
+    } else {
+      for (let i=0; i<topTensObj.entries.length; i++) {
+        if (topTensObj.entries[i].name !== oldVersion.entries[i].name) {
+          noRealChanges = false;
+          break;
+        }
+      }
+    }
+    if (!noRealChanges) {
+      topTensObj.lastEditedDate = new Date();
+    }
     this.toptensService.saveChanges(this.currentGroup.name, this.topTensMap.get(category).get(this.currentUser)).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Your changes have been saved!");

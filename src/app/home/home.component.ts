@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewChecked } from '@angular/core';
 import { Anime } from '../anime';
 import { Group } from '../group/group';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -16,9 +16,10 @@ import 'rxjs/add/operator/map';
 @Component({
   selector: 'home-page',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  inputs: ['selectedAnime']
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewChecked {
   wantToWatchList: Anime[];
   consideringList: Anime[];
   completedList: Anime[];
@@ -56,6 +57,8 @@ export class HomeComponent {
   allStudios: string[];
   selectedStudio: string;
 
+  recommendationPreference: string;
+
   refreshHeader: number;
   isLoading: boolean;
   catalogIsLoading: boolean;   // for when we just need the animation on left panel
@@ -89,6 +92,20 @@ export class HomeComponent {
       this.toastMessage = "";
       this.toastError = false;
     }, 3000);
+  }
+
+  ngAfterViewChecked() {
+    // Dynamically set height of description depending on button container height
+    // We have to do this because we use absolute positioning for button container
+    // Not really the Angular way but much simpler than using Observables / etc
+    let dbc = document.getElementById("details-button-container");
+    let dpc = document.getElementById("details-panel-content");
+    if (dbc && dpc) {
+      let newHeight = JSON.stringify(656 - dbc.offsetHeight) + "px";
+      if (dpc.style.height != newHeight) {
+        dpc.style.height = newHeight;
+      }
+    }
   }
 
   openAddAnimePrompt() {
@@ -230,8 +247,22 @@ export class HomeComponent {
   }
 
   private groupFilter(anime: Anime) {
-    let filterList = this.groupFilterAnime[this.groupFilterIndex];
-    return (filterList.indexOf(anime.name) !== -1);
+    // Special case is -2 => at least one group member, so check all lists
+    if (this.groupFilterIndex === -2) {
+      for (let filterList of this.groupFilterAnime) {
+        if (filterList.indexOf(anime.name) !== -1) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      let filterList = this.groupFilterAnime[this.groupFilterIndex];
+      return (filterList.indexOf(anime.name) !== -1);
+    }
+  }
+
+  private recommendationFilter(anime: Anime) {
+    return (this.recommendationPreference === "Recommended") ? (anime.recommenders.length > 0) : (anime.recommenders.length === 0);
   }
 
   applyFilters() {
@@ -268,6 +299,12 @@ export class HomeComponent {
       wantToWatch = wantToWatch.filter(this.groupFilter.bind(this));
       considering = considering.filter(this.groupFilter.bind(this));
       completed = completed.filter(this.groupFilter.bind(this));
+    }
+
+    if (this.recommendationPreference !== "No Filter") {
+      wantToWatch = wantToWatch.filter(this.recommendationFilter.bind(this));
+      considering = considering.filter(this.recommendationFilter.bind(this));
+      completed = completed.filter(this.recommendationFilter.bind(this));
     }
 
     this.wantToWatchList = wantToWatch;
@@ -309,7 +346,7 @@ export class HomeComponent {
         allStudios.add(anime["studios"]);
       }
     }
-    this.allStudios = Array.from(allStudios);
+    this.allStudios = Array.from(allStudios).sort();
   }
 
   addAnimeToCatalog(category?: string) {
@@ -401,6 +438,7 @@ export class HomeComponent {
     this.animeService.addNewSeason(this.selectedAnime["_id"]).subscribe(res => {
       if (res["success"]) {
         this.selectedAnime.hasNewSeason = true;
+        this.validateSelectAsFinalistButton();
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
@@ -413,6 +451,7 @@ export class HomeComponent {
     this.animeService.removeNewSeason(this.selectedAnime["_id"]).subscribe(res => {
       if (res["success"]) {
         this.selectedAnime.hasNewSeason = false;
+        this.validateSelectAsFinalistButton();
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
@@ -750,6 +789,9 @@ export class HomeComponent {
       case "Group":
         this.groupFilterIndex = newValueNumber;
         break;
+      case "Recommendation":
+        this.recommendationPreference = newValue;
+        break;
       default:
         console.log("This should never happen");
     }
@@ -899,6 +941,8 @@ export class HomeComponent {
 
     this.selectedStudio = "All Studios";
     this.allStudios = [];
+
+    this.recommendationPreference = "No Filter";
 
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];

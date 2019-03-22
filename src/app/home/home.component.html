@@ -43,12 +43,15 @@
       </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="studioFilterMenu" >
           <span>Filter by Studio ({{ selectedStudio }})</span>
-        </a>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
+        <span>Filter by Recommendation ({{ recommendationPreference }})</span>
+      </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
       <a *ngIf="groupFilterTypes.length" class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="groupFilterMenu" >
-        <span>Filter by Group Member ({{ (groupFilterIndex === -1) ? "No Filter" : groupFilterTypes[groupFilterIndex] }})</span>
+        <span>Filter by Group Member ({{ (groupFilterIndex === -1) ? "No Filter" : (groupFilterIndex === -2 ? "At Least One Member" : groupFilterTypes[groupFilterIndex]) }})</span>
       </a>
     </mat-menu>
 
@@ -98,6 +101,20 @@
         </a>
     </mat-menu>
 
+        <!-- Recommendation filter -->
+        <mat-menu class="catalog-actions" [overlapTrigger]="false" #recommendationFilterMenu="matMenu">
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'No Filter');">
+            <span>No Filter<span *ngIf="recommendationPreference === 'No Filter'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'Recommended');">
+            <span>Only Recommended <span *ngIf="recommendationPreference === 'Recommended'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'Not Recommended');">
+            <span>Only Not Recommended <span *ngIf="recommendationPreference === 'Not Recommended'" class="submenu-checkmark">✓</span></span>
+          </a>
+        </mat-menu>
+
+    <!-- Sort menu -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
       <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
         <span>Default Sorting <span *ngIf="sortCriteria === '_id,ascending'" class="submenu-checkmark">✓</span></span>
@@ -129,6 +146,9 @@
       </a>
       <a *ngFor="let groupFilterType of groupFilterTypes; let i = index;" class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', -1, i);">
         <span>{{ groupFilterTypes[i] }} <span *ngIf="groupFilterIndex === i" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Group', '', -2);">
+        <span>At Least One Member <span *ngIf="groupFilterIndex === -2" class="submenu-checkmark">✓</span></span>
       </a>
     </mat-menu>
 
@@ -217,72 +237,65 @@
   </div>
 
   <!-- Details View -->
-  <mat-card [ngClass]="{'details-panel-placeholder-2col': hideFinalistsPanel, 'details-panel-placeholder': !hideFinalistsPanel}" *ngIf="!selectedAnime['name']">
+  <mat-card [ngClass]="{'details-panel-placeholder-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel-placeholder': !hideFinalistsPanel && !hideCatalogPanel}" *ngIf="!selectedAnime['name']">
     Click on anime in any of your lists to see details from MAL here!
   </mat-card>
 
-  <mat-card class="no-padding-bottom" [ngClass]="{'details-panel-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel': selectedAnime['category'] != 'Completed', 'details-panel-completed': selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'], 'details-panel-newseason': selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" *ngIf="selectedAnime['name']">
-    <div *ngIf="selectedAnime['name']">
-      <div [ngClass]="{'details-panel-content': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
-       'details-panel-content-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'],
-       'details-panel-content-2col': hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-panel-content-completed-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
-        'details-panel-content-newseason-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}" >
-        <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
-        <div [ngClass]="{'details-flex-container': !hideFinalistsPanel, 'details-flex-container-2col': hideFinalistsPanel}">
-          <div [ngClass]="{'details-thumbnail-container': !hideFinalistsPanel, 'details-thumbnail-container-2col': hideFinalistsPanel}">
-            <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
-          </div>
-          <div [ngClass]="{'details-misc': !hideFinalistsPanel, 'details-misc-2col': hideFinalistsPanel}">
-            <p class="details-top-p" *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
-            <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(selectedAnime["endDate"]) }}</p>
-            <p *ngIf="selectedAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
-            <p><strong>MAL rating: </strong> {{ selectedAnime["rating"] ? selectedAnime["rating"] : "Unknown" }}</p>
-            <p><strong>Studios: </strong> <span [innerHTML]="selectedAnime['studios'] ? selectedAnime['studios'] : 'Unknown'"></span></p>
-            <p><strong>Type: </strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
-            <p><strong>English: </strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
-            <p><strong>Status: </strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
-            <p *ngIf="selectedAnime['runtime']"><strong>Runtime: </strong> {{ selectedAnime["runtime"] }}</p>
-            <p><strong>Genres: </strong>
-              <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
-                <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
-              </span>
-              <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
-            </p>
-            <p><strong>Recommenders: </strong>
-              <span *ngIf="selectedAnime['recommenders'] && selectedAnime['recommenders'].length">
-                <span *ngFor="let recommender of selectedAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == selectedAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
-              </span>
-              <span *ngIf="!selectedAnime['recommenders'] || !selectedAnime['recommenders'].length">None</span>
-            </p>
-          </div>
+  <mat-card class="no-padding-bottom" *ngIf="selectedAnime['name']" [ngClass]="{'details-panel-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel': !hideFinalistsPanel && !hideCatalogPanel}">
+    <div id="details-panel-content" [ngClass]="{'details-panel-content': !hideFinalistsPanel && !hideCatalogPanel,'details-panel-content-2col': hideFinalistsPanel || hideCatalogPanel}">
+      <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
+      <div [ngClass]="{'details-flex-container': !hideFinalistsPanel && !hideCatalogPanel, 'details-flex-container-2col': hideFinalistsPanel || hideCatalogPanel}">
+        <div [ngClass]="{'details-thumbnail-container': !hideFinalistsPanel && !hideCatalogPanel, 'details-thumbnail-container-2col': hideFinalistsPanel || hideCatalogPanel}">
+          <img [src]="selectedAnime['thumbnail']" alt="Thumbnail not available.">
         </div>
-        <div class="details-description">
-          <p [innerHTML]="selectedAnime['description']"></p>
+        <div [ngClass]="{'details-misc': !hideFinalistsPanel && !hideCatalogPanel, 'details-misc-2col': hideFinalistsPanel || hideCatalogPanel}">
+          <p class="details-top-p" *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
+          <p *ngIf="selectedAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(selectedAnime["endDate"]) }}</p>
+          <p *ngIf="selectedAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(selectedAnime["startDate"]) }}</p>
+          <p><strong>MAL rating: </strong> {{ selectedAnime["rating"] ? selectedAnime["rating"] : "Unknown" }}</p>
+          <p><strong>Studios: </strong> <span [innerHTML]="selectedAnime['studios'] ? selectedAnime['studios'] : 'Unknown'"></span></p>
+          <p><strong>Type: </strong> {{ selectedAnime["type"] ? selectedAnime["type"] : "Unknown" }}</p>
+          <p><strong>English: </strong> {{ selectedAnime["englishTitle"] ? selectedAnime["englishTitle"] : "Unknown" }}</p>
+          <p><strong>Status: </strong> {{ selectedAnime["status"] ? selectedAnime["status"] : "Unknown" }}</p>
+          <p *ngIf="selectedAnime['runtime']"><strong>Runtime: </strong> {{ selectedAnime["runtime"] }}</p>
+          <p><strong>Genres: </strong>
+            <span *ngIf="selectedAnime['genres'] && selectedAnime['genres'].length">
+              <span *ngFor="let genre of selectedAnime['genres']; let i = index;">{{ genre + (i == selectedAnime['genres'].length - 1 ? '' : ', ') }}</span>
+            </span>
+            <span *ngIf="!selectedAnime['genres'] || !selectedAnime['genres'].length">Unavailable (updated nightly)</span>
+          </p>
+          <p><strong>Recommenders: </strong>
+            <span *ngIf="selectedAnime['recommenders'] && selectedAnime['recommenders'].length">
+              <span *ngFor="let recommender of selectedAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == selectedAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+            </span>
+            <span *ngIf="!selectedAnime['recommenders'] || !selectedAnime['recommenders'].length">None</span>
+          </p>
         </div>
       </div>
-      <div [ngClass]="{'details-button-container': !hideFinalistsPanel && selectedAnime['category'] != 'Completed', 'details-button-container-completed': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
-       'details-button-container-newseason': !hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason'], 'details-button-container-2col': hideFinalistsPanel && selectedAnime['category'] != 'Completed',
-        'details-button-container-completed-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason'],
-        'details-button-container-newseason-2col': hideFinalistsPanel && selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']}">
-        <button mat-raised-button color="accent" [matMenuTriggerFor]="moveMenu" class="details-button">Change Category</button>
-        <mat-menu #moveMenu="matMenu" yPosition="above">
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')">
-            <span>Move to Want to Watch</span>
-          </a>
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')">
-            <span>Move to Considering</span>
-          </a>
-          <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')">
-            <span>Move to Completed</span>
-          </a>
-        </mat-menu>
-        <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed' || selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['ownerIsRecommender']" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['ownerIsRecommender']" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason']" class="new-season-button" (click)="addNewSeason()" mat-raised-button color="accent">Add New Season</button>
-        <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="new-season-button" (click)="removeNewSeason()" mat-raised-button color="accent">Remove New Season</button>
-        <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
+      <div class="details-description">
+        <p [innerHTML]="selectedAnime['description']"></p>
       </div>
+    </div>
+    <div id="details-button-container" [ngClass]="{'details-button-container': !hideFinalistsPanel && !hideCatalogPanel,
+    'details-button-container-2col': hideFinalistsPanel || hideCatalogPanel}">
+      <button mat-raised-button color="accent" [matMenuTriggerFor]="moveMenu" class="details-button">Change Category</button>
+      <mat-menu #moveMenu="matMenu" yPosition="above">
+        <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Want to Watch'" (click)="changeCategory('Want to Watch')">
+          <span>Move to Want to Watch</span>
+        </a>
+        <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Considering'" (click)="changeCategory('Considering')">
+          <span>Move to Considering</span>
+        </a>
+        <a class="move-menu-button" mat-menu-item *ngIf="selectedAnime['category'] != 'Completed'" (click)="changeCategory('Completed')">
+          <span>Move to Completed</span>
+        </a>
+      </mat-menu>
+      <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime['category'] != 'Completed' || selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
+      <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['ownerIsRecommender']" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
+      <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['ownerIsRecommender']" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
+      <button *ngIf="selectedAnime['category'] == 'Completed' && !selectedAnime['hasNewSeason']" class="new-season-button" (click)="addNewSeason()" mat-raised-button color="accent">Add New Season</button>
+      <button *ngIf="selectedAnime['category'] == 'Completed' && selectedAnime['hasNewSeason']" class="new-season-button" (click)="removeNewSeason()" mat-raised-button color="accent">Remove New Season</button>
+      <button *ngIf="selectedAnime['category'] != 'Completed'" (click)="removeAnimeFromCatalog()" class="details-button" mat-raised-button color="warn">Remove from Catalog</button>
     </div>
   </mat-card>
 
@@ -342,4 +355,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>      

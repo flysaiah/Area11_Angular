@@ -90,6 +90,7 @@ export class InfolistsComponent implements OnInit {
         this.newInfolistName = "";
         this.allInfolists.push(res["infolist"]);
         this.allInfolistNames.push(res["infolist"].name);
+        this.updatePaginatorInfo();
       } else {
         console.log(res);
         this.displayToast("There was a problem adding a new info list.", true);
@@ -183,10 +184,6 @@ export class InfolistsComponent implements OnInit {
         console.log(res);
       }
     });
-  }
-
-  testt(tt) {
-    console.log(tt);
   }
 
   constructor(

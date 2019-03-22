@@ -8,6 +8,7 @@ export class TopTens {
       viewerPrefs: {member: string, shouldHide: boolean}[]
     }[],
     public hasNoContent?: boolean,
-    public isSelected?: boolean
+    public isSelected?: boolean,
+    public lastEditedDate?: Date
   ) {}
 }
