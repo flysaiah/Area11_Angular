@@ -438,6 +438,7 @@ export class HomeComponent implements AfterViewChecked {
     this.animeService.addNewSeason(this.selectedAnime["_id"]).subscribe(res => {
       if (res["success"]) {
         this.selectedAnime.hasNewSeason = true;
+        this.validateSelectAsFinalistButton();
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
@@ -450,6 +451,7 @@ export class HomeComponent implements AfterViewChecked {
     this.animeService.removeNewSeason(this.selectedAnime["_id"]).subscribe(res => {
       if (res["success"]) {
         this.selectedAnime.hasNewSeason = false;
+        this.validateSelectAsFinalistButton();
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
