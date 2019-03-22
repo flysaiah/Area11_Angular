@@ -48,7 +48,6 @@ module.exports = (router) => {
   });
 
   router.post('/saveChanges', (req, res) => {
-    req.body.toptensObj.lastEditedDate = new Date();
     let newTT = new TopTens(req.body.toptensObj);
     TopTens.findOneAndUpdate({ category: newTT.category, group: newTT.group, user: newTT.user }, newTT, { upsert: true}, (err, tt) => {
       if (err) {
