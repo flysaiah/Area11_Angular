@@ -105,6 +105,14 @@
   margin-left: 5px;
   margin-right: 5px;
 }
+.toptens-date-filter-label {
+  margin-left: 10px;
+  margin-right: 5px;
+}
+#date-filter-select {
+  height: 28px;
+  font-size: 14px;
+}
 .toptens-top-navigator-options {
   padding-left: 20px;
   padding-right: 20px;
@@ -145,13 +153,13 @@
 }
 @media screen and (max-width: 850px) {
   .toptens-top-navigator {
-    width: 750px;
+    width: 800px;
   }
   .category-checkbox-options-container {
-    width: 700px;
+    width: 750px;
   }
   .category-checkbox-option {
-    width: 150px;
+    width: 170px;
   }
 }
 /deep/ .mat-checkbox-layout {
