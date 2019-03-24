@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewChecked, HostListener } from '@angular/core';
 import { Anime } from '../anime';
 import { Group } from '../group/group';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -104,6 +104,59 @@ export class HomeComponent implements AfterViewChecked {
       let newHeight = JSON.stringify(656 - dbc.offsetHeight) + "px";
       if (dpc.style.height != newHeight) {
         dpc.style.height = newHeight;
+      }
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeypress(event: KeyboardEvent) {
+    // Key up => move through catalog forwards
+    // Key down => move through catalog backwards
+    // Key right => move through finalists forwards
+    // Key left => move through finalists backwards
+    if (!this.selectedAnime.name) {
+      return;
+    }
+    let modifier = 1;
+    let list;
+    switch (event.key) {
+      case "ArrowUp":
+        modifier = -1;
+      case "ArrowDown":
+        if (this.wantToWatchList.indexOf(this.selectedAnime) !== -1) {
+          list = this.wantToWatchList;
+        } else if (this.consideringList.indexOf(this.selectedAnime) !== -1) {
+          list = this.consideringList;
+        } else if (this.completedList.indexOf(this.selectedAnime) !== -1) {
+          list = this.completedList;
+        } else {
+          // This should never happen
+          console.log("KeypressHandler error -- Selected anime not found in catalog!");
+          return;
+        }
+        break;
+      case "ArrowLeft":
+        modifier = -1;
+      case "ArrowRight":
+        list = this.finalistList;
+        break;
+      default:
+        // do nothing
+        return;
+    }
+    let currentIndex = list.indexOf(this.selectedAnime);
+    if (currentIndex !== -1) {
+      let newIndex = (currentIndex + 1 * modifier) % list.length;
+      if (newIndex < 0) {
+        newIndex = list.length - 1;
+      }
+      this.selectedAnime = list[newIndex];
+      if (list === this.wantToWatchList) {
+        this.scrollTop = newIndex * 40;
+      } else if (list === this.consideringList) {
+        this.scrollTop = this.wantToWatchList.length * 40 + newIndex * 40;
+      } else if (list === this.completedList) {
+        this.scrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40;
       }
     }
   }
