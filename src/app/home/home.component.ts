@@ -407,6 +407,10 @@ export class HomeComponent implements AfterViewChecked {
         if (selectedAnime["comments"][selectedAnime["comments"].length - 1] == "") {
           selectedAnime["comments"].splice(-1,1);
         }
+        // Remove unnecessary spaces
+        for (let i=0; i<selectedAnime.comments.length; i++) {
+          selectedAnime.comments[i] = selectedAnime.comments[i].trim();
+        }
       }
       this.animeService.selectAsFinalist(selectedAnime["_id"], selectedAnime["comments"]).subscribe((res) => {
         if (!res["success"] && res["message"] == "Token") {
@@ -567,6 +571,10 @@ export class HomeComponent implements AfterViewChecked {
       } else {
         // No changes were made--they hit the cancel button
         return;
+      }
+      // Remove unnecessary spaces
+      for (let i=0; i<this.finalistList[index].comments.length; i++) {
+        this.finalistList[index].comments[i] = this.finalistList[index].comments[i].trim();
       }
       const tmp = this.finalistList[index];
       this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
@@ -846,6 +854,15 @@ export class HomeComponent implements AfterViewChecked {
         this.displayToast("There was a problem getting your group info.", true);
       }
     });
+  }
+
+  getSeed(comment: string) {
+    // If comment matches format for seeds, return corresponding seed number
+    comment = comment.trim();
+    if (comment[0] !== "#" || comment.length <= 2 || comment.slice(2) !== " seed" || isNaN(parseInt(comment[1]))) {
+      return -1;
+    }
+    return parseInt(comment[1]);
   }
 
   refresh() {

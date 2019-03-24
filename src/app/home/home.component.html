@@ -334,7 +334,7 @@
           <div class="finalist-item-name">{{ anime["name"] }}</div>
           <div class="comments-chiplist">
             <mat-chip-list>
-              <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
+              <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']" [ngClass]="{'chip-gold': getSeed(comment) === 1, 'chip-silver': getSeed(comment) === 2, 'chip-bronze': getSeed(comment) === 3, 'chip-green': getSeed(comment) > 3}">{{ comment }}</mat-chip>
             </mat-chip-list>
           </div>
           <div [ngClass]="{'finalist-button-container': !hideCatalogPanel, 'finalist-button-container-2col': hideCatalogPanel}">
