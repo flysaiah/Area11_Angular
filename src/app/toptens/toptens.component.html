@@ -26,8 +26,13 @@
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectAll()">Select All</button>
           <button mat-raised-button color="accent" class="toptens-select-all-or-none" (click)="selectNone()">Select None</button>
           <mat-form-field color="accent" class="toptens-category-search">
-            <input matInput placeholder="Search for Category" (keyup)="updateCategorySearch($event.target.value)">
+            <input [(ngModel)]="filterText" matInput placeholder="Search for Category" (keyup)="applyFilters()">
           </mat-form-field>
+          <label for="date-filter-select" class="toptens-date-filter-label">Filter by Last Edited Date:</label>
+          <select id="date-filter-select" [(ngModel)]="dateFilter" (ngModelChange)="applyFilters()">
+            <option [value]="-1">No Filter</option>
+            <option *ngFor="let month of dateFilterOptions" [value]="month">{{ month }}+ Months</option>
+          </select>
         </div>
         <hr>
         <div class="category-checkbox-options-container">

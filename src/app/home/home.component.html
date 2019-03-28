@@ -172,6 +172,9 @@
       <a *ngIf="hideFinalistsPanel" class="search-toolbar-submenu" mat-menu-item (click)="showFinalists()" >
         <span>Show Finalists Panel</span>
       </a>
+      <a class="search-toolbar-submenu" mat-menu-item routerLink="/bracket" >
+        <span>Begin Tournament</span>
+      </a>
       <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item>
         <span>No Actions Available</span>
       </a>
@@ -334,7 +337,7 @@
           <div class="finalist-item-name">{{ anime["name"] }}</div>
           <div class="comments-chiplist">
             <mat-chip-list>
-              <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']">{{ comment }}</mat-chip>
+              <mat-chip class="comment-chip" *ngFor="let comment of anime['comments']" [ngClass]="{'chip-gold': getSeed(comment) === 1, 'chip-silver': getSeed(comment) === 2, 'chip-bronze': getSeed(comment) === 3, 'chip-green': getSeed(comment) > 3}">{{ comment }}</mat-chip>
             </mat-chip-list>
           </div>
           <div [ngClass]="{'finalist-button-container': !hideCatalogPanel, 'finalist-button-container-2col': hideCatalogPanel}">

@@ -69,4 +69,8 @@ export class AnimeService {
     this.createAuthenticationHeaders();
     return this.http.post(this.domain + '/api/anime/undoRecommendAnime', { anime: anime, recommender: recommender }, this.options).map(res => res.json());
   }
+  setSingleFinalist(finalist) {
+    this.createAuthenticationHeaders(); 
+    return this.http.post(this.domain + '/api/anime/setSingleFinalist', { finalist: finalist }, this.options).map(res => res.json());
+  }
 }

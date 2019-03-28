@@ -456,6 +456,33 @@ module.exports = (router) => {
     });
   });
 
+  router.post('/setSingleFinalist', (req, res) => {
+    // Remove all finalists other than selected from user's finalist list
+    User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else if (!user) {
+        res.json({ success: false, message: "User not found" });
+      } else {
+        Anime.update({ "user": user.username, "_id": { $ne: ObjectID(req.body.finalist._id) } }, { $set: { isFinalist: false, comments: [] } }, { multi: true }, (err) => {
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            Anime.findOneAndUpdate({ "_id": ObjectID(req.body.finalist._id) }, { $set: { isFinalist: true, comments: req.body.finalist.comments } } , (err, anime) => {
+              if (err) {
+                res.json({ success: false, message: err });
+              } else if (!anime) {
+                res.json({ success: false, message: "Anime not found" });
+              } else {
+                res.json({ success: true, message: "Finalist set successfully!" });
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
   router.post('/recommendAnime', (req,res) => {
     // First make sure username matches currently-logged-in-user
     User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {

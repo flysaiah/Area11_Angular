@@ -30,8 +30,18 @@ export class SettingsComponent implements OnInit {
     // Used for uploading user avatar
     let formData : any = new FormData();
     for(var i = 0; i < this.avatarUpload.length; i++) {
+      // Make sure file is correct type / isn't too big
+      if (this.avatarUpload[i].type.split("/")[0] !== "image") {
+        this.displayToast("Your avatar must be an image or GIF.", true);
+        return;
+      } else if (this.avatarUpload[i].size > 1000000) {
+        this.displayToast("Your avatar is too big. The max size is 1MB.", true);
+        return;
+      }
       formData.append("uploadAvatar", this.avatarUpload[i], "area11-user-avatar");
     }
+    console.log(this.avatarUpload);
+    console.log(formData);
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
       if (res["success"]) {
         this.displayToast("Profile avatar changed successfully!");

@@ -28,6 +28,7 @@ import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
 import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.component';
 import { InfolistsComponent } from './infolists/infolists.component';
+import { BracketProcessComponent } from './bracket-process/bracket-process.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { InfolistsComponent } from './infolists/infolists.component';
     HeaderComponent,
     TopTensComponent,
     TimelineComponent,
-    InfolistsComponent
+    InfolistsComponent,
+    BracketProcessComponent
   ],
   imports: [
     BrowserModule,

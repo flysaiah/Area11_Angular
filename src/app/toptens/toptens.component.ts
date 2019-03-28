@@ -29,6 +29,10 @@ export class TopTensComponent implements OnInit {
   oldVersionMap: Map<string, TopTens>;   // Cache old versions so when we edit we can cancel and undo our edits
   totalOrderMode: boolean;   // True when we are viewing total order for any 1 category (only 1 can be viewed at a time like this)
 
+  filterText: string;
+  dateFilter: string;
+  dateFilterOptions: string[]
+
   currentGroup: Group;
   currentGroupMembers: {id: string, username: string, avatar: string, bestgirl: string, isPending: boolean}[];
 
@@ -302,17 +306,37 @@ export class TopTensComponent implements OnInit {
     return date.toDateString();
   }
 
-  updateCategorySearch(filterText: string) {
+  applyFilters() {
+    this.updateCategorySearch();
+    this.filterByLastEditedDate();
+  }
+
+  updateCategorySearch() {
     // Filter out categories that don't match our search text
     this.allCategories = this.allCategoriesFull.filter(category => {
       // fuzzy
       for (let word of category.category.toLowerCase().split(" ")) {
-        if (word.startsWith(filterText.toLowerCase())) {
+        if (word.startsWith(this.filterText.toLowerCase())) {
           return true;
         }
       }
       return false;
-  });
+    });
+  }
+
+  filterByLastEditedDate() {
+    if (this.dateFilter !== "-1") {
+      this.allCategories = this.allCategories.filter(category => {
+        let lastEditedDate = this.topTensMap.get(category.category).get(this.currentUser).lastEditedDate;
+        if (!lastEditedDate) {
+          return true;
+        }
+        let today = new Date();
+        let categoryDate = new Date(lastEditedDate.toString());
+        categoryDate.setMonth(categoryDate.getMonth() + parseInt(this.dateFilter));
+        return (categoryDate < today);
+      })
+    }
   }
 
   private cacheSelectedAnime() {
@@ -383,6 +407,9 @@ export class TopTensComponent implements OnInit {
     this.totalOrderMode = false;
     this.isLoading = true;
     this.hideSelectorPanel = false;
+    this.dateFilter = "-1";
+    this.dateFilterOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+    this.filterText = "";
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
