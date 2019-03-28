@@ -39,6 +39,11 @@ export class BracketProcessComponent implements OnInit {
   validFinalists: boolean;   // Invalid if length < 8, length > 32, or duplicate seeds
   seedCount: number;   // Used so we don't skip a seed (in UI) if they forget to add one
 
+  winner: string;
+
+  enableFireworks: boolean;
+  fireworks: boolean;   // If true, then fireworks animation plays
+
   // Helps determine where seeds & seed opponents should be
   SEEDMAP = {
     8: {1:0, 2:6, 3:4, 4:2, 5:3, 6:5, 7:7, 8:1},
@@ -86,6 +91,31 @@ export class BracketProcessComponent implements OnInit {
       this.toastMessage = "";
       this.toastError = false;
     }, 3000);
+  }
+
+  winTournament(anime: Anime) {
+    // Make sure we have 2 finalists
+    // TODO: The round number is hardcoded right now, make it dynamic
+    if (this.finalistList[4][0].name === "empty" || this.finalistList[4][1].name === "empty") {
+      return;
+    }
+    this.animeService.setSingleFinalist(anime).subscribe((res) => {
+      if (res.success) {
+        this.winner = anime.name;
+        localStorage.setItem("area11-bracket", "");
+        localStorage.setItem("seed-count", "");
+        this.displayToast("Congratulations to the winner!");
+        if (this.enableFireworks) {
+          this.fireworks = true;
+          setTimeout(() => {
+            this.fireworks = false;
+          }, 6000);
+        }
+      } else {
+        this.displayToast("Sorry, there was a problem.", true);
+        console.log(res);
+      }
+    });
   }
 
   getSeed(comments: string[]) {
@@ -148,6 +178,9 @@ export class BracketProcessComponent implements OnInit {
         }
       }
     }
+    // Save to local storage
+    localStorage.setItem("area11-bracket", JSON.stringify(this.finalistList));
+    localStorage.setItem("seed-count", JSON.stringify(this.seedCount));
   }
 
   private placeAsSeed(currentIDX: number, seed: number) {
@@ -172,6 +205,10 @@ export class BracketProcessComponent implements OnInit {
           currentSeed++;
           this.finalistList[0][i]["hasBeenSeeded"] = currentSeed;
           this.placeAsSeed(i, currentSeed);
+        } else if (parseInt(this.getSeed(this.finalistList[0][i].comments)) < (currentSeed + 1) && !this.finalistList[0][i]["hasBeenSeeded"]) {
+          // Duplicate seeds
+          this.validFinalists = false;
+          return;
         }
       }
     }
@@ -214,6 +251,26 @@ export class BracketProcessComponent implements OnInit {
     }
   }
 
+  private confirmSavedDataIsAccurate(savedData) {
+    let savedList = JSON.parse(savedData);
+    // Make sure seeds + number of finalists is the same across both lists
+    if (this.finalistList[0].length !== savedList[0].length) {
+      return false;
+    }
+    for(let anime of this.finalistList[0]) {
+      let found = false;
+      for (let otherAnime of savedList[0]) {
+        if (anime.name === otherAnime.name && this.getSeed(anime.comments) === this.getSeed(otherAnime.comments)) {
+          found = true;
+        }
+      }
+      if (!found) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   constructor(
     private authService: AuthService,
     private userService: UserService,
@@ -229,18 +286,29 @@ export class BracketProcessComponent implements OnInit {
             this.finalistList[0].push(anime);
           }
         }
-        console.log(this.finalistList);
         // TODO: first condition should eventually be < 8, not < 17
         if (this.finalistList[0].length < 17 || this.finalistList[0].length > 32) {
           this.validFinalists = false;
+          this.isLoading = false;
           return;
         }
         while (this.finalistList[0].length < 32) {
           this.finalistList[0].push(new Anime("bye", "bye"));   // dummy anime
         }
+        // If we have it in local storage, then no need to get it from server
+        let savedData = localStorage.getItem("area11-bracket");
+        let seedCount = localStorage.getItem("seed-count");
+        if (savedData && seedCount && this.confirmSavedDataIsAccurate(savedData)) {
+          this.finalistList = JSON.parse(savedData);
+          this.seedCount = parseInt(seedCount);
+          this.isLoading = false;
+          return;
+        }
         this.determineFinalistPositions();
-        this.generateSubsequentRounds();
-        this.validateBracket();
+        if (this.validFinalists) {
+          this.generateSubsequentRounds();
+          this.validateBracket();
+        }
         this.isLoading = false;
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
@@ -258,14 +326,26 @@ export class BracketProcessComponent implements OnInit {
     this.finalistList = [[]];
     this.validFinalists = true;
 
+    this.winner = "";
+    this.fireworks = false;
+    this.enableFireworks = false;
+
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
             this.currentUser = res.user.username;
-            this.refresh();
+
+            this.userService.getUserInfo().subscribe((res) => {
+              if (res["success"]) {
+                if (res.user.fireworks) {
+                  this.enableFireworks = res["user"]["fireworks"];
+                }
+                this.refresh();
+              }
+            });
           } else {
-            this.displayToast("There was a problem loading your settings.", true)
+            this.displayToast("There was a problem loading your information.", true)
           }
         });
       } else {

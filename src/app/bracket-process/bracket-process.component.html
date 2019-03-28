@@ -1,3 +1,7 @@
+<div *ngIf="fireworks" class="pyro">
+  <div class="before"></div>
+  <div class="after"></div>
+</div>
 <!-- NOTE: Much of the bracket structure is based off of a codepen by Joe Beason: https://codepen.io/jbeason/pen/Wbaedb -->
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <div class="search-toolbar">
@@ -11,11 +15,11 @@
       <div class="round" *ngFor="let round of [0,1,2]" [ngClass]="{'round-one': round === 0, 'round-two': round === 1, 'round-three': round === 2}">
         <div class="round-details">Round {{ round + 1 }}</div>
         <ul class="matchup" *ngFor="let i of getRanges(0,round)">
-          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty'}"><span
+          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i].name !== 'empty' && finalistList[round][i].name !== 'bye', 'winner': winner === finalistList[round][i].name}"><span
               class="team-name">{{ finalistList[round][i].name === 'empty' ? "" : finalistList[round][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i].comments) <= seedCount">{{ getSeed(finalistList[round][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty'}"><span
+          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i+1].name !== 'empty' && finalistList[round][i+1].name !== 'bye', 'winner': winner === finalistList[round][i+1].name}"><span
               class="team-name">{{ finalistList[round][i+1].name === 'empty' ? "" : finalistList[round][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i+1].comments) <= seedCount">{{ getSeed(finalistList[round][i+1].comments) }}</span>
           </li>
@@ -27,11 +31,11 @@
       <div class="semis-1">
         <div class="round-details">West Semifinals</div>
         <ul class="matchup championship" *ngFor="let i of getRanges(0,3)">
-          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty'}"><span
+          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i].name !== 'empty' && finalistList[3][i].name !== 'bye', 'winner': winner === finalistList[3][i].name}"><span
               class="team-name">{{ finalistList[3][i].name === 'empty' ? "" : finalistList[3][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i].comments) <= seedCount">{{ getSeed(finalistList[3][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty'}"><span
+          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i+1].name !== 'empty' && finalistList[3][i+1].name !== 'bye', 'winner': winner === finalistList[3][i+1].name}"><span
               class="team-name">{{ finalistList[3][i+1].name === 'empty' ? "" : finalistList[3][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i+1].comments) <= seedCount">{{ getSeed(finalistList[3][i+1].comments) }}</span>
           </li>
@@ -41,11 +45,11 @@
         <i class="fa fa-trophy"></i>
         <div class="round-details"><span>Championship</span></div>
         <ul class="matchup championship">
-          <li class="team team-top" [ngClass]="{'current': finalistList[4][0].name !== 'empty'}"><span
+          <li class="team team-top" (click)="winTournament(finalistList[4][0])" [ngClass]="{'current': finalistList[4][0].name !== 'empty', 'interactable': finalistList[4][0].name !== 'empty' && finalistList[4][0].name !== 'bye', 'winner': winner === finalistList[4][0].name}"><span
               class="team-name">{{ finalistList[4][0].name === 'empty' ? "" : finalistList[4][0].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[4][0].comments) <= seedCount">{{ getSeed(finalistList[4][0].comments) }}</span>
           </li>
-          <li class="team team-bottom" [ngClass]="{'current': finalistList[4][1].name !== 'empty'}"><span
+          <li class="team team-bottom" (click)="winTournament(finalistList[4][1])" [ngClass]="{'current': finalistList[4][1].name !== 'empty', 'interactable': finalistList[4][1].name !== 'empty' && finalistList[4][1].name !== 'bye', 'winner': winner === finalistList[4][1].name}"><span
               class="team-name">{{ finalistList[4][1].name === 'empty' ? "" : finalistList[4][1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[4][1].comments) <= seedCount">{{ getSeed(finalistList[4][1].comments) }}</span>
           </li>
@@ -54,11 +58,11 @@
       <div class="semis-2">
         <div class="round-details">East Semifinals</div>
         <ul class="matchup championship" *ngFor="let i of getRanges(1,3)">
-          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty'}"><span
+          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i].name !== 'empty' && finalistList[3][i].name !== 'bye', 'winner': winner === finalistList[3][i].name}"><span
               class="team-name">{{ finalistList[3][i].name === 'empty' ? "" : finalistList[3][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i].comments) <= seedCount">{{ getSeed(finalistList[3][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty'}"><span
+          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i+1].name !== 'empty' && finalistList[3][i+1].name !== 'bye', 'winner': winner === finalistList[3][i+1].name}"><span
               class="team-name">{{ finalistList[3][i+1].name === 'empty' ? "" : finalistList[3][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i+1].comments) <= seedCount">{{ getSeed(finalistList[3][i+1].comments) }}</span>
           </li>
@@ -71,11 +75,11 @@
       <div class="round" *ngFor="let round of [2,1,0]" [ngClass]="{'round-one': round === 0, 'round-two': round === 1, 'round-three': round === 2}">
         <div class="round-details">Round {{ round + 1 }}</div>
         <ul class="matchup" *ngFor="let i of getRanges(1,round)">
-          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty'}"><span
+          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i].name !== 'empty' && finalistList[round][i].name !== 'bye', 'winner': winner === finalistList[round][i].name}"><span
               class="team-name">{{ finalistList[round][i].name === 'empty' ? "" : finalistList[round][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i].comments) <= seedCount">{{ getSeed(finalistList[round][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty'}"><span
+          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i+1].name !== 'empty' && finalistList[round][i+1].name !== 'bye', 'winner': winner === finalistList[round][i+1].name}"><span
               class="team-name">{{ finalistList[round][i+1].name === 'empty' ? "" : finalistList[round][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i+1].comments) <= seedCount">{{ getSeed(finalistList[round][i+1].comments) }}</span>
           </li>
@@ -90,7 +94,7 @@
     <h2>Invalid Bracket</h2>
     <p>In order to do a tournament-style picking process, you need to ensure the following items are true:</p>
     <ol>
-      <li>You have selected between 8 and 32 finalists.</li>
+      <li>You have selected between 17 and 32 finalists (this will be more flexible in the future!)</li>
       <li>You don't have any duplicate seeds.</li>
     </ol>
     <p>You can specify a finalist as a seed by editing the finalist with a
