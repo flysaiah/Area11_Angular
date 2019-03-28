@@ -159,6 +159,7 @@ export class HomeComponent implements AfterViewChecked {
         this.scrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40;
       }
     }
+    this.validateSelectAsFinalistButton();
   }
 
   openAddAnimePrompt() {
@@ -911,7 +912,7 @@ export class HomeComponent implements AfterViewChecked {
 
   getSeed(comment: string) {
     // If comment matches format for seeds, return corresponding seed number
-    comment = comment.trim();
+    comment = comment.trim().toLowerCase();
     if (comment[0] !== "#" || comment.length <= 2 || comment.slice(2) !== " seed" || isNaN(parseInt(comment[1]))) {
       return -1;
     }

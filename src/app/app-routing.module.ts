@@ -8,6 +8,7 @@ import { GroupComponent } from './group/group.component';
 import { TopTensComponent } from './toptens/toptens.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { InfolistsComponent } from './infolists/infolists.component';
+import { BracketProcessComponent } from './bracket-process/bracket-process.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 
@@ -19,7 +20,8 @@ const appRoutes: Routes = [
   { path: 'timeline', component: TimelineComponent, canActivate: [AuthGuard]},
   { path: 'timeline/infolists', component: InfolistsComponent, canActivate: [AuthGuard]},
   { path: 'group', component: GroupComponent, canActivate: [AuthGuard]},
-  { path: 'group/toptens', component: TopTensComponent, canActivate: [AuthGuard]}
+  { path: 'group/toptens', component: TopTensComponent, canActivate: [AuthGuard]},
+  { path: 'bracket', component: BracketProcessComponent, canActivate: [AuthGuard]}
   // { path: '**', component: PageNotFoundComponent}
 ]
 
