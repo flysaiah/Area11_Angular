@@ -1,14 +1,19 @@
+@import '~custom-theme.scss';
+$primary: map-get($my-app-theme, primary);
+$accent: map-get($my-app-theme, accent);
+$warn: map-get($my-app-theme, warn);
+
 .register-logo {
   font-size: 75px;
   font-family: "Syncopate";
-  color: #800015;
+  color: mat-color($primary);
   text-align: center;
   margin-bottom: 25px;
 }
 .register-form {
   display: flex;
   flex-direction: column;
-  border: 3px solid #800015;
+  border: 3px solid mat-color($primary);
   border-style: groove;
   border-width: 3px;
   width: 300px;
@@ -26,7 +31,7 @@
 }
 .area11-register-toast {
   display: none;
-  background-color: #3d85c6;
+  background-color: mat-color($accent);
   border: 1px solid black;
   border-width: 2px;
   margin-left: auto;
@@ -47,7 +52,7 @@
 }
 
 .toast-error {
-  background-color: #ff5722;
+  background-color: mat-color($warn);
 }
 
 .area11-register-toast.show {

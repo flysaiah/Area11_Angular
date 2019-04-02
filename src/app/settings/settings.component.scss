@@ -1,6 +1,11 @@
+@import '~custom-theme.scss';
+$primary: map-get($my-app-theme, primary);
+$accent: map-get($my-app-theme, accent);
+$warn: map-get($my-app-theme, warn);
+
 .area11-settings-toast {
   display: none;
-  background-color: #3d85c6;
+  background-color: mat-color($accent);
   color: #fff;
   width: 40%;
   margin-left: auto;
@@ -19,7 +24,7 @@
   font-size: 14px;
 }
 .toast-error {
-  background-color: #ff5722;
+  background-color: mat-color($warn);
 }
 
 .area11-settings-toast.show {
@@ -52,7 +57,7 @@
   width: 100%;
   color: #f0f0f0;
   vertical-align: middle;
-  background-color: #800015;
+  background-color: mat-color($primary);
   border: 1px solid #330000;
   border-width: 2px;
   height: 40px;
@@ -91,7 +96,7 @@
 }
 .user-profile {
   width: 55%;
-  color: #800015;
+  color: mat-color($primary);
   font-size: 45px;
   float: left;
   text-align: center;

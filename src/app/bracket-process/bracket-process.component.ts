@@ -22,7 +22,7 @@ function shuffle(array) {
 @Component({
   selector: 'app-bracket-process',
   templateUrl: './bracket-process.component.html',
-  styleUrls: ['./bracket-process.component.css']
+  styleUrls: ['./bracket-process.component.scss']
 })
 export class BracketProcessComponent implements OnInit {
 

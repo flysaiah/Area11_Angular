@@ -9,7 +9,7 @@ import { Era } from './era';
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  styleUrls: ['./timeline.component.scss']
 })
 export class TimelineComponent implements OnInit {
   currentUser: string;

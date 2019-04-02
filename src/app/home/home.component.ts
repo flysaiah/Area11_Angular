@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
 @Component({
   selector: 'home-page',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: ['./home.component.scss'],
   inputs: ['selectedAnime']
 })
 export class HomeComponent implements AfterViewChecked {
