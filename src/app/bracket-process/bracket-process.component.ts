@@ -93,6 +93,13 @@ export class BracketProcessComponent implements OnInit {
     }, 3000);
   }
 
+  restartTournament() {
+    localStorage.setItem("area11-bracket", "");
+    localStorage.setItem("seed-count", "");
+    this.isLoading = true;
+    this.setup();
+  }
+
   winTournament(anime: Anime) {
     // Make sure we have 2 finalists
     // TODO: The round number is hardcoded right now, make it dynamic
@@ -277,7 +284,11 @@ export class BracketProcessComponent implements OnInit {
     private animeService: AnimeService
   ) { }
 
-  refresh() {
+  setup() {
+    this.finalistList = [[]];
+    this.validFinalists = true;
+
+    this.winner = "";
     // Get finalist list
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
       if (res.success) {
@@ -341,7 +352,7 @@ export class BracketProcessComponent implements OnInit {
                 if (res.user.fireworks) {
                   this.enableFireworks = res["user"]["fireworks"];
                 }
-                this.refresh();
+                this.setup();
               }
             });
           } else {
