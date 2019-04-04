@@ -297,7 +297,12 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   private studioFilter(anime) {
-    return (this.selectedStudio == anime["studios"]);
+    for (let studio of anime.studios.split(", ")) {
+      if (this.selectedStudio === studio.trim()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private groupFilter(anime: Anime) {
@@ -397,7 +402,9 @@ export class HomeComponent implements AfterViewChecked {
     let allStudios = new Set<string>();
     for (let anime of this.searchAnime) {
       if (!allStudios.has(anime["studios"])) {
-        allStudios.add(anime["studios"]);
+        for (let studio of anime.studios.split(", ")) {
+          allStudios.add(studio);
+        }
       }
     }
     this.allStudios = Array.from(allStudios).sort();

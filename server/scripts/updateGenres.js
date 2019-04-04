@@ -118,7 +118,17 @@ Anime.find({}, (err, animeList) => {
               console.log("---STATUS---");
               console.log(status);
 
-              const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
+              // const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
+              let studios = "";
+              const studioBlock = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</div>')[0].split('</a>');
+              for (let i=0; i<studioBlock.length - 1; i++) {
+                const studio = studioBlock[i].split('</a>')[0].split('>')[1].trim();
+                if (!studios) {
+                  studios = studio;
+                } else {
+                  studios += ", " + studio;
+                }
+              }
               console.log("---STUDIOS---");
               console.log(studios);
 
