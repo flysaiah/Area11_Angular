@@ -54,6 +54,8 @@ export class HomeComponent implements AfterViewChecked {
   allTypes: string[];
   selectedType: string;
 
+  dialogOpen: boolean;
+
   allStudios: string[];
   selectedStudio: string;
 
@@ -144,6 +146,11 @@ export class HomeComponent implements AfterViewChecked {
       case "ArrowRight":
         list = this.finalistList;
         break;
+      case ("Enter"):
+        if (this.canSelectAsFinalist && !this.dialogOpen) {
+          this.selectAsFinalist();
+        }
+        return;
       default:
         // do nothing
         return;
@@ -463,7 +470,11 @@ export class HomeComponent implements AfterViewChecked {
 
   selectAsFinalist() {
     // Add selected anime to chooser panel
-    // First bring up a dialog to allow them to enter any comments
+    // First bring up a dialog to allow them to enter any comments (if one isn't open)
+    if (this.dialogOpen) {
+      return;
+    }
+    this.dialogOpen = true;
     let selectedAnime = this.selectedAnime;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
@@ -471,6 +482,7 @@ export class HomeComponent implements AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpen = false;
       // Only do something if user hit "Confirm" rather than cancel
       if (typeof result != "undefined") {
       if (result) {
@@ -1011,6 +1023,8 @@ export class HomeComponent implements AfterViewChecked {
     this.completedList = [];
     this.finalistList = [];
 
+    this.dialogOpen = false;
+
     this.showFinalistStats = false;
     this.finalistGenreDict = new Map<string, number>();
 
@@ -1128,5 +1142,11 @@ export class FinalistCommentsDialog {
   ) {}
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  @HostListener('document:keydown', ['$event'])
+  handleKeypress(event: KeyboardEvent) {
+    if (event.key == "Enter") {
+      this.dialogRef.close(this.data.comments);
+    }
   }
 }
