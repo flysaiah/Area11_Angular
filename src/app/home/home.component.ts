@@ -98,6 +98,10 @@ export class HomeComponent implements AfterViewChecked {
     // Dynamically set height of description depending on button container height
     // We have to do this because we use absolute positioning for button container
     // Not really the Angular way but much simpler than using Observables / etc
+    this.adjustDescriptionPanelHeights();
+  }
+
+  adjustDescriptionPanelHeights() {
     let dbc = document.getElementById("details-button-container");
     let dpc = document.getElementById("details-panel-content");
     if (dbc && dpc) {
@@ -178,6 +182,10 @@ export class HomeComponent implements AfterViewChecked {
     if (clearSearchBar) {
       this.searchText = "";
     }
+    // HACK: Not sure why we have to do this, but description panel height isn't correct unless we do
+    setTimeout(() => {
+      this.adjustDescriptionPanelHeights();
+    }, 1);
   }
 
   private sortByField(fieldName, direction) {
