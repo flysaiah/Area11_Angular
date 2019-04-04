@@ -438,6 +438,8 @@ export class HomeComponent implements AfterViewChecked {
           this.displayToast(res["message"], true);
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
+      } else if (res["message"] == "Bad URL") {
+        this.displayToast("The URL you entered is invalid.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
