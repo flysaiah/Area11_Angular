@@ -60,6 +60,7 @@ export class HomeComponent implements AfterViewChecked {
   selectedStudio: string;
 
   recommendationPreference: string;
+  selectedAiringStatus: string;
 
   refreshHeader: number;
   isLoading: boolean;
@@ -339,6 +340,10 @@ export class HomeComponent implements AfterViewChecked {
     return (this.recommendationPreference === "Recommended") ? (anime.recommenders.length > 0) : (anime.recommenders.length === 0);
   }
 
+  private airingStatusFilter(anime: Anime) {
+    return (this.selectedAiringStatus === anime.status);
+  }
+
   applyFilters() {
     this.catalogIsLoading = true;
     let wantToWatch = JSON.parse(JSON.stringify(this.newWantToWatch));
@@ -379,6 +384,12 @@ export class HomeComponent implements AfterViewChecked {
       wantToWatch = wantToWatch.filter(this.recommendationFilter.bind(this));
       considering = considering.filter(this.recommendationFilter.bind(this));
       completed = completed.filter(this.recommendationFilter.bind(this));
+    }
+
+    if (this.selectedAiringStatus !== "No Filter") {
+      wantToWatch = wantToWatch.filter(this.airingStatusFilter.bind(this));
+      considering = considering.filter(this.airingStatusFilter.bind(this));
+      completed = completed.filter(this.airingStatusFilter.bind(this));
     }
 
     this.wantToWatchList = wantToWatch;
@@ -883,8 +894,12 @@ export class HomeComponent implements AfterViewChecked {
       case "Recommendation":
         this.recommendationPreference = newValue;
         break;
+      case "AiringStatus":
+        this.selectedAiringStatus = newValue;
+        break;
       default:
-        console.log("This should never happen");
+        console.log("Unknown filter type received: " + type);
+        return;
     }
     this.applyFilters();
     this.scrollTop = Math.random();
@@ -1045,6 +1060,7 @@ export class HomeComponent implements AfterViewChecked {
     this.allStudios = [];
 
     this.recommendationPreference = "No Filter";
+    this.selectedAiringStatus = "No Filter"
 
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];

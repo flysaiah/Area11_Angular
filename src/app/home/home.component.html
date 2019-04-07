@@ -47,6 +47,9 @@
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
         <span>Filter by Recommendation ({{ recommendationPreference }})</span>
       </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="airingStatusFilterMenu" >
+          <span>Filter by Airing Status ({{ selectedAiringStatus }})</span>
+        </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
@@ -111,6 +114,16 @@
           </a>
           <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Recommendation', 'Not Recommended');">
             <span>Only Not Recommended <span *ngIf="recommendationPreference === 'Not Recommended'" class="submenu-checkmark">✓</span></span>
+          </a>
+        </mat-menu>
+
+        <!-- Recommendation filter -->
+        <mat-menu class="catalog-actions" [overlapTrigger]="false" #airingStatusFilterMenu="matMenu">
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'No Filter');">
+            <span>No Filter<span *ngIf="selectedAiringStatus === 'No Filter'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'Finished Airing');">
+            <span>Only Completed<span *ngIf="selectedAiringStatus === 'Finished Airing'" class="submenu-checkmark">✓</span></span>
           </a>
         </mat-menu>
 
