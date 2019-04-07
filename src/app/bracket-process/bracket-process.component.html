@@ -50,7 +50,7 @@
     <div class="choose-a-winner">Choose A Winner</div>
     <button mat-button class="matchup-details-button" (click)="moveToNextRound(0)">{{ leftMatchupAnime.name }}</button>
     <button mat-button class="matchup-details-button" (click)="moveToNextRound(1)">{{ rightMatchupAnime.name }}</button>
-    <button mat-button class="matchup-details-button" (click)="escapeMatchupDetails()">Fuck this, I'm out</button>
+    <button mat-button class="matchup-details-button" (click)="escapeMatchupDetails()">Decide Later</button>
   </div>
 </div>
 <div class="matchup-details matchup-details-right" id="matchup-details-right" [ngClass]="{'matchup-details-show': showMatchupDetails}">
