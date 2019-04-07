@@ -22,7 +22,7 @@ function shuffle(array) {
 @Component({
   selector: 'app-bracket-process',
   templateUrl: './bracket-process.component.html',
-  styleUrls: ['./bracket-process.component.css']
+  styleUrls: ['./bracket-process.component.scss']
 })
 export class BracketProcessComponent implements OnInit {
 
@@ -34,6 +34,12 @@ export class BracketProcessComponent implements OnInit {
 
   refreshHeader: number;
   isLoading: boolean;
+
+  showMatchupDetails: boolean;
+  leftMatchupAnime: Anime;
+  rightMatchupAnime: Anime;
+  matchupRound: number;
+  matchupIndex: number;
 
   finalistList: Anime[][];
   validFinalists: boolean;   // Invalid if length < 8, length > 32, or duplicate seeds
@@ -79,6 +85,47 @@ export class BracketProcessComponent implements OnInit {
     }
   }
 
+  isInteractable(round:number, i:number) {
+    // Don't allow showing details panel on matchpus that have a bye / empty contestant, or if there is already a matchup being shown
+    if (round >= this.finalistList.length || i >= this.finalistList[round].length) {
+      return false;
+    }
+    return !this.showMatchupDetails && this.finalistList[round][i].name !== 'empty' && this.finalistList[round][i].name !== 'bye' &&
+    this.finalistList[round][i+1].name !== 'empty' && this.finalistList[round][i+1].name !== 'bye'
+  }
+
+  viewMatchupDetails(round:number, i:number) {
+    if (!this.isInteractable(round, i)) {
+      return;
+    }
+    this.leftMatchupAnime = this.finalistList[round][i];
+    this.rightMatchupAnime = this.finalistList[round][i+1];
+    this.showMatchupDetails = true;
+    this.matchupRound = round;
+    this.matchupIndex = i;
+    // HACK: Not sure what an elegant way to do this would be but we don't want the double scroll bar here
+    document.getElementsByTagName("body")[0].style["overflow"] = "hidden";
+    this.adjustDrawerHeights();
+  }
+
+  escapeMatchupDetails() {
+    document.getElementsByTagName("body")[0].style["overflow"] = "auto";
+    this.showMatchupDetails = false;
+  }
+
+  ngAfterViewChecked() {
+    this.adjustDrawerHeights();
+  }
+
+  private adjustDrawerHeights() {
+    // Set height dynamically for each drawer
+    let matchupDetailsLeft = document.getElementById("matchup-details-left");
+    let matchupDetailsRight = document.getElementById("matchup-details-right");
+    const correctHeight = window.innerHeight - 120;
+    matchupDetailsLeft.style.height = correctHeight + "px";
+    matchupDetailsRight.style.height = correctHeight + "px";
+  }
+
   private displayToast(message: string, error?: boolean) {
     // Display toast in application with message and timeout after 3 sec
     this.showToast = true;
@@ -91,6 +138,13 @@ export class BracketProcessComponent implements OnInit {
       this.toastMessage = "";
       this.toastError = false;
     }, 3000);
+  }
+
+  restartTournament() {
+    localStorage.setItem("area11-bracket", "");
+    localStorage.setItem("seed-count", "");
+    this.isLoading = true;
+    this.setup();
   }
 
   winTournament(anime: Anime) {
@@ -118,6 +172,18 @@ export class BracketProcessComponent implements OnInit {
     });
   }
 
+  getFormattedDate(date: string) {
+    return date ? this.formatDate(date) : "Unknown";
+  }
+  private formatDate(date: string) {
+    const dObj = new Date(date);
+    const res = dObj.toLocaleDateString();
+    if (res == "Invalid Date") {
+      return "Unkown";
+    }
+    return res;
+  }
+
   getSeed(comments: string[]) {
     // If seeded according to seed formatting, display seed number
     if (!comments) return;
@@ -130,8 +196,16 @@ export class BracketProcessComponent implements OnInit {
     return "";
   }
 
-  moveToNextRound(animeIndex:number, roundIndex:number) {
+  moveToNextRound(mod:number) {
     // Can only move if there is a choice between 2
+    const animeIndex = this.matchupIndex + mod;
+    const roundIndex = this.matchupRound + 1;
+    if (roundIndex >= this.finalistList.length) {
+      // Winner
+      this.winTournament(this.finalistList[roundIndex - 1][animeIndex]);
+      this.escapeMatchupDetails();
+      return;
+    }
     if (this.finalistList[roundIndex-1][animeIndex].name === "bye") {
       return;
     }
@@ -141,6 +215,7 @@ export class BracketProcessComponent implements OnInit {
       return
     }
     this.finalistList[roundIndex][Math.floor(animeIndex / 2)] = this.finalistList[roundIndex-1][animeIndex];
+    this.escapeMatchupDetails();
     this.validateBracket();
   }
 
@@ -277,7 +352,14 @@ export class BracketProcessComponent implements OnInit {
     private animeService: AnimeService
   ) { }
 
-  refresh() {
+  setup() {
+    this.finalistList = [[]];
+    this.validFinalists = true;
+    this.showMatchupDetails = false;
+
+    document.getElementsByTagName("body")[0].style["overflow"] = "auto";
+
+    this.winner = "";
     // Get finalist list
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
       if (res.success) {
@@ -330,6 +412,8 @@ export class BracketProcessComponent implements OnInit {
     this.fireworks = false;
     this.enableFireworks = false;
 
+    this.showMatchupDetails = false;
+
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
         this.userService.getUserInfo().subscribe((res) => {
@@ -341,7 +425,7 @@ export class BracketProcessComponent implements OnInit {
                 if (res.user.fireworks) {
                   this.enableFireworks = res["user"]["fireworks"];
                 }
-                this.refresh();
+                this.setup();
               }
             });
           } else {

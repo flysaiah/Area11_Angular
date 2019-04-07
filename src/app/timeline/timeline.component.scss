@@ -1,6 +1,11 @@
+@import '~custom-theme.scss';
+$primary: map-get($my-app-theme, primary);
+$accent: map-get($my-app-theme, accent);
+$warn: map-get($my-app-theme, warn);
+
 .area11-group-toast {
   display: none;
-  background-color: #3d85c6;
+  background-color: mat-color($accent);
   color: #fff;
   width: 40%;
   margin-left: auto;
@@ -21,7 +26,7 @@
   font-size: 14px;
 }
 .toast-error {
-  background-color: #ff5722;
+  background-color: mat-color($warn);
 }
 .area11-group-toast.show {
   display: block;
@@ -51,7 +56,7 @@
   width: 100%;
   color: #f0f0f0;
   vertical-align: middle;
-  background-color: #800015;
+  background-color: mat-color($primary);
   border: 1px solid #330000;
   border-width: 2px;
   height: 40px;
@@ -122,6 +127,9 @@ p {
 .add-new-era-button {
   height: 20px;
   line-height: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 8px;
 }
 .delete-era-button {
   height: 20px;
@@ -164,7 +172,7 @@ p {
     content: '';
     position: absolute;
     width: 6px;
-    background-color: #800015;
+    background-color: mat-color($primary);
     top: 0;
     bottom: 0;
     left: 50%;
@@ -187,7 +195,7 @@ p {
     height: 25px;
     right: -17px;
     background-color: white;
-    border: 4px solid #800015;
+    border: 4px solid mat-color($primary);
     top: 15px;
     border-radius: 50%;
     z-index: 1;

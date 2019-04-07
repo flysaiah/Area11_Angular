@@ -8,7 +8,7 @@ import { ConfirmDialog } from '../app.component';
 @Component({
   selector: 'app-infolists',
   templateUrl: './infolists.component.html',
-  styleUrls: ['./infolists.component.css']
+  styleUrls: ['./infolists.component.scss']
 })
 export class InfolistsComponent implements OnInit {
 

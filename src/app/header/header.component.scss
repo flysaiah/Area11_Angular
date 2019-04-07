@@ -1,3 +1,8 @@
+@import '~custom-theme.scss';
+$primary: map-get($my-app-theme, primary);
+$accent: map-get($my-app-theme, accent);
+$warn: map-get($my-app-theme, warn);
+
 .top-wrapper {
   padding-top: 10px;
   padding-bottom: 8px;
@@ -7,7 +12,7 @@
   justify-content: space-between;
 }
 .main-logo {
-  color: #800015;
+  color: mat-color($primary);
   font-family: "Syncopate";
   margin-left: 10px;
   font-size: 40px;
@@ -21,7 +26,7 @@
   margin-left: auto;
   margin-right: auto;
   display: inline;
-  color: #800015;
+  color: mat-color($primary);
   margin-top: 8px;
   font-size: 20px;
 }
@@ -33,7 +38,7 @@
 .profile-container {
   float: right;
   margin-right: 60px;
-  color: #800015;
+  color: mat-color($primary);
   font-size: 20px;
 }
 .profile-username {

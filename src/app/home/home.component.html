@@ -47,6 +47,9 @@
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
         <span>Filter by Recommendation ({{ recommendationPreference }})</span>
       </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="airingStatusFilterMenu" >
+          <span>Filter by Airing Status ({{ selectedAiringStatus }})</span>
+        </a>
       <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
@@ -114,6 +117,16 @@
           </a>
         </mat-menu>
 
+        <!-- Recommendation filter -->
+        <mat-menu class="catalog-actions" [overlapTrigger]="false" #airingStatusFilterMenu="matMenu">
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'No Filter');">
+            <span>No Filter<span *ngIf="selectedAiringStatus === 'No Filter'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'Finished Airing');">
+            <span>Only Completed<span *ngIf="selectedAiringStatus === 'Finished Airing'" class="submenu-checkmark">✓</span></span>
+          </a>
+        </mat-menu>
+
     <!-- Sort menu -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
       <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
@@ -174,9 +187,6 @@
       </a>
       <a class="search-toolbar-submenu" mat-menu-item routerLink="/bracket" >
         <span>Begin Tournament</span>
-      </a>
-      <a *ngIf="hideCatalogPanel" class="search-toolbar-submenu" mat-menu-item>
-        <span>No Actions Available</span>
       </a>
     </mat-menu>
   </div>

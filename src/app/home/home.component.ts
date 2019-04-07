@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
 @Component({
   selector: 'home-page',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: ['./home.component.scss'],
   inputs: ['selectedAnime']
 })
 export class HomeComponent implements AfterViewChecked {
@@ -54,10 +54,13 @@ export class HomeComponent implements AfterViewChecked {
   allTypes: string[];
   selectedType: string;
 
+  dialogOpen: boolean;
+
   allStudios: string[];
   selectedStudio: string;
 
   recommendationPreference: string;
+  selectedAiringStatus: string;
 
   refreshHeader: number;
   isLoading: boolean;
@@ -98,6 +101,10 @@ export class HomeComponent implements AfterViewChecked {
     // Dynamically set height of description depending on button container height
     // We have to do this because we use absolute positioning for button container
     // Not really the Angular way but much simpler than using Observables / etc
+    this.adjustDescriptionPanelHeights();
+  }
+
+  adjustDescriptionPanelHeights() {
     let dbc = document.getElementById("details-button-container");
     let dpc = document.getElementById("details-panel-content");
     if (dbc && dpc) {
@@ -140,6 +147,11 @@ export class HomeComponent implements AfterViewChecked {
       case "ArrowRight":
         list = this.finalistList;
         break;
+      case ("Enter"):
+        if (this.canSelectAsFinalist && !this.dialogOpen) {
+          this.selectAsFinalist();
+        }
+        return;
       default:
         // do nothing
         return;
@@ -178,6 +190,10 @@ export class HomeComponent implements AfterViewChecked {
     if (clearSearchBar) {
       this.searchText = "";
     }
+    // HACK: Not sure why we have to do this, but description panel height isn't correct unless we do
+    setTimeout(() => {
+      this.adjustDescriptionPanelHeights();
+    }, 1);
   }
 
   private sortByField(fieldName, direction) {
@@ -297,7 +313,12 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   private studioFilter(anime) {
-    return (this.selectedStudio == anime["studios"]);
+    for (let studio of anime.studios.split(", ")) {
+      if (this.selectedStudio === studio.trim()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private groupFilter(anime: Anime) {
@@ -317,6 +338,10 @@ export class HomeComponent implements AfterViewChecked {
 
   private recommendationFilter(anime: Anime) {
     return (this.recommendationPreference === "Recommended") ? (anime.recommenders.length > 0) : (anime.recommenders.length === 0);
+  }
+
+  private airingStatusFilter(anime: Anime) {
+    return (this.selectedAiringStatus === anime.status);
   }
 
   applyFilters() {
@@ -361,6 +386,12 @@ export class HomeComponent implements AfterViewChecked {
       completed = completed.filter(this.recommendationFilter.bind(this));
     }
 
+    if (this.selectedAiringStatus !== "No Filter") {
+      wantToWatch = wantToWatch.filter(this.airingStatusFilter.bind(this));
+      considering = considering.filter(this.airingStatusFilter.bind(this));
+      completed = completed.filter(this.airingStatusFilter.bind(this));
+    }
+
     this.wantToWatchList = wantToWatch;
     this.consideringList = considering;
     this.completedList = completed;
@@ -397,7 +428,9 @@ export class HomeComponent implements AfterViewChecked {
     let allStudios = new Set<string>();
     for (let anime of this.searchAnime) {
       if (!allStudios.has(anime["studios"])) {
-        allStudios.add(anime["studios"]);
+        for (let studio of anime.studios.split(", ")) {
+          allStudios.add(studio);
+        }
       }
     }
     this.allStudios = Array.from(allStudios).sort();
@@ -423,6 +456,8 @@ export class HomeComponent implements AfterViewChecked {
           this.displayToast(res["message"], true);
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
+      } else if (res["message"] == "Bad URL") {
+        this.displayToast("The URL you entered is invalid.", true);
       } else {
         this.displayToast("There was a problem.", true)
         console.log(res);
@@ -446,7 +481,11 @@ export class HomeComponent implements AfterViewChecked {
 
   selectAsFinalist() {
     // Add selected anime to chooser panel
-    // First bring up a dialog to allow them to enter any comments
+    // First bring up a dialog to allow them to enter any comments (if one isn't open)
+    if (this.dialogOpen) {
+      return;
+    }
+    this.dialogOpen = true;
     let selectedAnime = this.selectedAnime;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
@@ -454,6 +493,7 @@ export class HomeComponent implements AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpen = false;
       // Only do something if user hit "Confirm" rather than cancel
       if (typeof result != "undefined") {
       if (result) {
@@ -854,8 +894,12 @@ export class HomeComponent implements AfterViewChecked {
       case "Recommendation":
         this.recommendationPreference = newValue;
         break;
+      case "AiringStatus":
+        this.selectedAiringStatus = newValue;
+        break;
       default:
-        console.log("This should never happen");
+        console.log("Unknown filter type received: " + type);
+        return;
     }
     this.applyFilters();
     this.scrollTop = Math.random();
@@ -994,6 +1038,8 @@ export class HomeComponent implements AfterViewChecked {
     this.completedList = [];
     this.finalistList = [];
 
+    this.dialogOpen = false;
+
     this.showFinalistStats = false;
     this.finalistGenreDict = new Map<string, number>();
 
@@ -1014,6 +1060,7 @@ export class HomeComponent implements AfterViewChecked {
     this.allStudios = [];
 
     this.recommendationPreference = "No Filter";
+    this.selectedAiringStatus = "No Filter"
 
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];
@@ -1111,5 +1158,11 @@ export class FinalistCommentsDialog {
   ) {}
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  @HostListener('document:keydown', ['$event'])
+  handleKeypress(event: KeyboardEvent) {
+    if (event.key == "Enter") {
+      this.dialogRef.close(this.data.comments);
+    }
   }
 }

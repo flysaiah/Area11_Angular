@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material';
 @Component({
   selector: 'app-toptens',
   templateUrl: './toptens.component.html',
-  styleUrls: ['./toptens.component.css']
+  styleUrls: ['./toptens.component.scss']
 })
 export class TopTensComponent implements OnInit {
 

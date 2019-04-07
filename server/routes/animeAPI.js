@@ -181,7 +181,14 @@ module.exports = (router) => {
       loadImages: false,
       injectJquery: false,
     });
-    horseman.open(req.body.malURL).html().then((stuff) => {
+    horseman.open(req.body.malURL)
+    .catch((err) => {
+      console.log("--ERROR--");
+      console.log(err);
+      res.json({ success: false, message: "Bad URL" });
+    })
+    .html()
+    .then((stuff) => {
       // Description
       const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
       // Rating
