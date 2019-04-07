@@ -547,8 +547,8 @@ $warn: map-get($my-app-theme, warn);
 }
 .new-season-button {
   margin: 5px !important;
-  color: black;
-  background-color: #FFD700;
+  color: black !important;
+  background-color: #FFD700 !important;
 }
 .chooser-tool {
   border: 1px solid #c3c3c3;

@@ -548,14 +548,14 @@ $warn: map-get($my-app-theme, warn);
   text-overflow: ellipsis !important;
 }
 .round-two .matchup {
-  margin: 0;
+  padding: 0;
   height: 60px;
-  padding: 50px 0;
+  margin: 50px 0px;
 }
 .round-three .matchup {
-  margin: 0;
+  padding: 0;
   height: 60px;
-  padding: 130px 0;
+  margin: 130px 0;
 }
 .round-details {
   font-family: "Roboto Condensed", sans-serif;
@@ -684,4 +684,100 @@ $warn: map-get($my-app-theme, warn);
 }
 .loading-bar {
   text-align: left;
+}
+
+.matchup-details {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+.matchup-details-show {
+  width: 35%;
+  background-color: white;
+  border: 1px solid #c3c3c3;
+  border-style: double;
+  border-width: 5px;
+}
+.matchup-details-left {
+  left: 0;
+  border-left: none;
+}
+.matchup-details-right {
+  right: 0;
+  border-right: none;
+}
+.matchup-details-background {
+  background-color: #111;
+  opacity: .2;
+}
+.matchup-details-middle {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: auto;
+}
+.matchup-middle-show {
+  width: 20%;
+  background-color: white;
+  border: 1px solid black;
+  text-align: center;
+}
+.details-panel {
+  text-align: center;
+
+  padding-top: 0px !important;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  overflow: auto;
+  padding-right: 24px;
+}
+.details-title {
+  margin-bottom: 8px;
+}
+.details-flex-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+@media screen and (max-width: 1305px) {
+  .details-flex-container {
+    justify-content: space-between;
+  }
+}
+.details-thumbnail-container {
+  display: inline-block;
+  width: 48%;
+  text-align: center;
+}
+.details-description {
+  clear: both;
+}
+.details-top-p {
+  margin-top: 5px;
+}
+.details-misc {
+  display: inline-block;
+  width: 35%;
+  text-align: left;
+  font-size: 14px;
+}
+.choose-a-winner {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: mat-color($primary);
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 25px;
+}
+.matchup-details-button {
+  width: 100%;
+  display: inline-block;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }

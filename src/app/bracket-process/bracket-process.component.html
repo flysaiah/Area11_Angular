@@ -6,21 +6,102 @@
 <app-header [refreshHeader]="refreshHeader"></app-header>
 <div class="search-toolbar">
   <button mat-raised-button class="home-button" routerLink="/">Back to Home</button>
-  <button mat-raised-button class="reset-button" (click)="restartTournament()">Restart Tournament</button>
+  <button mat-raised-button class="reset-button" *ngIf="validFinalists" (click)="restartTournament()">Restart Tournament</button>
 </div>
 <div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
-
-<div id="bracket" *ngIf="!isLoading && validFinalists">
+<div class="matchup-details matchup-details-left" id="matchup-details-left" [ngClass]="{'matchup-details-show': showMatchupDetails}">
+  <div *ngIf="leftMatchupAnime && leftMatchupAnime.name" class="details-panel">
+    <h2 class="details-title">{{ leftMatchupAnime["name"] }}</h2>
+    <div class="details-flex-container">
+      <div class="details-thumbnail-container">
+        <img [src]="leftMatchupAnime['thumbnail']" alt="Thumbnail not available.">
+      </div>
+      <div class="details-misc">
+        <p class="details-top-p" *ngIf="leftMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime["startDate"]) }}</p>
+        <p *ngIf="leftMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(leftMatchupAnime["endDate"]) }}</p>
+        <p *ngIf="leftMatchupAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(leftMatchupAnime["startDate"]) }}</p>
+        <p><strong>MAL rating: </strong> {{ leftMatchupAnime["rating"] ? leftMatchupAnime["rating"] : "Unknown" }}</p>
+        <p><strong>Studios: </strong> <span [innerHTML]="leftMatchupAnime['studios'] ? leftMatchupAnime['studios'] : 'Unknown'"></span></p>
+        <p><strong>Type: </strong> {{ leftMatchupAnime["type"] ? leftMatchupAnime["type"] : "Unknown" }}</p>
+        <p><strong>English: </strong> {{ leftMatchupAnime["englishTitle"] ? leftMatchupAnime["englishTitle"] : "Unknown" }}</p>
+        <p><strong>Status: </strong> {{ leftMatchupAnime["status"] ? leftMatchupAnime["status"] : "Unknown" }}</p>
+        <p *ngIf="leftMatchupAnime['runtime']"><strong>Runtime: </strong> {{ leftMatchupAnime["runtime"] }}</p>
+        <p><strong>Genres: </strong>
+          <span *ngIf="leftMatchupAnime['genres'] && leftMatchupAnime['genres'].length">
+            <span *ngFor="let genre of leftMatchupAnime['genres']; let i = index;">{{ genre + (i == leftMatchupAnime['genres'].length - 1 ? '' : ', ') }}</span>
+          </span>
+          <span *ngIf="!leftMatchupAnime['genres'] || !leftMatchupAnime['genres'].length">Unavailable (updated nightly)</span>
+        </p>
+        <p><strong>Recommenders: </strong>
+          <span *ngIf="leftMatchupAnime['recommenders'] && leftMatchupAnime['recommenders'].length">
+            <span *ngFor="let recommender of leftMatchupAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == leftMatchupAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+          </span>
+          <span *ngIf="!leftMatchupAnime['recommenders'] || !leftMatchupAnime['recommenders'].length">None</span>
+        </p>
+      </div>
+    </div>
+    <div class="details-description">
+      <p [innerHTML]="leftMatchupAnime['description']"></p>
+    </div>
+  </div>
+</div>
+<div class="matchup-details matchup-details-middle" [ngClass]="{'matchup-middle-show': showMatchupDetails}">
+  <div *ngIf="leftMatchupAnime && leftMatchupAnime.name && rightMatchupAnime && rightMatchupAnime.name">
+    <div class="choose-a-winner">Choose A Winner</div>
+    <button mat-button class="matchup-details-button" (click)="moveToNextRound(0)">{{ leftMatchupAnime.name }}</button>
+    <button mat-button class="matchup-details-button" (click)="moveToNextRound(1)">{{ rightMatchupAnime.name }}</button>
+    <button mat-button class="matchup-details-button" (click)="escapeMatchupDetails()">Fuck this, I'm out</button>
+  </div>
+</div>
+<div class="matchup-details matchup-details-right" id="matchup-details-right" [ngClass]="{'matchup-details-show': showMatchupDetails}">
+  <div *ngIf="rightMatchupAnime && rightMatchupAnime.name" class="details-panel">
+    <div class="details-panel-content">
+      <h2 class="details-title">{{ rightMatchupAnime["name"] }}</h2>
+      <div class="details-flex-container">
+        <div class="details-thumbnail-container">
+          <img [src]="rightMatchupAnime['thumbnail']" alt="Thumbnail not available.">
+        </div>
+        <div class="details-misc">
+          <p class="details-top-p" *ngIf="rightMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime["startDate"]) }}</p>
+          <p *ngIf="rightMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(rightMatchupAnime["endDate"]) }}</p>
+          <p *ngIf="rightMatchupAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime["startDate"]) }}</p>
+          <p><strong>MAL rating: </strong> {{ rightMatchupAnime["rating"] ? rightMatchupAnime["rating"] : "Unknown" }}</p>
+          <p><strong>Studios: </strong> <span [innerHTML]="rightMatchupAnime['studios'] ? rightMatchupAnime['studios'] : 'Unknown'"></span></p>
+          <p><strong>Type: </strong> {{ rightMatchupAnime["type"] ? rightMatchupAnime["type"] : "Unknown" }}</p>
+          <p><strong>English: </strong> {{ rightMatchupAnime["englishTitle"] ? rightMatchupAnime["englishTitle"] : "Unknown" }}</p>
+          <p><strong>Status: </strong> {{ rightMatchupAnime["status"] ? rightMatchupAnime["status"] : "Unknown" }}</p>
+          <p *ngIf="rightMatchupAnime['runtime']"><strong>Runtime: </strong> {{ rightMatchupAnime["runtime"] }}</p>
+          <p><strong>Genres: </strong>
+            <span *ngIf="rightMatchupAnime['genres'] && rightMatchupAnime['genres'].length">
+              <span *ngFor="let genre of rightMatchupAnime['genres']; let i = index;">{{ genre + (i == rightMatchupAnime['genres'].length - 1 ? '' : ', ') }}</span>
+            </span>
+            <span *ngIf="!rightMatchupAnime['genres'] || !rightMatchupAnime['genres'].length">Unavailable (updated nightly)</span>
+          </p>
+          <p><strong>Recommenders: </strong>
+            <span *ngIf="rightMatchupAnime['recommenders'] && rightMatchupAnime['recommenders'].length">
+              <span *ngFor="let recommender of rightMatchupAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == rightMatchupAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+            </span>
+            <span *ngIf="!rightMatchupAnime['recommenders'] || !rightMatchupAnime['recommenders'].length">None</span>
+          </p>
+        </div>
+      </div>
+      <div class="details-description">
+        <p [innerHTML]="rightMatchupAnime['description']"></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="bracket" *ngIf="!isLoading && validFinalists" [ngClass]="{'matchup-details-background': showMatchupDetails}">
   <div class="container">
     <div class="split split-one">
       <div class="round" *ngFor="let round of [0,1,2]" [ngClass]="{'round-one': round === 0, 'round-two': round === 1, 'round-three': round === 2}">
         <div class="round-details">Round {{ round + 1 }}</div>
-        <ul class="matchup" *ngFor="let i of getRanges(0,round)">
-          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i].name !== 'empty' && finalistList[round][i].name !== 'bye', 'winner': winner === finalistList[round][i].name}"><span
+        <ul class="matchup" (click)="viewMatchupDetails(round, i)" *ngFor="let i of getRanges(0,round)" [ngClass]="{'interactable': isInteractable(round, i)}">
+          <li class="team team-top" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'winner': winner === finalistList[round][i].name}"><span
               class="team-name">{{ finalistList[round][i].name === 'empty' ? "" : finalistList[round][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i].comments) <= seedCount">{{ getSeed(finalistList[round][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i+1].name !== 'empty' && finalistList[round][i+1].name !== 'bye', 'winner': winner === finalistList[round][i+1].name}"><span
+          <li class="team team-bottom" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'winner': winner === finalistList[round][i+1].name}"><span
               class="team-name">{{ finalistList[round][i+1].name === 'empty' ? "" : finalistList[round][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i+1].comments) <= seedCount">{{ getSeed(finalistList[round][i+1].comments) }}</span>
           </li>
@@ -31,12 +112,12 @@
     <div class="champion">
       <div class="semis-1">
         <div class="round-details">West Semifinals</div>
-        <ul class="matchup championship" *ngFor="let i of getRanges(0,3)">
-          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i].name !== 'empty' && finalistList[3][i].name !== 'bye', 'winner': winner === finalistList[3][i].name}"><span
+        <ul class="matchup championship" *ngFor="let i of getRanges(0,3)" (click)="viewMatchupDetails(3, i)" [ngClass]="{'interactable': isInteractable(3, i)}">
+          <li class="team team-top" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'winner': winner === finalistList[3][i].name}"><span
               class="team-name">{{ finalistList[3][i].name === 'empty' ? "" : finalistList[3][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i].comments) <= seedCount">{{ getSeed(finalistList[3][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i+1].name !== 'empty' && finalistList[3][i+1].name !== 'bye', 'winner': winner === finalistList[3][i+1].name}"><span
+          <li class="team team-bottom" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'winner': winner === finalistList[3][i+1].name}"><span
               class="team-name">{{ finalistList[3][i+1].name === 'empty' ? "" : finalistList[3][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i+1].comments) <= seedCount">{{ getSeed(finalistList[3][i+1].comments) }}</span>
           </li>
@@ -45,12 +126,12 @@
       <div class="final">
         <i class="fa fa-trophy"></i>
         <div class="round-details"><span>Championship</span></div>
-        <ul class="matchup championship">
-          <li class="team team-top" (click)="winTournament(finalistList[4][0])" [ngClass]="{'current': finalistList[4][0].name !== 'empty', 'interactable': finalistList[4][0].name !== 'empty' && finalistList[4][0].name !== 'bye', 'winner': winner === finalistList[4][0].name}"><span
+        <ul class="matchup championship" [ngClass]="{'interactable': isInteractable(4, 0)}" (click)="viewMatchupDetails(4, 0)">
+          <li class="team team-top" [ngClass]="{'current': finalistList[4][0].name !== 'empty', 'winner': winner === finalistList[4][0].name}"><span
               class="team-name">{{ finalistList[4][0].name === 'empty' ? "" : finalistList[4][0].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[4][0].comments) <= seedCount">{{ getSeed(finalistList[4][0].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="winTournament(finalistList[4][1])" [ngClass]="{'current': finalistList[4][1].name !== 'empty', 'interactable': finalistList[4][1].name !== 'empty' && finalistList[4][1].name !== 'bye', 'winner': winner === finalistList[4][1].name}"><span
+          <li class="team team-bottom" [ngClass]="{'current': finalistList[4][1].name !== 'empty', 'winner': winner === finalistList[4][1].name}"><span
               class="team-name">{{ finalistList[4][1].name === 'empty' ? "" : finalistList[4][1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[4][1].comments) <= seedCount">{{ getSeed(finalistList[4][1].comments) }}</span>
           </li>
@@ -58,12 +139,12 @@
       </div>
       <div class="semis-2">
         <div class="round-details">East Semifinals</div>
-        <ul class="matchup championship" *ngFor="let i of getRanges(1,3)">
-          <li class="team team-top" (click)="moveToNextRound(i, 3+1)" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i].name !== 'empty' && finalistList[3][i].name !== 'bye', 'winner': winner === finalistList[3][i].name}"><span
+        <ul class="matchup championship" *ngFor="let i of getRanges(1,3)" (click)="viewMatchupDetails(3, i)" [ngClass]="{'interactable': isInteractable(3, i)}">
+          <li class="team team-top" [ngClass]="{'current': finalistList[3][i].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'winner': winner === finalistList[3][i].name}"><span
               class="team-name">{{ finalistList[3][i].name === 'empty' ? "" : finalistList[3][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i].comments) <= seedCount">{{ getSeed(finalistList[3][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, 3+1)" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'interactable': finalistList[3][i+1].name !== 'empty' && finalistList[3][i+1].name !== 'bye', 'winner': winner === finalistList[3][i+1].name}"><span
+          <li class="team team-bottom" [ngClass]="{'current': finalistList[3][i+1].name !== 'empty' && finalistList[3+1][i/2].name === 'empty', 'winner': winner === finalistList[3][i+1].name}"><span
               class="team-name">{{ finalistList[3][i+1].name === 'empty' ? "" : finalistList[3][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[3][i+1].comments) <= seedCount">{{ getSeed(finalistList[3][i+1].comments) }}</span>
           </li>
@@ -75,12 +156,12 @@
     <div class="split split-two">
       <div class="round" *ngFor="let round of [2,1,0]" [ngClass]="{'round-one': round === 0, 'round-two': round === 1, 'round-three': round === 2}">
         <div class="round-details">Round {{ round + 1 }}</div>
-        <ul class="matchup" *ngFor="let i of getRanges(1,round)">
-          <li class="team team-top" (click)="moveToNextRound(i, round+1)" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i].name !== 'empty' && finalistList[round][i].name !== 'bye', 'winner': winner === finalistList[round][i].name}"><span
+        <ul class="matchup" *ngFor="let i of getRanges(1,round)" (click)="viewMatchupDetails(round, i)" [ngClass]="{'interactable': isInteractable(round, i)}">
+          <li class="team team-top" [ngClass]="{'current': finalistList[round][i].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'winner': winner === finalistList[round][i].name}"><span
               class="team-name">{{ finalistList[round][i].name === 'empty' ? "" : finalistList[round][i].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i].comments) <= seedCount">{{ getSeed(finalistList[round][i].comments) }}</span>
           </li>
-          <li class="team team-bottom" (click)="moveToNextRound(i+1, round+1)" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'interactable': finalistList[round][i+1].name !== 'empty' && finalistList[round][i+1].name !== 'bye', 'winner': winner === finalistList[round][i+1].name}"><span
+          <li class="team team-bottom" [ngClass]="{'current': finalistList[round][i+1].name !== 'empty' && finalistList[round+1][i/2].name === 'empty', 'winner': winner === finalistList[round][i+1].name}"><span
               class="team-name">{{ finalistList[round][i+1].name === 'empty' ? "" : finalistList[round][i+1].name }}</span><span class="score"
               *ngIf="getSeed(finalistList[round][i+1].comments) <= seedCount">{{ getSeed(finalistList[round][i+1].comments) }}</span>
           </li>
