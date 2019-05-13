@@ -231,6 +231,15 @@ $warn: map-get($my-app-theme, warn);
   z-index: 1;
   font-size: 14px;
 }
+.area11-toast-top {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 15px;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .toast-error {
   background-color: mat-color($warn);
 }

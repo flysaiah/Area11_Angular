@@ -254,6 +254,7 @@
     Click on anime in any of your lists to see details from MAL here!
   </mat-card>
 
+  <div class="area11-toast area11-toast-top" [ngClass]="{show: showToast && hideFinalistsPanel, 'toast-error': toastError}">{{ toastMessage }}</div>
   <mat-card class="no-padding-bottom" *ngIf="selectedAnime['name']" [ngClass]="{'details-panel-2col': hideFinalistsPanel || hideCatalogPanel, 'details-panel': !hideFinalistsPanel && !hideCatalogPanel}">
     <div id="details-panel-content" [ngClass]="{'details-panel-content': !hideFinalistsPanel && !hideCatalogPanel,'details-panel-content-2col': hideFinalistsPanel || hideCatalogPanel}">
       <h2 class="details-title">{{ selectedAnime["name"] }}</h2>
