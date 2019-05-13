@@ -700,7 +700,8 @@ module.exports = (router) => {
             englishTitle: anime['englishTitle'],
             status: anime['status'],
             recommenders: anime['recommenders'],
-            studios: anime["studios"]
+            studios: anime["studios"],
+            runtime: anime["runtime"]
           });
           newAnime.save(done);
         }, function allDone(err) {
