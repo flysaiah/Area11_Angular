@@ -156,7 +156,7 @@ $warn: map-get($my-app-theme, warn);
   text-overflow: ellipsis !important;
   font-size: 12px;
 }
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 1025px) {
   .toptens-top-navigator {
     width: 800px;
   }
