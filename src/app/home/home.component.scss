@@ -231,6 +231,15 @@ $warn: map-get($my-app-theme, warn);
   z-index: 1;
   font-size: 14px;
 }
+.area11-toast-top {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 15px;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .toast-error {
   background-color: mat-color($warn);
 }
@@ -716,19 +725,19 @@ $warn: map-get($my-app-theme, warn);
   height: 4px;
 }
 .chip-gold {
-  background-color: #FFD700;
+  background-color: #FFD700 !important;
 }
 .chip-silver {
-  background-color: silver;
-  color: white;
+  background-color: silver !important;
+  color: white !important;
 }
 .chip-bronze {
-  background-color: #cd7f32;
-  color: white;
+  background-color: #cd7f32 !important;
+  color: white !important;
 }
 .chip-green {
-  background-color: green;
-  color: white;
+  background-color: green !important;
+  color: white !important;
 }
 .finalist-divider {
   display: block;

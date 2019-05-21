@@ -49,7 +49,7 @@ module.exports = (router) => {
 
   router.post('/saveChanges', (req, res) => {
     let newTT = new TopTens(req.body.toptensObj);
-    TopTens.findOneAndUpdate({ category: newTT.category, group: newTT.group, user: newTT.user }, newTT, { upsert: true}, (err, tt) => {
+    TopTens.findOneAndUpdate({ category: newTT.category, group: newTT.group, user: newTT.user }, { group: newTT.group, category: newTT.category, user: newTT.user, entries: newTT.entries, hasNoContent: newTT.hasNoContent, lastEditedDate: newTT.lastEditedDate }, { upsert: true}, (err, tt) => {
       if (err) {
         res.json({ success: false, message: err });
       } else {

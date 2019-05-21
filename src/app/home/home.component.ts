@@ -121,7 +121,7 @@ export class HomeComponent implements AfterViewChecked {
     // Key down => move through catalog backwards
     // Key right => move through finalists forwards
     // Key left => move through finalists backwards
-    if (!this.selectedAnime.name) {
+    if (!this.selectedAnime.name || this.dialogOpen) {
       return;
     }
     let modifier = 1;
@@ -148,7 +148,7 @@ export class HomeComponent implements AfterViewChecked {
         list = this.finalistList;
         break;
       case ("Enter"):
-        if (this.canSelectAsFinalist && !this.dialogOpen) {
+        if (this.canSelectAsFinalist) {
           this.selectAsFinalist();
         }
         return;
@@ -649,11 +649,13 @@ export class HomeComponent implements AfterViewChecked {
 
   editComments(index: number) {
     // Bring up the dialog for editing the comments of a finalist
+    this.dialogOpen = true;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
       data: {comments: this.finalistList[index]["comments"].join(";")}
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.dialogOpen = false;
       // result = comment string
       if (result) {
         this.finalistList[index]["comments"] = result.split(";");
