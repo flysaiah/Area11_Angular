@@ -10,13 +10,13 @@ const async = require('async');
 const fs = require('fs');
 
 // Make sure Area11/public exists; if not then create it
-if (!fs.existsSync('Area11/public') ){
-    fs.mkdirSync('Area11/public/');
+if (!fs.existsSync('public') ){
+    fs.mkdirSync('public/');
 }
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'Area11/public/')
+    cb(null, 'public/')
   },
   filename: function (req, file, cb) {
     // Distinguish between group & user uploads
