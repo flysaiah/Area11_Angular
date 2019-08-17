@@ -375,6 +375,7 @@ export class TopTensComponent implements OnInit {
         this.rememberSelectedAnime();
         this.generateLogistics();
         this.organizeTopTens();
+        this.applyFilters();
       } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
       } else if (res["message"] == "Token") {
