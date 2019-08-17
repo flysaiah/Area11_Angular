@@ -476,6 +476,8 @@ export class HomeComponent implements AfterViewChecked {
           break;
         }
       }
+    } else {
+      this.canSelectAsFinalist = false;
     }
   }
 
