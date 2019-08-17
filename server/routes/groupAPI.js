@@ -766,7 +766,8 @@ module.exports = (router) => {
                           type: anime['type'],
                           englishTitle: anime['englishTitle'],
                           status: anime['status'],
-                          recommenders: anime['recommenders']
+                          recommenders: anime['recommenders'],
+                          studios: anime['studios']
                         });
                         newAnime.save((err) => {
                           if (err) {

@@ -17,7 +17,8 @@ $warn: map-get($my-app-theme, warn);
   margin-left: 10px;
   font-size: 40px;
   position: relative;
-  bottom: 27px;
+  text-decoration: none;
+  font-weight: bold;
 }
 .main-logo:hover {
   cursor: pointer;

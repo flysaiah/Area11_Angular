@@ -143,6 +143,9 @@ export class SettingsComponent implements OnInit {
             if (res["user"]["bestboy"]) {
               this.model["bestboy"] = res["user"]["bestboy"];
             }
+            if (res.user.warnMe) {
+              this.model.warnMe = res.user.warnMe;
+            }
             this.isLoading = false;
           } else {
             this.displayToast("There was a problem loading your settings.", true)

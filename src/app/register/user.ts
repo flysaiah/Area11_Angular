@@ -8,6 +8,7 @@ export class User {
     public group?: string,
     public autoTimelineAdd?: boolean,
     public fireworks?: boolean,
-    public bestboy?: string
+    public bestboy?: string,
+    public warnMe?: boolean
   ) {}
 }
