@@ -12,6 +12,7 @@ const userSchema = new Schema({
   autoTimelineAdd: Boolean,
   fireworks: Boolean,
   bestboy: String,
+  warnMe: Boolean
 });
 
 // This runs any time the user Schema is activated

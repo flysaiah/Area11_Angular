@@ -201,7 +201,7 @@ module.exports = (router) => {
 
   router.post('/saveUserChanges', (req, res) => {
     // For user settings page
-    User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { bestgirl: req.body.bestgirl, avatar: req.body.avatar, autoTimelineAdd: req.body.autoTimelineAdd, fireworks: req.body.fireworks, bestboy: req.body.bestboy, bioDisplay: req.body.bioDisplay } }, (err, user) => {
+    User.findOneAndUpdate({ "_id": ObjectID(req.decoded.userId) }, { $set: { bestgirl: req.body.bestgirl, avatar: req.body.avatar, autoTimelineAdd: req.body.autoTimelineAdd, fireworks: req.body.fireworks, bestboy: req.body.bestboy, bioDisplay: req.body.bioDisplay, warnMe: req.body.warnMe } }, (err, user) => {
       if (err) {
         res.json({ success: false, message: err });
       } else {

@@ -40,6 +40,7 @@ export class HomeComponent implements AfterViewChecked {
   possibleCategories: string[];
   // We do simple toasts without outside packages
   showToast: boolean;
+  showTopToast: boolean;
   toastMessage: string;
   toastError: boolean;
   sortCriteria: string;
@@ -82,16 +83,25 @@ export class HomeComponent implements AfterViewChecked {
   hideCatalogPanel: boolean;
   enableFireworks: boolean;
   fireworks: boolean;   // If true, then fireworks animation plays
+  warnMe: boolean;
 
-  private displayToast(message: string, error?: boolean) {
+  private displayToast(message: string, error?: boolean, topToast?: boolean) {
     // Display toast in application with message and timeout after 3 sec
-    this.showToast = true;
+    if (topToast) {
+      this.showTopToast = true;
+    } else {
+      this.showToast = true;
+    }
     this.toastMessage = message;
     if (error) {
       this.toastError = true;
     }
     setTimeout(() => {
-      this.showToast = false;
+      if (topToast) {
+        this.showTopToast = false;
+      } else {
+        this.showToast = false;
+      }
       this.toastMessage = "";
       this.toastError = false;
     }, 3000);
@@ -403,7 +413,6 @@ export class HomeComponent implements AfterViewChecked {
 
   private getGenres() {
     let allGenres = new Set<string>();
-    // NOTE: This could be a little costly eventually, so make sure to minimize when we call refresh()
     for (let anime of this.searchAnime) {
       for (let genre of anime["genres"]) {
         if (!allGenres.has(genre)) {
@@ -584,37 +593,52 @@ export class HomeComponent implements AfterViewChecked {
       case "Want to Watch":
         idx = this.wantToWatchList.indexOf(anime);
         this.wantToWatchList.splice(idx, 1);
+        idx = this.newWantToWatch.indexOf(anime);
+        this.newWantToWatch.splice(idx, 1);
         break;
       case "Considering":
         idx = this.consideringList.indexOf(anime);
         this.consideringList.splice(idx, 1);
+        idx = this.newConsidering.indexOf(anime);
+        this.newConsidering.splice(idx, 1);
         break;
       case "Completed":
         idx = this.completedList.indexOf(anime);
         this.completedList.splice(idx, 1);
+        idx = this.newCompleted.indexOf(anime);
+        this.newCompleted.splice(idx, 1);
         break;
       default:
         console.log("WARNING: THIS SHOULD NOT BE HAPPENING");
     }
-    // NOTE: We only add if the categories have a length; otherwise those are probably filtered out
+    // NOTE: We only add to *visible* lists if the categories have a length; otherwise those are probably filtered out
     switch (newCat) {
       case "Want to Watch":
         if (this.wantToWatchList.length) {
           this.wantToWatchList.push(anime);
         }
+        this.newWantToWatch.push(anime);
         break;
       case "Considering":
         if (this.consideringList.length) {
           this.consideringList.push(anime);
         }
+        this.newConsidering.push(anime);
         break;
       case "Completed":
         if (this.completedList.length) {
           this.completedList.push(anime);
         }
+        this.newCompleted.push(anime);
         break;
       default:
         console.log("WARNING: THIS SHOULD NOT BE HAPPENING");
+    }
+    // TODO: Investigate why this is necessary
+    for (let searchAnime of this.searchAnime) {
+      if (searchAnime.name === anime.name) {
+        searchAnime = anime;
+      }
     }
   }
 
@@ -636,9 +660,15 @@ export class HomeComponent implements AfterViewChecked {
               console.log(res);
             }
             this.updateCategoryChangeUI(this.selectedAnime, oldCategory, newCategory);
+            if (this.warnMe && (this.newCompleted.length + 1) % 50 == 0) {
+              this.displayToast("WARNING: Your next show will be a 50-milestone!", false, true);
+            }
           });
         } else {
           this.updateCategoryChangeUI(this.selectedAnime, oldCategory, newCategory);
+        }
+        if (this.warnMe && (this.newCompleted.length + 1) % 50 == 0) {
+          this.displayToast("WARNING: Your next show will be a 50-milestone!", false, true);
         }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
@@ -967,7 +997,7 @@ export class HomeComponent implements AfterViewChecked {
     return parseInt(comment[1]);
   }
 
-  refresh() {
+  refresh(firstTime?: boolean) {
     // Fetch all anime stored in database and update our lists
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
@@ -1008,6 +1038,10 @@ export class HomeComponent implements AfterViewChecked {
 
         this.applyFilters();
         this.isLoading = false;
+        // Warn user if enabled and they are 1 show away from a multiple of 50
+        if (firstTime && this.warnMe && (this.newCompleted.length + 1) % 50 == 0) {
+          this.displayToast("WARNING: Your next show will be a 50-milestone!", false, true);
+        }
       } else if (res["message"] == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -1089,12 +1123,14 @@ export class HomeComponent implements AfterViewChecked {
     this.showCategory = "All Categories";
     this.possibleCategories = ["Want to Watch", "Considering", "Completed"];
     this.showToast = false;
+    this.showTopToast = false;
     this.toastMessage = "";
 
     this.hideFinalistsPanel = false;
     this.hideCatalogPanel = false;
     this.fireworks = false;
     this.enableFireworks = false;
+    this.warnMe = false;
 
     this.authService.getProfile().subscribe((res) => {
       if (res["success"]) {
@@ -1103,12 +1139,9 @@ export class HomeComponent implements AfterViewChecked {
 
         this.userService.getUserInfo().subscribe((res) => {
           if (res["success"]) {
-            if (res["user"]["autoTimelineAdd"]) {
-              this.autoTimelineAdd = res["user"]["autoTimelineAdd"];
-            }
-            if (res["user"]["fireworks"]) {
-              this.enableFireworks = res["user"]["fireworks"];
-            }
+            this.autoTimelineAdd = res.user.autoTimelineAdd;
+            this.enableFireworks = res.user.fireworks;
+            this.warnMe = res.user.warnMe;
 
             if (res["user"]["group"]) {
               this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
@@ -1118,10 +1151,10 @@ export class HomeComponent implements AfterViewChecked {
                 } else {
                   console.log(res);
                 }
-                this.refresh();
+                this.refresh(true);
               });
             } else {
-              this.refresh();
+              this.refresh(true);
             }
           } else {
             this.displayToast("There was a problem loading your settings.", true)
