@@ -427,7 +427,7 @@ export class HomeComponent implements AfterViewChecked {
   private getStudios() {
     let allStudios = new Set<string>();
     for (let anime of this.searchAnime) {
-      if (!allStudios.has(anime["studios"])) {
+      if (anime["studios"] && !allStudios.has(anime["studios"])) {
         for (let studio of anime.studios.split(", ")) {
           allStudios.add(studio);
         }
