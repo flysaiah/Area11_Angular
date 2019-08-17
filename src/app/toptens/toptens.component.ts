@@ -313,14 +313,27 @@ export class TopTensComponent implements OnInit {
 
   updateCategorySearch() {
     // Filter out categories that don't match our search text
+    // In order to match, all words in search bar must be present, meaning each
+    // word is at least a prefix of a word in some part of a category's name
     this.allCategories = this.allCategoriesFull.filter(category => {
-      // fuzzy
-      for (let word of category.category.toLowerCase().split(" ")) {
-        if (word.startsWith(this.filterText.toLowerCase())) {
-          return true;
+      if (this.filterText === "") {
+        return true;
+      }
+      for (let filterWord of this.filterText.split(" ")) {
+        if (filterWord.trim() === "") {
+          continue;
+        }
+        let wordFound = false;
+        for (let word of category.category.toLowerCase().split(" ")) {
+          if (word.startsWith(filterWord.toLowerCase().trim())) {
+            wordFound = true;
+          }
+        }
+        if (!wordFound) {
+          return false;
         }
       }
-      return false;
+      return true;
     });
   }
 
