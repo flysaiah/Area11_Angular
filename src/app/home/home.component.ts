@@ -885,6 +885,20 @@ export class HomeComponent implements AfterViewChecked {
     return date ? this.formatDate(date) : "Unknown";
   }
 
+  resetAllFilters() {
+    this.showCategory = "All Categories";
+    this.selectedType = "All Types";
+    this.selectedStudio = "All Studios";
+    this.selectedGenre = "All Genres";
+    this.sortCriteria = "_id,ascending";
+    this.groupFilterIndex = -1;
+    this.recommendationPreference = "No Filter";
+    this.selectedAiringStatus = "No Filter";
+    
+    this.applyFilters();
+    this.scrollTop = Math.random();
+  }
+
   private formatDate(date: string) {
     const dObj = new Date(date);
     const res = dObj.toLocaleDateString();
