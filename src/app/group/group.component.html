@@ -11,12 +11,12 @@
       <mat-tab label="My Group">
         <div *ngIf="currentGroup['name']" class="group-settings-tab">
           <div class="group-profile">
-            <div class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+            <div class="group-avatar" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
             <h3 class="group-name">{{ currentGroup['name'] }}</h3>
           </div>
           <div class="member-list-container-left">
             <div class="group-member" *ngFor="let groupMember of currentGroupMembersCol1">
-              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p *ngIf="groupMember['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
@@ -30,7 +30,7 @@
           </div>
           <div class="member-list-container-right">
             <div class="group-member" *ngFor="let groupMember of currentGroupMembersCol2">
-              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+              <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(/' + groupMember['id'] + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
               <div class="group-member-name-container">
                 <h2 class="group-member-name">{{ groupMember['username'] }}</h2>
                 <p *ngIf="groupMember['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl" title="Best girl: {{ groupMember['bestgirl'] }}">Best girl: {{ groupMember['bestgirl'] }}</p>
@@ -78,7 +78,7 @@
             <div>These people are requesting membership to your group:</div>
             <div class="member-list-container-left">
               <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol1">
-                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
                 <div class="group-member-name-container">
                   <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
                   <p *ngIf="pendingUser['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
@@ -91,7 +91,7 @@
             </div>
             <div class="member-list-container-right">
               <div class="group-member" *ngFor="let pendingUser of pendingUserRequestsCol2">
-                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+                <div class="group-member-avatar" [ngStyle]="{ 'background-image': 'url(' + pendingUser['id'] + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
                 <div class="group-member-name-container">
                   <h2 class="group-member-name">{{ pendingUser['username'] }}</h2>
                   <p *ngIf="pendingUser['bioDisplay'] == 'bestgirl'" class="group-member-bestgirl">Best girl: {{ pendingUser['bestgirl'] }}</p>
@@ -132,7 +132,7 @@
             <button mat-raised-button color="warn" (click)="disbandGroup()">Disband Group</button>
           </div>
           <div class="group-settings-right">
-            <div class="group-settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+            <div class="group-settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + currentGroupAvatar + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
             <h3 class="group-settings-avatar-name">{{ currentGroup['name'] }}</h3>
             <div class="change-avatar">
               <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>

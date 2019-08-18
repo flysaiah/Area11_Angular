@@ -39,7 +39,7 @@
       <button class="delete-account-button" mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
     </form>
     <div class="user-profile">
-      <div class="settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + userAvatar + '), url(http://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
+      <div class="settings-avatar-big" [ngStyle]="{ 'background-image': 'url(' + userAvatar + '), url(https://s3.amazonaws.com/37assets/svn/765-default-avatar.png)'}"></div>
       <h3 class="settings-avatar-name">{{ currentUser }}</h3>
       <div class="change-avatar">
         <button *ngIf="!showUploadOptions" mat-raised-button color="accent" (click)="toggleUploadOptions()">Change Avatar</button>
