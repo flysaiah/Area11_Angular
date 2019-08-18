@@ -637,7 +637,7 @@ export class HomeComponent implements AfterViewChecked {
     // TODO: Investigate why this is necessary
     for (let searchAnime of this.searchAnime) {
       if (searchAnime.name === anime.name) {
-        searchAnime = anime;
+        this.searchAnime[this.searchAnime.indexOf(searchAnime)] = anime;
       }
     }
   }
