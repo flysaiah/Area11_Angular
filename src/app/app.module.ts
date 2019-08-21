@@ -27,7 +27,7 @@ import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
 import { TimelineComponent, DeleteEraDialog } from './timeline/timeline.component';
-import { InfolistsComponent } from './infolists/infolists.component';
+import { InfolistsComponent, RenameInfolistDialog } from './infolists/infolists.component';
 import { BracketProcessComponent } from './bracket-process/bracket-process.component';
 
 @NgModule({
@@ -39,6 +39,7 @@ import { BracketProcessComponent } from './bracket-process/bracket-process.compo
     DeleteAccountDialog,
     ConfirmDialog,
     DeleteEraDialog,
+    RenameInfolistDialog,
     RegisterComponent,
     LoginComponent,
     SettingsComponent,
@@ -77,6 +78,6 @@ import { BracketProcessComponent } from './bracket-process/bracket-process.compo
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, InfolistService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog, RenameInfolistDialog]
 })
 export class AppModule { }

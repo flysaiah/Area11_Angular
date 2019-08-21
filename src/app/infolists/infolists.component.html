@@ -46,7 +46,7 @@
         <div class="allInfolists-add-save-container">
           <button class="infolists-right-button" mat-raised-button color="accent" (click)="addNewEntry(infolist)">New Entry</button>
           <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="primary" (click)="saveChanges(infolist)">Save</button>
-          <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="warn" (click)="deleteEmptyRows(infolist)">Delete Empty Rows</button>
+          <button class="infolists-right-button infolists-gold-background" mat-raised-button (click)="renameInfolist(infolist)">Rename</button>
         </div>
 
         <div class="empty-list-placeholder" *ngIf="!infolist.entries || !infolist.entries.length">
