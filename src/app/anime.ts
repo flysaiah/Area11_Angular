@@ -16,10 +16,11 @@ export class Anime {
     public type?: string,
     public englishTitle?: string,
     public status?: string,
-    public recommenders?: Object[],
+    public recommenders?: { name: string }[],
     public ownerIsRecommender?: boolean,
     public hasNewSeason?: boolean,
     public runtime?: string,
-    public studios?: string
+    public studios?: string,
+    public seedNumber?: number
   ) {}
 }

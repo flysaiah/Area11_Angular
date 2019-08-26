@@ -92,7 +92,7 @@ export class InfolistsComponent implements OnInit {
       if (typeof result != "undefined") {
         if (result) {
           this.infolistService.saveInfolist(infolist, result).subscribe((res) => {
-            if (res["success"]) {
+            if (res.success) {
               let oldName = infolist.name;
               infolist.name = res.infolist.name;
               this.allInfolistNames[this.allInfolistNames.indexOf(infolist.name)] = res.infolist.name;
@@ -120,10 +120,10 @@ export class InfolistsComponent implements OnInit {
       "entries": []
     }
     this.infolistService.addNewInfolist(newInfolist).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.newInfolistName = "";
-        this.allInfolists.push(res["infolist"]);
-        this.allInfolistNames.push(res["infolist"].name);
+        this.allInfolists.push(res.infolist);
+        this.allInfolistNames.push(res.infolist.name);
         this.updatePaginatorInfo();
       } else {
         console.log(res);
@@ -171,7 +171,7 @@ export class InfolistsComponent implements OnInit {
   saveChanges(infolist: Infolist) {
     this.deleteEmptyRows(infolist);
     this.infolistService.saveInfolist(infolist).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Info List saved successfully!");
       } else {
         console.log(res);
@@ -189,7 +189,7 @@ export class InfolistsComponent implements OnInit {
       // Result is the index of the anime they chose to link, if they chose to link one
       if (result) {
         this.infolistService.deleteInfolist(infolist).subscribe((res) => {
-          if (res["success"]) {
+          if (res.success) {
             this.allInfolists.splice(index, 1);
             this.allInfolistNames.splice(index, 1);
           } else {
@@ -209,12 +209,12 @@ export class InfolistsComponent implements OnInit {
   }
   refresh() {
     this.infolistService.fetchInfolists().subscribe((res) => {
-      if (res["success"] && res["infolists"]) {
-        this.allInfolists = res["infolists"]
+      if (res.success && res.infolists) {
+        this.allInfolists = res.infolists
         this.generateInfolistNames();
         this.updatePaginatorInfo();
         this.isLoading = false;
-      } else if (!res["success"]) {
+      } else if (!res.success) {
         this.displayToast("There was a problem getting your info lists.", true);
         console.log(res);
       }
@@ -238,12 +238,12 @@ export class InfolistsComponent implements OnInit {
     this.paginatorCurrentIndexMap = {};
 
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
+      if (res.success) {
+        this.currentUser = res.user.username;
         this.refresh();
       } else {
         // If there was a problem we need to have them log in again
-        console.log(res["message"]);
+        console.log(res.message);
         this.authService.logout();
       }
     });

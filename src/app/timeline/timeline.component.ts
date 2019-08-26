@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
-import { Anime } from '../anime';
 import { AuthService } from '../services/auth.service';
 import { TimelineService } from '../services/timeline.service';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -44,7 +43,7 @@ export class TimelineComponent implements OnInit {
 
   createTimeline() {
     this.timelineService.createTimeline().subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.eraList = [{
           name: "First Era",
           startDate: "April 1850",
@@ -53,7 +52,7 @@ export class TimelineComponent implements OnInit {
         this.displayToast("Successfully created a new timeline!");
       } else {
         this.displayToast("There was a problem", true);
-        console.log(res["message"]);
+        console.log(res.message);
       }
     });
   }
@@ -71,13 +70,13 @@ export class TimelineComponent implements OnInit {
   saveEraChanges(index: number) {
     this.eraList[index].entries = this.editingEraString.split("\n");
     this.timelineService.saveTimeline(this.eraList).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.editingEraString = "";
         this.editingEra = -1;
         this.displayToast("Successfully saved your changes!");
       } else {
         this.displayToast("There was a problem", true);
-        console.log(res["message"]);
+        console.log(res.message);
       }
     });
   }
@@ -88,11 +87,11 @@ export class TimelineComponent implements OnInit {
       entries: ["List your anime here!"]
     });
     this.timelineService.saveTimeline(this.eraList).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("New era added!");
       } else {
         this.displayToast("There was a problem", true);
-        console.log(res["message"]);
+        console.log(res.message);
       }
     });
   }
@@ -107,11 +106,11 @@ export class TimelineComponent implements OnInit {
       if (result) {
         this.eraList.splice(index, 1);
         this.timelineService.saveTimeline(this.eraList).subscribe((res) => {
-          if (res["success"]) {
+          if (res.success) {
             this.displayToast("Successfully deleted era!");
           } else {
             this.displayToast("There was a problem", true);
-            console.log(res["message"]);
+            console.log(res.message);
           }
         });
       }
@@ -149,23 +148,23 @@ export class TimelineComponent implements OnInit {
         user = params.user;
       }
       this.authService.getProfile().subscribe((res) => {
-        if (res["success"]) {
-          this.currentUser = res["user"]["username"];
+        if (res.success) {
+          this.currentUser = res.user.username;
           this.timelineService.fetchTimeline(user).subscribe((res) => {
-            if (res["success"] && res["timeline"]) {
-              this.eraList = res["timeline"]["eras"];
-            } else if (!res["success"] && res["message"] == "Permission denied") {
+            if (res.success && res.timeline) {
+              this.eraList = res.timeline.eras;
+            } else if (!res.success && res.message == "Permission denied") {
               this.unauthorizedError = true;
-            } else if (!res["success"]) {
+            } else if (!res.success) {
               this.displayToast("There was a problem.", true);
-              console.log(res["message"]);
+              console.log(res.message);
             }
             this.isLoading = false;
           });
         } else {
           // If there was a problem we need to have them log in again
           this.authService.logout();
-          console.log(res["message"]);
+          console.log(res.message);
         }
       });
 

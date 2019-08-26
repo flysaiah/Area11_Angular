@@ -43,11 +43,11 @@ export class SettingsComponent implements OnInit {
     console.log(this.avatarUpload);
     console.log(formData);
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Profile avatar changed successfully!");
         this.avatarUpload = [];
         this.refresh();
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem changing your profile avatar.", true);
@@ -87,12 +87,12 @@ export class SettingsComponent implements OnInit {
       // If result is defined then they confirmed the deletion
       if (result) {
         this.userService.deleteAccount(this.currentUser).subscribe((res) => {
-          if (res["success"]) {
+          if (res.success) {
             this.displayToast("Account successfully deleted.");
             setTimeout(() => {
               this.authService.logout();
             }, 1500);
-          } else if (res["message"] == "Token") {
+          } else if (res.message == "Token") {
             this.displayToast("Your session has expired. Please refresh and log back in.", true);
           } else {
             this.displayToast("There was a problem deleting your account.", true);
@@ -105,10 +105,10 @@ export class SettingsComponent implements OnInit {
 
   saveChanges() {
     this.userService.saveUserChanges(this.model).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Your settings have been saved!");
         this.refresh();
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem saving your settings.");
@@ -126,22 +126,22 @@ export class SettingsComponent implements OnInit {
     this.showUploadOptions = false;
     this.userAvatar = "";   // Reset this so we force HTML to refresh avatar
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
+      if (res.success) {
+        this.currentUser = res.user.username;
         // Use random number to force refresh of image after new upload
-        this.userAvatar = "/" + res["user"]["_id"] + "?xxx=" + Math.random();
+        this.userAvatar = "/" + res.user._id + "?xxx=" + Math.random();
         this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
-            this.model["bestgirl"] = res["user"]["bestgirl"];
-            this.model["bioDisplay"] = res["user"]["bioDisplay"];
-            if (res["user"]["autoTimelineAdd"]) {
-              this.model["autoTimelineAdd"] = res["user"]["autoTimelineAdd"];
+          if (res.success) {
+            this.model.bestgirl = res.user.bestgirl;
+            this.model.bioDisplay = res.user.bioDisplay;
+            if (res.user.autoTimelineAdd) {
+              this.model.autoTimelineAdd = res.user.autoTimelineAdd;
             }
-            if (res["user"]["fireworks"]) {
-              this.model["fireworks"] = res["user"]["fireworks"];
+            if (res.user.fireworks) {
+              this.model.fireworks = res.user.fireworks;
             }
-            if (res["user"]["bestboy"]) {
-              this.model["bestboy"] = res["user"]["bestboy"];
+            if (res.user.bestboy) {
+              this.model.bestboy = res.user.bestboy;
             }
             if (res.user.warnMe) {
               this.model.warnMe = res.user.warnMe;
@@ -153,7 +153,7 @@ export class SettingsComponent implements OnInit {
         });
       } else {
         // If there was a problem we need to have them log in again
-        console.log(res["message"]);
+        console.log(res.message);
         this.authService.logout();
       }
     });

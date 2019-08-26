@@ -33,16 +33,16 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.model).subscribe(res => {
       this.submitted = true;
-      if (res["success"]) {
+      if (res.success) {
         this.authService.storeUserData(res.token, res.user);
         this.router.navigate(['/']);
-      } else if (res["message"] == "Username not found." || res["message"] == "Incorrect password.") {
-        this.displayToast(res["message"], true);
+      } else if (res.message == "Username not found." || res.message == "Incorrect password.") {
+        this.displayToast(res.message, true);
         this.submitted = false;
       } else {
         this.displayToast("There was a problem.", true);
         this.submitted = false;
-        console.log(res["message"]);
+        console.log(res.message);
       }
     })
   }

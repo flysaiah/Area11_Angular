@@ -38,14 +38,14 @@ export class GroupComponent implements OnInit {
 
   createGroup() {
     this.groupService.createGroup(this.newGroupName).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Group successfully created!");
         this.refresh();
-      } else if (res["message"]["code"] == 11000) {
+      } else if (res.message.code == 11000) {
         this.displayToast("A group with that name already exists.", true)
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem creating the group", true);
@@ -55,10 +55,10 @@ export class GroupComponent implements OnInit {
   }
 
   leaveGroup() {
-    this.groupService.leaveGroup(this.currentGroup["name"]).subscribe((res) => {
-      if (res["success"]) {
+    this.groupService.leaveGroup(this.currentGroup.name).subscribe((res) => {
+      if (res.success) {
         this.displayToast("You have successfully left the group!");
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem removing you from the group.", true);
@@ -76,14 +76,14 @@ export class GroupComponent implements OnInit {
     // For group avatar
     let formData : any = new FormData();
     for(var i = 0; i < this.groupAvatarUpload.length; i++) {
-      formData.append("uploadAvatar", this.groupAvatarUpload[i], this.currentGroup["name"].split(" ").join("-"));
+      formData.append("uploadAvatar", this.groupAvatarUpload[i], this.currentGroup.name.split(" ").join("-"));
     }
     this.userService.uploadUserAvatar(formData).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Group avatar changed successfully!");
         this.groupAvatarUpload = [];
         this.refresh();
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem changing your group avatar.", true);
@@ -93,19 +93,19 @@ export class GroupComponent implements OnInit {
 
   acceptUserRequest(pendingUser: {id: string, username: string}) {
     // Change isPending status of user
-    this.groupService.acceptUserRequest(this.currentGroup["name"], pendingUser.id).subscribe((res) => {
-      if (res["success"]) {
+    this.groupService.acceptUserRequest(this.currentGroup.name, pendingUser.id).subscribe((res) => {
+      if (res.success) {
         this.displayToast(pendingUser.username + " successfully added to group!");
         this.refresh();
-      } else if (res["message"] == "Already in group") {
+      } else if (res.message == "Already in group") {
         this.displayToast(pendingUser.username + " has already been accepted.", true);
         this.refresh();
-      } else if (res["message"] == "In different group") {
+      } else if (res.message == "In different group") {
         this.displayToast(pendingUser.username + " is a member of a different group.", true);
         this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem accepting the request.s");
@@ -115,16 +115,16 @@ export class GroupComponent implements OnInit {
   }
   rejectUserRequest(pendingUser: {id: string, username: string}) {
     // Change isPending status of user
-    this.groupService.rejectUserRequest(this.currentGroup["name"], pendingUser.id).subscribe((res) => {
-      if (res["success"]) {
+    this.groupService.rejectUserRequest(this.currentGroup.name, pendingUser.id).subscribe((res) => {
+      if (res.success) {
         this.displayToast("You have rejected " + pendingUser.username + " from your group.");
         this.refresh();
-      } else if (res["message"] == "Already in group") {
+      } else if (res.message == "Already in group") {
         this.displayToast(pendingUser.username + " has already been accepted", true);
         this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem accepting the request", true);
@@ -136,15 +136,15 @@ export class GroupComponent implements OnInit {
   joinGroupRequest() {
     // Send a request to join group; adds user as a member with isPending=true
     this.groupService.joinGroupRequest(this.joinGroupName).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Your request has been sent!");
-      } else if (res["message"] == "Already requested") {
+      } else if (res.message == "Already requested") {
         this.displayToast("You have already requested membership to this group.", true);
-      } else if (res["message"] == "No group found") {
+      } else if (res.message == "No group found") {
         this.displayToast("That group doesn't exist", true);
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem with sending your request.", true);
@@ -161,10 +161,10 @@ export class GroupComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       // Result is the index of the anime they chose to link, if they chose to link one
       if (result) {
-      this.groupService.disbandGroup(this.currentGroup["name"]).subscribe((res) => {
-        if (!res["success"] && res["message"] == "Token") {
+      this.groupService.disbandGroup(this.currentGroup.name).subscribe((res) => {
+        if (!res.success && res.message == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
-        } else if (!res["success"]) {
+        } else if (!res.success) {
           this.displayToast("There was a problem deleting the account.", true);
           console.log(res);
         }
@@ -190,12 +190,12 @@ export class GroupComponent implements OnInit {
 
   importAnime(username:string, userID:string) {
 
-    this.groupService.fetchImportableAnime(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
-      if (res["success"]) {
+    this.groupService.fetchImportableAnime(userID, username, this.currentUser, this.currentGroup.name).subscribe((res) => {
+      if (res.success) {
         // Add attributes for checkbox
-        let importableAnime = res["importableAnime"];
+        let importableAnime = res.importableAnime;
         for (let anime of importableAnime) {
-          anime["selected"] = false;
+          anime.selected = false;
         }
 
         let filteredAnime = importableAnime.filter(anime => anime.category === "Completed");
@@ -211,18 +211,18 @@ export class GroupComponent implements OnInit {
             if (result) {
               if (result == "Import All") {
                 // Adds all MAL-linked anime from one user's catalog to this user's catalog (in 'Considering' category) that don't already exist in the latter
-                this.groupService.importCatalog(userID, username, this.currentUser, this.currentGroup["name"]).subscribe((res) => {
-                  if (res["success"]) {
-                    if (res["message"] != 0) {
-                      this.displayToast("You have successfully imported " + res["message"] + " anime from " + username + "'s catalog!'")
+                this.groupService.importCatalog(userID, username, this.currentUser, this.currentGroup.name).subscribe((res) => {
+                  if (res.success) {
+                    if (res.message != 0) {
+                      this.displayToast("You have successfully imported " + res.message + " anime from " + username + "'s catalog!'")
                     } else {
                       this.displayToast(username + " doesn't have any anime you can import!", true)
                     }
-                  } else if (res["message"] == "Nothing to import") {
+                  } else if (res.message == "Nothing to import") {
                     this.displayToast("This user has nothing in their catalog.", true);
-                  } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                  } else if (res.message == "No group found" || res.message == "Invalid group membership") {
                     this.displayToast("There is a problem with your group membership.", true)
-                  } else if (res["message"] == "Token") {
+                  } else if (res.message == "Token") {
                     this.displayToast("Your session has expired. Please refresh and log back in.", true);
                   } else {
                     this.displayToast("Something went wrong while importing " + username + "'s catalog.", true);
@@ -233,19 +233,19 @@ export class GroupComponent implements OnInit {
                 // User has individually selected anime to import
                 let selectedAnime = [];
                 for (let anime of result) {
-                  if (anime["selected"]) {
+                  if (anime.selected) {
                     selectedAnime.push(anime);
                   }
                 }
                 if (!selectedAnime.length) {
                   this.displayToast("You haven't selected any anime to import!", true);
                 } else {
-                  this.groupService.importAnime(this.currentGroup["name"], selectedAnime).subscribe((res) => {
-                    if (res["success"]) {
+                  this.groupService.importAnime(this.currentGroup.name, selectedAnime).subscribe((res) => {
+                    if (res.success) {
                       this.displayToast("You have successfully imported " + selectedAnime.length + " anime from " + username + "'s catalog!'")
-                    } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                    } else if (res.message == "No group found" || res.message == "Invalid group membership") {
                       this.displayToast("There is a problem with your group membership.", true)
-                    } else if (res["message"] == "Token") {
+                    } else if (res.message == "Token") {
                       this.displayToast("Your session has expired. Please refresh and log back in.", true);
                     } else {
                       this.displayToast("Something went wrong while importing the selected anime.", true);
@@ -257,11 +257,11 @@ export class GroupComponent implements OnInit {
             }
           });
         }
-      } else if (res["message"] == "Nothing to import") {
+      } else if (res.message == "Nothing to import") {
         this.displayToast(username + " doesn't have any anime you can import!", true)
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("Something went wrong while importing " + username + "'s catalog.", true);
@@ -272,8 +272,8 @@ export class GroupComponent implements OnInit {
 
   generateUserRequests() {
     // Filters members by whether they're actually members or are pending (have requested membership)
-    for (let member of this.currentGroup["members"]) {
-      if (member["isPending"]) {
+    for (let member of this.currentGroup.members) {
+      if (member.isPending) {
         this.pendingUserRequestsCol1.push(member);
       } else {
         this.currentGroupMembersCol1.push(member);
@@ -300,15 +300,15 @@ export class GroupComponent implements OnInit {
 
   saveChanges() {
     // If group name was changed, a little more work has to be done on the backend
-    this.groupService.saveChanges(this.currentGroup["name"], this.changesModel).subscribe((res) => {
-      if (res["success"]) {
+    this.groupService.saveChanges(this.currentGroup.name, this.changesModel).subscribe((res) => {
+      if (res.success) {
         this.displayToast("Your changes have been saved successfully!");
         setTimeout(() => {
           this.refresh();
         }, 1500)
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
@@ -348,29 +348,29 @@ export class GroupComponent implements OnInit {
     this.pendingUserRequestsCol1 = [];
     this.pendingUserRequestsCol2 = [];
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
+      if (res.success) {
+        this.currentUser = res.user.username;
         this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
-            if (res["user"]["group"]) {
-              this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
-                if (res["success"]) {
-                  this.currentGroup = res["group"];
+          if (res.success) {
+            if (res.user.group) {
+              this.groupService.getGroupInfo(res.user.group).subscribe((res) => {
+                if (res.success) {
+                  this.currentGroup = res.group;
                   this.changesModel = JSON.parse(JSON.stringify(this.currentGroup));
                   // backwards compatibility
                   if (!this.changesModel.countdown) {
                     this.changesModel.countdown = { name: "", date: null }
                   }
                   // Force refresh of image
-                  this.currentGroupAvatar = "/" + res["group"]["name"].split(" ").join("-") + "?xxx=" + Math.random();
+                  this.currentGroupAvatar = "/" + res.group.name.split(" ").join("-") + "?xxx=" + Math.random();
                   this.generateUserRequests();
-                  this.getCurrentAnime(res["currentlyWatching"]);
+                  this.getCurrentAnime(res.currentlyWatching);
                   this.isLoading = false;
                 } else {
-                  if (res["message"] == "No group found") {
+                  if (res.message == "No group found") {
                     this.displayToast("Your group was disbanded", true);
                     this.isLoading = false;
-                  } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+                  } else if (res.message == "No group found" || res.message == "Invalid group membership") {
                     this.displayToast("There is a problem with your group membership.", true);
                     this.isLoading = false;
                   } else {
@@ -390,7 +390,7 @@ export class GroupComponent implements OnInit {
         });
       } else {
         // If there was a problem we need to have them log in again
-        console.log(res["message"]);
+        console.log(res.message);
         this.authService.logout();
       }
     });

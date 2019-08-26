@@ -60,8 +60,8 @@ export class TopTensComponent implements OnInit {
   }
 
   private getGroupMembers() {
-    for (let member of this.currentGroup["members"]) {
-      if (!member["isPending"]) {
+    for (let member of this.currentGroup.members) {
+      if (!member.isPending) {
         this.currentGroupMembers.push(member);
       }
     }
@@ -69,15 +69,15 @@ export class TopTensComponent implements OnInit {
 
   addNewCategory() {
     this.toptensService.addNewCategory(this.currentGroup.name, this.newCategoryName).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.newCategoryName = "";
         this.displayToast("New category added!");
         this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Category already exists") {
+      } else if (res.message == "Category already exists") {
         this.displayToast("This category already exists.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
@@ -156,14 +156,14 @@ export class TopTensComponent implements OnInit {
       topTensObj.lastEditedDate = new Date();
     }
     this.toptensService.saveChanges(this.currentGroup.name, this.topTensMap.get(category).get(this.currentUser)).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Your changes have been saved!");
         this.categoryLogistics[index].isEditing = false;
         this.statusMap.set(category + "-edit", false);
         this.refresh();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
@@ -174,7 +174,7 @@ export class TopTensComponent implements OnInit {
 
   moveUp(category: string, catIndex: number, entryIndex: number) {
     // Swap entry with the entry above it
-    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex].member).entries;
     let tmp = entries[entryIndex]
     entries[entryIndex] = entries[entryIndex - 1]
     entries[entryIndex - 1] = tmp
@@ -182,7 +182,7 @@ export class TopTensComponent implements OnInit {
 
   moveDown(category: string, catIndex: number, entryIndex: number) {
     // Swap entry with the entry below it
-    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex].member).entries;
     let tmp = entries[entryIndex]
     entries[entryIndex] = entries[entryIndex + 1]
     entries[entryIndex + 1] = tmp
@@ -190,7 +190,7 @@ export class TopTensComponent implements OnInit {
 
   addNewEntry(category: string, catIndex: number, entryIndex: number) {
     // Add new entry to top tens category
-    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex].member).entries;
     let newViewerPrefs = [];
     for (let viewerPref of entries[0].viewerPrefs) {
       newViewerPrefs.push({ member: viewerPref.member, shouldHide: false });
@@ -201,7 +201,7 @@ export class TopTensComponent implements OnInit {
 
   removeEntry(category: string, catIndex: number, entryIndex: number) {
     // Remove entry from top tens category
-    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex]['member'])['entries'];
+    let entries = this.topTensMap.get(category).get(this.categoryLogistics[catIndex].member).entries;
     entries = entries.splice(entryIndex , 1)
   }
   private generateLogistics() {
@@ -272,13 +272,13 @@ export class TopTensComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       // Result is the index of the anime they chose to link, if they chose to link one
       if (result) {
-        this.toptensService.deleteCategory(this.currentGroup["name"], category).subscribe((res) => {
-          if (res["success"]) {
+        this.toptensService.deleteCategory(this.currentGroup.name, category).subscribe((res) => {
+          if (res.success) {
             this.displayToast("Category deleted successfully!");
             this.refresh();
-          } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+          } else if (res.message == "No group found" || res.message == "Invalid group membership") {
             this.displayToast("There is a problem with your group membership.", true)
-          } else if (res["message"] == "Token") {
+          } else if (res.message == "Token") {
             this.displayToast("Your session has expired. Please refresh and log back in.", true);
           } else {
             console.log(res);
@@ -290,11 +290,11 @@ export class TopTensComponent implements OnInit {
   }
 
   isHidden(entry) {
-    if (!entry["name"]) {
+    if (!entry.name) {
       return false;
     }
-    for (let memb of entry["viewerPrefs"]) {
-      if (memb["member"] == this.currentUser && memb["shouldHide"] == true) {
+    for (let memb of entry.viewerPrefs) {
+      if (memb.member == this.currentUser && memb.shouldHide == true) {
         return true;
       }
     }
@@ -381,17 +381,17 @@ export class TopTensComponent implements OnInit {
     }
 
     this.toptensService.getTopTensInfo(this.currentGroup.name).subscribe((res) => {
-      if (res["success"]) {
-        this.allCategories = res["allCategories"];
-        this.allCategoriesFull = res["allCategories"];
-        this.allTopTens = res["allTopTens"];
+      if (res.success) {
+        this.allCategories = res.allCategories;
+        this.allCategoriesFull = res.allCategories;
+        this.allTopTens = res.allTopTens;
         this.rememberSelectedAnime();
         this.generateLogistics();
         this.organizeTopTens();
         this.applyFilters();
-      } else if (res["message"] == "No group found" || res["message"] == "Invalid group membership") {
+      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
         this.displayToast("There is a problem with your group membership.", true)
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
@@ -426,20 +426,20 @@ export class TopTensComponent implements OnInit {
     this.filterText = "";
 
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
+      if (res.success) {
+        this.currentUser = res.user.username;
         this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
-            if (res["user"]["group"]) {
-              this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
-                if (res["success"]) {
-                  this.currentGroup = res["group"];
+          if (res.success) {
+            if (res.user.group) {
+              this.groupService.getGroupInfo(res.user.group).subscribe((res) => {
+                if (res.success) {
+                  this.currentGroup = res.group;
                   this.getGroupMembers();
                   this.refresh();
                 } else {
-                  if (res["message"] == "No group found") {
+                  if (res.message == "No group found") {
                     this.displayToast("Your group was disbanded", true);
-                  } else if (res["message"] == "Invalid group membership") {
+                  } else if (res.message == "Invalid group membership") {
                     this.displayToast("You are no longer a member of this group.", true)
                   } else {
                     console.log(res);
@@ -454,7 +454,7 @@ export class TopTensComponent implements OnInit {
         });
       } else {
         // If there was a problem we need to have them log in again
-        console.log(res["message"]);
+        console.log(res.message);
         this.authService.logout();
       }
     });

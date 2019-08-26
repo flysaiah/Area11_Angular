@@ -193,8 +193,8 @@ export class HomeComponent implements AfterViewChecked {
   showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
-    if (this.selectedAnime["description"]) {
-      this.selectedAnime["description"] = this.selectedAnime["description"].replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
+    if (this.selectedAnime.description) {
+      this.selectedAnime.description = this.selectedAnime.description.replace(/\[i\]/g, "\<i\>").replace(/\[\/i\]/g, "\</i\>")
     }
     this.validateSelectAsFinalistButton();
     if (clearSearchBar) {
@@ -269,7 +269,7 @@ export class HomeComponent implements AfterViewChecked {
   watchOPs() {
     // Open youtube searches of each finalist in new tabs
     for (let anime of this.finalistList) {
-      window.open("http://www.youtube.com/results?search_query=" + encodeURI(anime["name"] + " OP"), "_blank")
+      window.open("http://www.youtube.com/results?search_query=" + encodeURI(anime.name + " OP"), "_blank")
     }
   }
 
@@ -306,7 +306,7 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   private genreFilter(anime) {
-    for (let genre of anime["genres"]) {
+    for (let genre of anime.genres) {
       if (genre == this.selectedGenre) {
         return true;
       }
@@ -319,7 +319,7 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   private typeFilter(anime) {
-    return (this.selectedType == anime["type"])
+    return (this.selectedType == anime.type)
   }
 
   private studioFilter(anime) {
@@ -414,7 +414,7 @@ export class HomeComponent implements AfterViewChecked {
   private getGenres() {
     let allGenres = new Set<string>();
     for (let anime of this.searchAnime) {
-      for (let genre of anime["genres"]) {
+      for (let genre of anime.genres) {
         if (!allGenres.has(genre)) {
           allGenres.add(genre);
         }
@@ -426,8 +426,8 @@ export class HomeComponent implements AfterViewChecked {
   private getTypes() {
     let allTypes = new Set<string>();
     for (let anime of this.searchAnime) {
-      if (!allTypes.has(anime["type"])) {
-        allTypes.add(anime["type"])
+      if (!allTypes.has(anime.type)) {
+        allTypes.add(anime.type)
       }
     }
     this.allTypes = Array.from(allTypes);
@@ -436,7 +436,7 @@ export class HomeComponent implements AfterViewChecked {
   private getStudios() {
     let allStudios = new Set<string>();
     for (let anime of this.searchAnime) {
-      if (anime["studios"] && !allStudios.has(anime["studios"])) {
+      if (anime.studios && !allStudios.has(anime.studios)) {
         for (let studio of anime.studios.split(", ")) {
           allStudios.add(studio);
         }
@@ -456,16 +456,16 @@ export class HomeComponent implements AfterViewChecked {
     }
 
     this.animeService.addAnimeToCatalog(this.newAnimeMALURL, cat).subscribe(res => {
-      if (res["success"]) {
+      if (res.success) {
         this.newAnimeCategory = "";
         this.newAnimeMALURL = "";
         this.displayToast("Successfully added anime to catalog!");
         this.refresh();
-      } else if (res["message"] == "Anime already in catalog") {
-          this.displayToast(res["message"], true);
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Anime already in catalog") {
+          this.displayToast(res.message, true);
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
-      } else if (res["message"] == "Bad URL") {
+      } else if (res.message == "Bad URL") {
         this.displayToast("The URL you entered is invalid.", true);
       } else {
         this.displayToast("There was a problem.", true)
@@ -477,10 +477,10 @@ export class HomeComponent implements AfterViewChecked {
 
   private validateSelectAsFinalistButton() {
     // Custom validation for 'select as finalist' button
-    if (this.selectedAnime["category"] != "Completed" || this.selectedAnime["category"] == "Completed" && this.selectedAnime["hasNewSeason"]) {
+    if (this.selectedAnime.category != "Completed" || this.selectedAnime.category == "Completed" && this.selectedAnime.hasNewSeason) {
       this.canSelectAsFinalist = true;
       for (let anime of this.finalistList) {
-        if (this.selectedAnime["_id"] == anime["_id"]) {
+        if (this.selectedAnime._id == anime._id) {
           this.canSelectAsFinalist = false;
           break;
         }
@@ -508,27 +508,27 @@ export class HomeComponent implements AfterViewChecked {
       // Only do something if user hit "Confirm" rather than cancel
       if (typeof result != "undefined") {
       if (result) {
-        selectedAnime["comments"] = result.split(";");
-        if (selectedAnime["comments"][selectedAnime["comments"].length - 1] == "") {
-          selectedAnime["comments"].splice(-1,1);
+        selectedAnime.comments = result.split(";");
+        if (selectedAnime.comments[selectedAnime.comments.length - 1] == "") {
+          selectedAnime.comments.splice(-1,1);
         }
         // Remove unnecessary spaces
         for (let i=0; i<selectedAnime.comments.length; i++) {
           selectedAnime.comments[i] = selectedAnime.comments[i].trim();
         }
       }
-      this.animeService.selectAsFinalist(selectedAnime["_id"], selectedAnime["comments"]).subscribe((res) => {
-        if (!res["success"] && res["message"] == "Token") {
+      this.animeService.selectAsFinalist(selectedAnime._id, selectedAnime.comments).subscribe((res) => {
+        if (!res.success && res.message == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
-        } else if (!res["success"]) {
+        } else if (!res.success) {
           this.displayToast("There was a problem.", true);
         }
       });
       this.finalistList.push(selectedAnime);
       this.validateSelectAsFinalistButton();
       // Update finalist stats
-      if (selectedAnime["genres"].length && this.finalistGenreDict.size) {
-        for (let genre of this.selectedAnime["genres"]) {
+      if (selectedAnime.genres.length && this.finalistGenreDict.size) {
+        for (let genre of this.selectedAnime.genres) {
           let current = this.finalistGenreDict.get(genre);
           if (typeof current != "undefined") {
             this.finalistGenreDict.set(genre, current + 1);
@@ -544,8 +544,8 @@ export class HomeComponent implements AfterViewChecked {
 
   addNewSeason() {
     // Update hasNewSeason flag for anime
-    this.animeService.addNewSeason(this.selectedAnime["_id"]).subscribe(res => {
-      if (res["success"]) {
+    this.animeService.addNewSeason(this.selectedAnime._id).subscribe(res => {
+      if (res.success) {
         this.selectedAnime.hasNewSeason = true;
         this.validateSelectAsFinalistButton();
       } else {
@@ -557,8 +557,8 @@ export class HomeComponent implements AfterViewChecked {
 
   removeNewSeason() {
     // Update hasNewSeason flag for anime
-    this.animeService.removeNewSeason(this.selectedAnime["_id"]).subscribe(res => {
-      if (res["success"]) {
+    this.animeService.removeNewSeason(this.selectedAnime._id).subscribe(res => {
+      if (res.success) {
         this.selectedAnime.hasNewSeason = false;
         this.validateSelectAsFinalistButton();
       } else {
@@ -570,15 +570,15 @@ export class HomeComponent implements AfterViewChecked {
 
   removeAnimeFromCatalog() {
     // remove anime from database
-    this.animeService.removeAnimeFromCatalog(this.selectedAnime["_id"]).subscribe(res => {
-      if (res["success"]) {
+    this.animeService.removeAnimeFromCatalog(this.selectedAnime._id).subscribe(res => {
+      if (res.success) {
         this.refresh();
         this.selectedAnime = new Anime(this.currentUser, "");
         this.displayToast("Anime successfully removed!");
-      } else if (res["message"] == "Already deleted") {
+      } else if (res.message == "Already deleted") {
         this.displayToast("This anime has already been removed.", true);
         this.refresh();
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
@@ -644,16 +644,16 @@ export class HomeComponent implements AfterViewChecked {
 
   changeCategory(newCategory: string) {
     // Update database entry to reflect category change of anime
-    let oldCategory = this.selectedAnime["category"];
-    this.animeService.changeCategory(this.selectedAnime["_id"], newCategory).subscribe(res => {
-      if (res["success"]) {
+    let oldCategory = this.selectedAnime.category;
+    this.animeService.changeCategory(this.selectedAnime._id, newCategory).subscribe(res => {
+      if (res.success) {
         // Have to manually update currently selected anime's category
-        this.selectedAnime["category"] = newCategory;
+        this.selectedAnime.category = newCategory;
         // If autoTimelineAdd is true, then add to timeline here on move to completed
         if (newCategory == "Completed" && this.autoTimelineAdd) {
-          this.timelineService.addAnimeToTimeline(this.selectedAnime["name"], -1).subscribe(res => {
-            if (res["success"]) {
-            } else if (res["message"] == "Timeline not found") {
+          this.timelineService.addAnimeToTimeline(this.selectedAnime.name, -1).subscribe(res => {
+            if (res.success) {
+            } else if (res.message == "Timeline not found") {
               this.displayToast("You haven't started your timeline yet.", true);
             } else {
               this.displayToast("There was a problem.", true);
@@ -670,7 +670,7 @@ export class HomeComponent implements AfterViewChecked {
         if (this.warnMe && (this.newCompleted.length + 1) % 50 == 0) {
           this.displayToast("WARNING: Your next show will be a 50-milestone!", false, true);
         }
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
@@ -684,18 +684,18 @@ export class HomeComponent implements AfterViewChecked {
     this.dialogOpen = true;
     let dialogRef = this.dialog.open(FinalistCommentsDialog, {
       width: '300px',
-      data: {comments: this.finalistList[index]["comments"].join(";")}
+      data: {comments: this.finalistList[index].comments.join(";")}
     });
     dialogRef.afterClosed().subscribe(result => {
       this.dialogOpen = false;
       // result = comment string
       if (result) {
-        this.finalistList[index]["comments"] = result.split(";");
-        if (this.finalistList[index]["comments"][this.finalistList[index]["comments"].length - 1] == "") {
-          this.finalistList[index]["comments"].splice(-1,1);
+        this.finalistList[index].comments = result.split(";");
+        if (this.finalistList[index].comments[this.finalistList[index].comments.length - 1] == "") {
+          this.finalistList[index].comments.splice(-1,1);
         }
       } else if (result == "") {
-        this.finalistList[index]["comments"] = [];
+        this.finalistList[index].comments = [];
       } else {
         // No changes were made--they hit the cancel button
         return;
@@ -705,10 +705,10 @@ export class HomeComponent implements AfterViewChecked {
         this.finalistList[index].comments[i] = this.finalistList[index].comments[i].trim();
       }
       const tmp = this.finalistList[index];
-      this.animeService.selectAsFinalist(tmp["_id"], tmp["comments"]).subscribe((res) => {
-        if (!res["success"] && res["message"] == "Token") {
+      this.animeService.selectAsFinalist(tmp._id, tmp.comments).subscribe((res) => {
+        if (!res.success && res.message == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
-        } else if (!res["success"]) {
+        } else if (!res.success) {
           console.log(res);
           this.displayToast("There was a problem.", true);
         }
@@ -717,9 +717,9 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   removeFinalist(index: number) {
-    let genres = this.finalistList[index]["genres"] ? JSON.parse(JSON.stringify(this.finalistList[index]["genres"])) : [];
-    this.animeService.removeFinalist(this.finalistList[index]["_id"]).subscribe((res) => {
-      if (res["success"]) {
+    let genres = this.finalistList[index].genres ? JSON.parse(JSON.stringify(this.finalistList[index].genres)) : [];
+    this.animeService.removeFinalist(this.finalistList[index]._id).subscribe((res) => {
+      if (res.success) {
         this.finalistList.splice(index, 1);
         this.validateSelectAsFinalistButton();
         switch (this.finalistList.length) {
@@ -754,7 +754,7 @@ export class HomeComponent implements AfterViewChecked {
           }
         }
         this.allGenres.sort(this.sortGenres().bind(this));
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         console.log(res);
@@ -841,16 +841,16 @@ export class HomeComponent implements AfterViewChecked {
 
   recommendAnime() {
     this.animeService.recommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Anime recommended!");
-        if (!this.selectedAnime["recommenders"]) {
-          this.selectedAnime["recommenders"] = [{ name: this.currentUser }];
+        if (!this.selectedAnime.recommenders) {
+          this.selectedAnime.recommenders = [{ name: this.currentUser }];
         } else {
-          this.selectedAnime["recommenders"].push({ name: this.currentUser });
+          this.selectedAnime.recommenders.push({ name: this.currentUser });
         }
-        this.selectedAnime["ownerIsRecommender"] = true;
+        this.selectedAnime.ownerIsRecommender = true;
         this.refresh();
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
@@ -859,19 +859,19 @@ export class HomeComponent implements AfterViewChecked {
   }
   undoRecommendAnime() {
     this.animeService.undoRecommendAnime(this.selectedAnime, this.currentUser).subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("You have taken back your recommendation!");
-        if (this.selectedAnime["recommenders"] && this.selectedAnime["recommenders"].length == 1) {
-          this.selectedAnime["recommenders"] = [];
-        } else if (this.selectedAnime["recommenders"] && this.selectedAnime["recommenders"].length > 1) {
-          for (let i=0; i<this.selectedAnime["recommenders"].length; i++) {
-            if (this.selectedAnime["recommenders"][i]["name"] == this.currentUser) {
-              this.selectedAnime["recommenders"].splice(i,1);
+        if (this.selectedAnime.recommenders && this.selectedAnime.recommenders.length == 1) {
+          this.selectedAnime.recommenders = [];
+        } else if (this.selectedAnime.recommenders && this.selectedAnime.recommenders.length > 1) {
+          for (let i=0; i<this.selectedAnime.recommenders.length; i++) {
+            if (this.selectedAnime.recommenders[i].name == this.currentUser) {
+              this.selectedAnime.recommenders.splice(i,1);
             }
           }
         }
-        this.selectedAnime["ownerIsRecommender"] = false;
-      } else if (res["message"] == "Token") {
+        this.selectedAnime.ownerIsRecommender = false;
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true);
@@ -959,10 +959,10 @@ export class HomeComponent implements AfterViewChecked {
     let groupFilterAnime = [];
 
     this.groupService.getGroupMemberAnime(this.currentGroup.name).subscribe(res => {
-      if (res["success"]) {
+      if (res.success) {
         // First populate filter types
         let memberAnimeMap = new Map<string, Anime[]>();
-        for (let anime of res["anime"]) {
+        for (let anime of res.anime) {
           if (!memberAnimeMap.has(anime.user)) {
             memberAnimeMap.set(anime.user, [anime.name]);
           } else {
@@ -980,7 +980,7 @@ export class HomeComponent implements AfterViewChecked {
         for (let filterType of groupFilterTypes) {
           let filterList = [];
           let members = filterType.split(" + ");
-          for (let anime of res["anime"]) {
+          for (let anime of res.anime) {
             let valid = true;
             for (let member of members) {
               if (memberAnimeMap.get(member).indexOf(anime.name) === -1) {
@@ -1015,25 +1015,25 @@ export class HomeComponent implements AfterViewChecked {
     // Fetch all anime stored in database and update our lists
 
     this.animeService.fetchAnime(this.currentUser).subscribe((res) => {
-      if (res["success"]) {
-        const animeList = res["animeList"];
+      if (res.success) {
+        const animeList = res.animeList;
         this.newWantToWatch = [];
         this.newConsidering = [];
         this.newCompleted = [];
         const newFinalistList = [];
         const newSearchAnimeList = [];
         for (let anime of animeList) {
-          if (anime["category"] == "Want to Watch") {
+          if (anime.category == "Want to Watch") {
             this.newWantToWatch.push(anime);
             newSearchAnimeList.push(anime);
-          } else if (anime["category"] == "Considering") {
+          } else if (anime.category == "Considering") {
             this.newConsidering.push(anime);
             newSearchAnimeList.push(anime);
-          } else if (anime["category"] == "Completed") {
+          } else if (anime.category == "Completed") {
             this.newCompleted.push(anime);
             newSearchAnimeList.push(anime);
           }
-          if (anime["isFinalist"]) {
+          if (anime.isFinalist) {
             newFinalistList.push(anime);
           }
         }
@@ -1056,7 +1056,7 @@ export class HomeComponent implements AfterViewChecked {
         if (firstTime && this.warnMe && (this.newCompleted.length + 1) % 50 == 0) {
           this.displayToast("WARNING: Your next show will be a 50-milestone!", false, true);
         }
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
@@ -1147,20 +1147,20 @@ export class HomeComponent implements AfterViewChecked {
     this.warnMe = false;
 
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
-        this.selectedAnime["user"] = this.currentUser;
+      if (res.success) {
+        this.currentUser = res.user.username;
+        this.selectedAnime.user = this.currentUser;
 
         this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
+          if (res.success) {
             this.autoTimelineAdd = res.user.autoTimelineAdd;
             this.enableFireworks = res.user.fireworks;
             this.warnMe = res.user.warnMe;
 
-            if (res["user"]["group"]) {
-              this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
-                if (res["success"]) {
-                  this.currentGroup = res["group"];
+            if (res.user.group) {
+              this.groupService.getGroupInfo(res.user.group).subscribe((res) => {
+                if (res.success) {
+                  this.currentGroup = res.group;
                   this.populateGroupFilterLists();   // Definitely don't want to do this every refresh
                 } else {
                   console.log(res);

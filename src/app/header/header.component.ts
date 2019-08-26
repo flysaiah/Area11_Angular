@@ -47,21 +47,21 @@ export class HeaderComponent implements OnInit {
     clearInterval(this.interval);
     // Load avatar & username
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
-        this.currentUser = res["user"]["username"];
-        this.userAvatar = "/" + res["user"]["_id"];
+      if (res.success) {
+        this.currentUser = res.user.username;
+        this.userAvatar = "/" + res.user._id;
 
         // If user is in group and this is the group page, check for countdown timer
         let tmp = window.location.href.split("/");
         if (tmp[tmp.length - 1] === "group") {   // FIXME: This is kinda ugly
           this.userService.getUserInfo().subscribe((res) => {
-            if (res["success"] && res["user"]["group"]) {
-              this.groupService.getGroupInfo(res["user"]["group"]).subscribe((res) => {
-                if (res["success"] && res["group"]["countdown"] && res["group"]["countdown"]["name"] && res["group"]["countdown"]["date"]) {
-                  this.countdownDate = this.getCountdownString(res["group"]["countdown"]["date"]);
-                  this.countdownName = res["group"]["countdown"]["name"];
+            if (res.success && res.user.group) {
+              this.groupService.getGroupInfo(res.user.group).subscribe((res) => {
+                if (res.success && res.group.countdown && res.group.countdown.name && res.group.countdown.date) {
+                  this.countdownDate = this.getCountdownString(res.group.countdown.date);
+                  this.countdownName = res.group.countdown.name;
                   this.interval = setInterval(() => {
-                    this.countdownDate = this.getCountdownString(res["group"]["countdown"]["date"]);
+                    this.countdownDate = this.getCountdownString(res.group.countdown.date);
                   }, 1000);
                 }
               });
@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit {
       } else {
         // If there was a problem we need to have them log in again
         this.authService.logout();
-        console.log(res["message"]);
+        console.log(res.message);
       }
     });
   }

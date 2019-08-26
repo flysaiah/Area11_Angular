@@ -27,7 +27,7 @@
     <div class="infolists-list">
       <div class="infolists-list-item" *ngFor="let infolist of allInfolists; let i = index;">
         <mat-checkbox [(ngModel)]="infolist.isSelected">
-          {{ infolist["name"] }}
+          {{ infolist.name }}
         </mat-checkbox>
         <button mat-raised-button color="warn" class="delete-infolist-button" (click)="deleteInfolist(infolist, i)">Delete</button>
       </div>
@@ -41,7 +41,7 @@
   <div class="infolists-right-container">
     <div *ngFor="let infolist of allInfolists; let idx = index">
       <mat-card *ngIf="infolist.isSelected" class="infolists-right-card" >
-        <h2>{{ infolist["name"] }}</h2>
+        <h2>{{ infolist.name }}</h2>
 
         <div class="allInfolists-add-save-container">
           <button class="infolists-right-button" mat-raised-button color="accent" (click)="addNewEntry(infolist)">New Entry</button>

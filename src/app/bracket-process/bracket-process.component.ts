@@ -104,12 +104,12 @@ export class BracketProcessComponent implements OnInit {
     this.matchupRound = round;
     this.matchupIndex = i;
     // HACK: Not sure what an elegant way to do this would be but we don't want the double scroll bar here
-    document.getElementsByTagName("body")[0].style["overflow"] = "hidden";
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
     this.adjustDrawerHeights();
   }
 
   escapeMatchupDetails() {
-    document.getElementsByTagName("body")[0].style["overflow"] = "auto";
+    document.getElementsByTagName("body")[0].style.overflow = "auto";
     this.showMatchupDetails = false;
   }
 
@@ -278,9 +278,9 @@ export class BracketProcessComponent implements OnInit {
         if (parseInt(this.getSeed(this.finalistList[0][i].comments)) == (currentSeed + 1)) {
           seedFound = true;
           currentSeed++;
-          this.finalistList[0][i]["hasBeenSeeded"] = currentSeed;
+          this.finalistList[0][i].seedNumber = currentSeed;
           this.placeAsSeed(i, currentSeed);
-        } else if (parseInt(this.getSeed(this.finalistList[0][i].comments)) < (currentSeed + 1) && !this.finalistList[0][i]["hasBeenSeeded"]) {
+        } else if (parseInt(this.getSeed(this.finalistList[0][i].comments)) < (currentSeed + 1) && !this.finalistList[0][i].seedNumber) {
           // Duplicate seeds
           this.validFinalists = false;
           return;
@@ -294,10 +294,10 @@ export class BracketProcessComponent implements OnInit {
     while (seedFound) {
       seedFound = false;
       for (let i=0; i<this.finalistList[0].length; i++) {
-        if (!this.finalistList[0][i]["hasBeenSeeded"] && this.finalistList[0][i].name !== "bye") {
+        if (!this.finalistList[0][i].seedNumber && this.finalistList[0][i].name !== "bye") {
           seedFound = true;
           finalSeedCount++;
-          this.finalistList[0][i]["hasBeenSeeded"] = finalSeedCount;
+          this.finalistList[0][i].seedNumber = finalSeedCount;
           this.placeAsSeed(i, finalSeedCount);
         }
       }
@@ -357,7 +357,7 @@ export class BracketProcessComponent implements OnInit {
     this.validFinalists = true;
     this.showMatchupDetails = false;
 
-    document.getElementsByTagName("body")[0].style["overflow"] = "auto";
+    document.getElementsByTagName("body")[0].style.overflow = "auto";
 
     this.winner = "";
     // Get finalist list
@@ -392,7 +392,7 @@ export class BracketProcessComponent implements OnInit {
           this.validateBracket();
         }
         this.isLoading = false;
-      } else if (res["message"] == "Token") {
+      } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
         this.displayToast("There was a problem.", true)
@@ -415,15 +415,15 @@ export class BracketProcessComponent implements OnInit {
     this.showMatchupDetails = false;
 
     this.authService.getProfile().subscribe((res) => {
-      if (res["success"]) {
+      if (res.success) {
         this.userService.getUserInfo().subscribe((res) => {
-          if (res["success"]) {
+          if (res.success) {
             this.currentUser = res.user.username;
 
             this.userService.getUserInfo().subscribe((res) => {
-              if (res["success"]) {
+              if (res.success) {
                 if (res.user.fireworks) {
-                  this.enableFireworks = res["user"]["fireworks"];
+                  this.enableFireworks = res.user.fireworks;
                 }
                 this.setup();
               }
@@ -434,7 +434,7 @@ export class BracketProcessComponent implements OnInit {
         });
       } else {
         // If there was a problem we need to have them log in again
-        console.log(res["message"]);
+        console.log(res.message);
         this.authService.logout();
       }
     });
