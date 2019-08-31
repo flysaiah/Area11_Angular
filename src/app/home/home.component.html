@@ -169,7 +169,7 @@
     </mat-menu>
 
     <div class="search-toolbar-minicontainer">
-      <input class="search-anime-input" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
+      <input class="search-anime-input" id="animeSearchbar" placeholder="Search for anime" [(ngModel)]="searchText" [matAutocomplete]="auto" [formControl]="searchAnimeCtl">
       <mat-autocomplete #auto="matAutocomplete">
         <mat-option class="search-option" *ngFor="let anime of filteredSearchAnime | async" [value]="anime.name" (click)="showAnimeDetails(anime, true)">
           <img class="search-anime-thumbnail" [src]="anime.thumbnail" />

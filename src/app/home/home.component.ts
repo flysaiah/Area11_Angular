@@ -131,6 +131,16 @@ export class HomeComponent implements AfterViewChecked {
     // Key down => move through catalog backwards
     // Key right => move through finalists forwards
     // Key left => move through finalists backwards
+    // Key ENTER => either select anime from searchbar OR select anime as finalist
+    
+    if (event.key === "Enter" && document.activeElement.id === "animeSearchbar") {
+      for (let anime of this.searchAnime) {
+        if (anime.name === this.searchText) {
+          this.showAnimeDetails(anime, true);
+          return;
+        }
+      }
+    }
     if (!this.selectedAnime.name || this.dialogOpen) {
       return;
     }
@@ -187,9 +197,11 @@ export class HomeComponent implements AfterViewChecked {
   openAddAnimePrompt() {
     this.showAddAnimePrompt = true;
   }
+
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
   }
+  
   showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
