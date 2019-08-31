@@ -19,6 +19,7 @@ export class GroupComponent implements OnInit {
 
   refreshHeader: number;
   isLoading: boolean;
+  isSaving: boolean;
 
   newGroupName: string;
   groupAvatarUpload: Array<File> = [];
@@ -299,22 +300,30 @@ export class GroupComponent implements OnInit {
   }
 
   saveChanges() {
+    if (this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
     // If group name was changed, a little more work has to be done on the backend
     this.groupService.saveChanges(this.currentGroup.name, this.changesModel).subscribe((res) => {
       if (res.success) {
         this.displayToast("Your changes have been saved successfully!");
         setTimeout(() => {
           this.refresh();
+          this.isSaving = false;
         }, 1500)
-      } else if (res.message == "No group found" || res.message == "Invalid group membership") {
-        this.displayToast("There is a problem with your group membership.", true)
-      } else if (res.message == "Token") {
-        this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
-        console.log(res);
-        this.displayToast("There was a problem saving your changes.", true);
+        if (res.message == "No group found" || res.message == "Invalid group membership") {
+          this.displayToast("There is a problem with your group membership.", true);
+        } else if (res.message == "Token") {
+          this.displayToast("Your session has expired. Please refresh and log back in.", true);
+        } else {
+          console.log(res);
+          this.displayToast("There was a problem saving your changes.", true);
+        }
+        this.isSaving = false;
       }
-    })
+    });
   }
 
   toggleUploadOptions() {
@@ -405,6 +414,7 @@ export class GroupComponent implements OnInit {
 
   ngOnInit() {
     this.isLoading = true;
+    this.isSaving = false;
     this.refresh();
   }
 

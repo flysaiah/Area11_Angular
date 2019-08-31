@@ -124,7 +124,7 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
               <br>
-              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="!name.dirty && !countdownName.dirty && !countdownDate.dirty || countdownDate.invalid || ((changesModel.countdown.date && !changesModel.countdown.name) ? true : false) || ((changesModel.countdown.name && !changesModel.countdown.date) ? true : false)" (click)="saveChanges()">Save Changes</button>
+              <button class="save-changes-button" mat-raised-button color="accent" [disabled]="isSaving || !name.dirty && !countdownName.dirty && !countdownDate.dirty || countdownDate.invalid || ((changesModel.countdown.date && !changesModel.countdown.name) ? true : false) || ((changesModel.countdown.name && !changesModel.countdown.date) ? true : false)" (click)="saveChanges()">Save Changes</button>
             </form>
             <br><br>
             More group features and settings will be available in future updates!
