@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');

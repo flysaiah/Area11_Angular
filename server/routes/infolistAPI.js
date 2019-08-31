@@ -1,8 +1,5 @@
-const express = require('express');
-const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
 const Infolist = require('../models/infolist.js')
-const User = require("../models/user.js");
 
 module.exports = (router) => {
 

@@ -287,7 +287,7 @@ export class HomeComponent implements AfterViewChecked {
     return a;
   }
 
-  sortAnime(criteria) {
+  sortAnime(criteria: string) {
     // Sort all anime lists by the criteria picked in the toolbar select
     const c1 = criteria.split(",")[0];
     const c2 = criteria.split(",")[1];
@@ -305,7 +305,7 @@ export class HomeComponent implements AfterViewChecked {
     this.completedList.sort(this.sortByField(c1, c2));
   }
 
-  private genreFilter(anime) {
+  private genreFilter(anime: Anime) {
     for (let genre of anime.genres) {
       if (genre == this.selectedGenre) {
         return true;
@@ -318,11 +318,11 @@ export class HomeComponent implements AfterViewChecked {
     return (this.showCategory === anime.category);
   }
 
-  private typeFilter(anime) {
+  private typeFilter(anime: Anime) {
     return (this.selectedType == anime.type)
   }
 
-  private studioFilter(anime) {
+  private studioFilter(anime: Anime) {
     for (let studio of anime.studios.split(", ")) {
       if (this.selectedStudio === studio.trim()) {
         return true;
