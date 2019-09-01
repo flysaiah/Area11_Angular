@@ -133,13 +133,16 @@ export class HomeComponent implements AfterViewChecked {
     // Key left => move through finalists backwards
     // Key ENTER => either select anime from searchbar OR select anime as finalist
     
-    if (event.key === "Enter" && document.activeElement.id === "animeSearchbar") {
-      for (let anime of this.searchAnime) {
-        if (anime.name === this.searchText) {
-          this.showAnimeDetails(anime, true);
-          return;
+    if (document.activeElement.id === "animeSearchbar") {
+      if (event.key === "Enter") {
+        for (let anime of this.searchAnime) {
+          if (anime.name === this.searchText) {
+            this.showAnimeDetails(anime, true);
+            break;
+          }
         }
       }
+      return;
     }
     if (!this.selectedAnime.name || this.dialogOpen) {
       return;
@@ -201,7 +204,7 @@ export class HomeComponent implements AfterViewChecked {
   closeAddAnimePrompt() {
     this.showAddAnimePrompt = false;
   }
-  
+
   showAnimeDetails(anime: Anime, clearSearchBar?: boolean) {
     this.selectedAnime = anime;
     // Some elements like [i] and [/i] are used in description, so we replace with regex to ensure they render correctly
@@ -1142,6 +1145,8 @@ export class HomeComponent implements AfterViewChecked {
     this.sortScheme.set("name,ascending", "Alphabetical");
     this.sortScheme.set("rating,descending", "Rating (High to Low)");
     this.sortScheme.set("rating,ascending", "Rating (Low to High)");
+    this.sortScheme.set("popularity,ascending", "Popularity (High to Low)");
+    this.sortScheme.set("popularity,descending", "Popularity (Low to High)");
     this.sortScheme.set("startDate,ascending", "Air Date (Old to New)");
     this.sortScheme.set("startDate,descending", "Air Date (New to Old)");
     this.sortScheme.set("random,_", "Random");

@@ -334,6 +334,12 @@ $warn: map-get($my-app-theme, warn);
   font-size: 14px;
 }
 .search-toolbar-submenu-wide {
+  width: 180px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+}
+.search-toolbar-submenu-extrawide {
   width: 230px;
   height: 35px;
   line-height: 35px;

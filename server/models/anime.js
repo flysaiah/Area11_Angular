@@ -22,7 +22,9 @@ const animeSchema = new Schema({
   ownerIsRecommender: Boolean,
   hasNewSeason: Boolean,
   runtime: String,
-  studios: String
-})
+  studios: String,
+  ranking: Number,
+  popularity: Number
+});
 
 module.exports = mongoose.model('Anime', animeSchema);

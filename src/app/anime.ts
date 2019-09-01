@@ -21,6 +21,8 @@ export class Anime {
     public hasNewSeason?: boolean,
     public runtime?: string,
     public studios?: string,
-    public seedNumber?: number
+    public seedNumber?: number,
+    public ranking?: number,
+    public popularity?: number
   ) {}
 }

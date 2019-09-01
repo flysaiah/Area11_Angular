@@ -248,7 +248,16 @@ module.exports = (router) => {
       const name = stuff.split('<h1 class="h1"><span itemprop="name">')[1].split('</span></h1>')[0].trim();
       const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
       const malID = req.body.malURL.split("/anime/")[1].split("/")[0];
-
+      // Ranking
+      let ranking = stuff.split('<span class="dark_text">Ranked:</span>')[1].split('<sup>')[0].trim().replace("#", "");
+      if (isNaN(ranking)) {
+        ranking = null;
+      }
+      // Popularity
+      let popularity = stuff.split('<span class="dark_text">Popularity:</span>')[1].split('</div>')[0].trim().replace("#", "");
+      if (isNaN(popularity)) {
+        popularity = null;
+      }
       User.findOne({ "_id": ObjectID(req.decoded.userId) }, (err, user) => {
         if (err) {
           res.json({ success: false, message: err });
@@ -287,7 +296,9 @@ module.exports = (router) => {
                     englishTitle: englishTitle,
                     status: status,
                     runtime: runtime,
-                    studios: studios
+                    studios: studios,
+                    ranking: ranking,
+                    popularity: popularity
                   });
 
                   // Update recommenations if user is in a group

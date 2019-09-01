@@ -32,31 +32,31 @@
       Filter/Sort<span class="down-icon">▾</span>
     </div>
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #filterSortMenu="matMenu">
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="categoryFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="categoryFilterMenu" >
         <span>Filter by Category ({{ showCategory }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="genreFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="genreFilterMenu" >
         <span>Filter by Genre ({{ selectedGenre }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="typeFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="typeFilterMenu" >
         <span>Filter by Type ({{ selectedType }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="studioFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="studioFilterMenu" >
           <span>Filter by Studio ({{ selectedStudio }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="recommendationFilterMenu" >
         <span>Filter by Recommendation ({{ recommendationPreference }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="airingStatusFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="airingStatusFilterMenu" >
           <span>Filter by Airing Status ({{ selectedAiringStatus }})</span>
         </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
-      <a *ngIf="groupFilterTypes.length" class="search-toolbar-submenu-wide" mat-menu-item [matMenuTriggerFor]="groupFilterMenu" >
+      <a *ngIf="groupFilterTypes.length" class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="groupFilterMenu" >
         <span>Filter by Group Member ({{ (groupFilterIndex === -1) ? "No Filter" : (groupFilterIndex === -2 ? "At Least One Member" : groupFilterTypes[groupFilterIndex]) }})</span>
       </a>
-      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); resetAllFilters()">
+      <a class="search-toolbar-submenu-extrawide" mat-menu-item (click)="$event.stopPropagation(); resetAllFilters()">
         <span>Reset All Filters</span>
       </a>
     </mat-menu>
@@ -132,25 +132,31 @@
 
     <!-- Sort menu -->
     <mat-menu class="catalog-actions" [overlapTrigger]="false" #sortFilterMenu="matMenu">
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', '_id,ascending');">
         <span>Default Sorting <span *ngIf="sortCriteria === '_id,ascending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'name,ascending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'name,ascending');">
         <span>Alphabetical <span *ngIf="sortCriteria === 'name,ascending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,descending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,descending');">
         <span>Rating (High to Low) <span *ngIf="sortCriteria === 'rating,descending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,ascending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'rating,ascending');">
         <span>Rating (Low to High) <span *ngIf="sortCriteria === 'rating,ascending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,ascending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'popularity,ascending');">
+        <span>Popularity (High to Low) <span *ngIf="sortCriteria === 'rating,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'popularity,descending');">
+        <span>Popularity (Low to High) <span *ngIf="sortCriteria === 'rating,ascending'" class="submenu-checkmark">✓</span></span>
+      </a>
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,ascending');">
         <span>Air Date (Old to New) <span *ngIf="sortCriteria === 'startDate,ascending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,descending');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'startDate,descending');">
         <span>Air Date (New to Old) <span *ngIf="sortCriteria === 'startDate,descending'" class="submenu-checkmark">✓</span></span>
       </a>
-      <a class="search-toolbar-submenu" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'random,_');">
+      <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('Sort', 'random,_');">
         <span>Random <span *ngIf="sortCriteria === 'random,_'" class="submenu-checkmark">✓</span></span>
       </a>
     </mat-menu>
