@@ -16,7 +16,7 @@ let malIDs = new Set();
 let allAnime = [];
 let updateList = [];
 
-Anime.find({"user": "flysaiah", "category": "Completed"}, (err, animeList) => {
+Anime.find({}, (err, animeList) => {
   if (err) {
     mongoose.disconnect();
     console.log(err);

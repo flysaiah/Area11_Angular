@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material';
 import { MatButtonModule, MatInputModule, MatDialogModule, MatListModule, MatCardModule, MatChipsModule, MatMenuModule, MatSelectModule, MatTabsModule , MatAutocompleteModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatNativeDateModule } from '@angular/material';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent, ConfirmDialog } from './app.component';
@@ -74,7 +75,8 @@ import { BracketProcessComponent } from './bracket-process/bracket-process.compo
     ColorPickerModule,
     MatRadioModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTooltipModule
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, InfolistService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],

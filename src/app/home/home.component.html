@@ -275,7 +275,13 @@
           <p class="details-top-p" *ngIf="selectedAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(selectedAnime.startDate) }}</p>
           <p *ngIf="selectedAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(selectedAnime.endDate) }}</p>
           <p *ngIf="selectedAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(selectedAnime.startDate) }}</p>
-          <p><strong>MAL rating: </strong> {{ selectedAnime.rating ? selectedAnime.rating : "Unknown" }}</p>
+          <p>
+            <strong>MAL rating: </strong>
+            <span class="mal-tooltip-owner" matTooltip="Score ranking: {{ selectedAnime.ranking ? '#' + selectedAnime.ranking : 'Unknown' }}
+            Popularity ranking: {{ selectedAnime.popularity ? '#' + selectedAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="selectedAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
+            {{ selectedAnime.rating ? selectedAnime.rating : "Unknown" }}
+            </span>
+          </p>
           <p><strong>Studios: </strong> <span [innerHTML]="selectedAnime.studios ? selectedAnime.studios : 'Unknown'"></span></p>
           <p><strong>Type: </strong> {{ selectedAnime.type ? selectedAnime.type : "Unknown" }}</p>
           <p><strong>English: </strong> {{ selectedAnime.englishTitle ? selectedAnime.englishTitle : "Unknown" }}</p>
@@ -341,10 +347,10 @@
       <div class="finalist-item finalist-topitem">
         <h3 *ngIf="finalistList.length == 1" class="finalist-topitem-header-cr">Currently Watching</h3>
         <h3 *ngIf="finalistList.length != 1" class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>
-        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
-        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-viewstats" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
-        <button *ngIf="finalistList.length > 1" class="finalist-topitem-shuffle" mat-raised-button color="primary" (click)="shuffleFinalists()">Shuffle</button>
-        <button *ngIf="finalistList.length > 1" mat-raised-button class="finalist-topitem-watchops" color="accent" (click)="watchOPs()">Watch OPs</button>
+        <button *ngIf="finalistList.length > 1 && !showFinalistStats" class="finalist-topitem-button finalist-topitem-viewstats" mat-raised-button (click)="viewFinalistStats()">View Stats</button>
+        <button *ngIf="finalistList.length > 1 && showFinalistStats" class="finalist-topitem-button finalist-topitem-viewstats" mat-raised-button (click)="hideFinalistStats()">Hide Stats</button>
+        <button *ngIf="finalistList.length > 1" class="finalist-topitem-button finalist-topitem-shuffle" mat-raised-button color="primary" (click)="shuffleFinalists()">Shuffle</button>
+        <button *ngIf="finalistList.length > 1" mat-raised-button class="finalist-topitem-button finalist-topitem-watchops" color="accent" (click)="watchOPs()">Watch OPs</button>
         <span class="finalist-divider"></span>
       </div>
       <div class="finalist-stats" *ngIf="showFinalistStats">

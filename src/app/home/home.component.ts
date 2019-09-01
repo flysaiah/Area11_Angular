@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, AfterViewChecked, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewChecked, HostListener, ViewEncapsulation } from '@angular/core';
 import { Anime } from '../anime';
 import { Group } from '../group/group';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -17,7 +17,8 @@ import 'rxjs/add/operator/map';
   selector: 'home-page',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  inputs: ['selectedAnime']
+  inputs: ['selectedAnime'],
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements AfterViewChecked {
   wantToWatchList: Anime[];
@@ -134,15 +135,16 @@ export class HomeComponent implements AfterViewChecked {
     // Key ENTER => either select anime from searchbar OR select anime as finalist
     
     if (document.activeElement.id === "animeSearchbar") {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && this.searchText) {
         for (let anime of this.searchAnime) {
           if (anime.name === this.searchText) {
             this.showAnimeDetails(anime, true);
-            break;
+            return;
           }
         }
+      } else if (event.key !== "Enter") {
+        return;
       }
-      return;
     }
     if (!this.selectedAnime.name || this.dialogOpen) {
       return;

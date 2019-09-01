@@ -329,20 +329,20 @@ $warn: map-get($my-app-theme, warn);
 }
 .search-toolbar-submenu {
   width: 150px;
-  height: 35px;
-  line-height: 35px;
+  height: 35px !important;
+  line-height: 35px !important;
   font-size: 14px;
 }
 .search-toolbar-submenu-wide {
   width: 180px;
-  height: 35px;
-  line-height: 35px;
+  height: 35px !important;
+  line-height: 35px !important;
   font-size: 14px;
 }
 .search-toolbar-submenu-extrawide {
   width: 230px;
-  height: 35px;
-  line-height: 35px;
+  height: 35px !important;
+  line-height: 35px !important;
   font-size: 14px;
 }
 .submenu-checkmark {
@@ -599,32 +599,24 @@ $warn: map-get($my-app-theme, warn);
   margin-bottom: 10px;
   margin-top: 5px;
 }
-.finalist-topitem-viewstats {
-  margin-right: 2px;
-  background-color: #FFD700;
-  border-radius: 50px;
-  height: 20px;
+.finalist-topitem-button {
+  border-radius: 50px !important;
+  height: 20px !important;
   vertical-align: middle;
-  line-height: 20px;
-  margin-bottom: 10px;
+  line-height: 20px !important;
+  margin-bottom: 10px !important;
+}
+.finalist-topitem-viewstats {
+  margin-right: 2px !important;
+  background-color: #FFD700;
 }
 .finalist-topitem-shuffle {
-  margin-left: 2px;
-  margin-right: 2px;
-  border-radius: 50px;
-  height: 20px;
-  vertical-align: middle;
-  line-height: 20px;
-  margin-bottom: 10px;
+  margin-left: 2px !important;
+  margin-right: 2px !important;
   min-width: 50px !important;
 }
 .finalist-topitem-watchops {
-  margin-left: 2px;
-  border-radius: 50px;
-  height: 20px;
-  vertical-align: middle;
-  line-height: 20px;
-  margin-bottom: 10px;
+  margin-left: 2px !important;
   min-width: 70px !important;
 }
 .finalist-stats {
@@ -674,14 +666,14 @@ $warn: map-get($my-app-theme, warn);
     }
     .finalist-button-container-smallscreen {
       display: block;
-      margin-right: 2%;
+      margin-right: 2% !important;
       float: right;
       margin-top: 13px;
       margin-bottom: 5px;
     }
     .finalist-smallscreen-action {
-      height: 30px;
-      line-height: 30px;
+      height: 30px !important;
+      line-height: 30px !important;
     }
     .add-anime-smallscreen {
       display: inline;
@@ -715,13 +707,13 @@ $warn: map-get($my-app-theme, warn);
   }
 }
 .finalist-button {
-  margin-right: 1px;
-  margin-left: 2px;
-  border-radius: 50px;
-  height: 20px;
+  margin-right: 1px !important;
+  margin-left: 2px !important;
+  border-radius: 50px !important;
+  height: 20px !important;
   vertical-align: middle;
-  line-height: 20px;
-  min-width: 67px;
+  line-height: 20px !important;
+  min-width: 67px !important;
 }
 .comments-chiplist {
   margin-top: 5px !important;
@@ -753,4 +745,28 @@ $warn: map-get($my-app-theme, warn);
   margin: 0;
   width: 100%;
   clear: both;
+}
+.mal-tooltip-owner {
+  border-bottom: 1px dotted black;
+}
+.mal-tooltip {
+  width: 160px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.mal-tooltip-wide {
+  width: 180px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.mal-tooltip::after {
+  content: " ";
+  position: absolute;
+  top: 45%;
+  left: 0%;
+  margin-left: -10px;
+  border-width: 10px 10px 10px 0;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
 }
