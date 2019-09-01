@@ -168,6 +168,17 @@ export class InfolistsComponent implements OnInit {
     return infolist.entries.slice(startIndex, endIndex);
   }
 
+  sortByName(infolist: Infolist, descending?: boolean) {
+    // Sort infolist by left column (Anime Name)
+    infolist.entries.sort((entry1, entry2) => {
+      if (descending) {
+        return entry1.anime < entry2.anime ? 1 : -1;
+      } else {
+        return entry1.anime < entry2.anime ? -1 : 1;
+      }
+    });
+  }
+
   saveChanges(infolist: Infolist) {
     this.deleteEmptyRows(infolist);
     this.infolistService.saveInfolist(infolist).subscribe((res) => {
@@ -182,7 +193,7 @@ export class InfolistsComponent implements OnInit {
 
   deleteInfolist(infolist: Infolist, index: number) {
     let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: { doIt: true }
+      data: {}
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -265,7 +276,7 @@ export class RenameInfolistDialog {
   @HostListener('document:keydown', ['$event'])
   handleKeypress(event: KeyboardEvent) {
     if (event.key == "Enter") {
-      this.dialogRef.close(this.data.comments);
+      this.dialogRef.close(this.data.newName);
     }
   }
 }

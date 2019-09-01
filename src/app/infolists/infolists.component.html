@@ -69,8 +69,10 @@
             <tr>
               <td colspan="2">
                 <span class="paginator">
-                  <label for="paginatorLabel">Items per page: </label>
-                  <select id="paginatorLabel-{{ idx }}" [(ngModel)]="paginatorOptionsMap[infolist.name]" (ngModelChange)="paginatorCurrentIndexMap[infolist.name] = 0;">
+                  <label for="paginatorSortByName"></label>
+                  <button id="paginatorSortByName" [disabled]="!infolist.entries || !infolist.entries.length" class="paginator-sort-button" mat-raised-button color="accent" (click)="sortByName(infolist)">Sort by Name</button>
+                  <label for="paginatorItemsPerPage">Items per page: </label>
+                  <select id="paginatorItemsPerPage-{{ idx }}" [(ngModel)]="paginatorOptionsMap[infolist.name]" (ngModelChange)="paginatorCurrentIndexMap[infolist.name] = 0;">
                     <option selected="selected" value=10>10</option>
                     <option value=25>25</option>
                     <option value=50>50</option>
