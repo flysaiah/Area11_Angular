@@ -238,7 +238,7 @@
     </div>
 
     <!-- Anime catalogue -->
-    <div class="catalog" [scrollTop]="scrollTop" *ngIf="!isLoading && !catalogIsLoading">
+    <div class="catalog" [scrollTop]="catalogScrollTop" *ngIf="!isLoading && !catalogIsLoading">
       <mat-nav-list dense #animeCatalog>
         <h3 matSubheader *ngIf="showCategory == 'All Categories' || showCategory == 'Want to Watch'">Want to Watch ({{ wantToWatchList.length }}):</h3>
         <mat-list-item (click)="showAnimeDetails(anime)" class="catalog-item" *ngFor="let anime of wantToWatchList">
@@ -343,7 +343,7 @@
     </div>
 
   <!-- IDEA: Recommender filter for finalist list based on genres not selected yet -->
-    <div *ngIf="finalistList.length && !isLoading" class="chooser-tool">
+    <div *ngIf="finalistList.length && !isLoading" class="chooser-tool" [scrollTop]="finalistListScrollTop">
       <div class="finalist-item finalist-topitem">
         <h3 *ngIf="finalistList.length == 1" class="finalist-topitem-header-cr">Currently Watching</h3>
         <h3 *ngIf="finalistList.length != 1" class="finalist-topitem-header">Finalists: {{ finalistList.length }}</h3>

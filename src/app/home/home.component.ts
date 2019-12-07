@@ -68,7 +68,8 @@ export class HomeComponent implements AfterViewChecked {
   isLoading: boolean;
   catalogIsLoading: boolean;   // for when we just need the animation on left panel
   currentlyAddingAnime: boolean;
-  scrollTop: number;
+  catalogScrollTop: number;
+  finalistListScrollTop: number;
 
   searchAnimeCtl: FormControl;
   searchAnime: Anime[];
@@ -151,26 +152,28 @@ export class HomeComponent implements AfterViewChecked {
     }
     let modifier = 1;
     let list;
+    let currentIndex = -1;
     switch (event.key) {
       case "ArrowUp":
         modifier = -1;
       case "ArrowDown":
-        if (this.wantToWatchList.indexOf(this.selectedAnime) !== -1) {
-          list = this.wantToWatchList;
-        } else if (this.consideringList.indexOf(this.selectedAnime) !== -1) {
-          list = this.consideringList;
-        } else if (this.completedList.indexOf(this.selectedAnime) !== -1) {
+        currentIndex = this.getIndexOfAnimeInList(this.wantToWatchList, this.selectedAnime.name);
+        list = this.wantToWatchList;
+
+        if (currentIndex == -1) {
+          currentIndex = this.getIndexOfAnimeInList(this.consideringList, this.selectedAnime.name);
+          list = this.consideringList
+        }
+        if (currentIndex == -1) {
+          currentIndex = this.getIndexOfAnimeInList(this.completedList, this.selectedAnime.name);
           list = this.completedList;
-        } else {
-          // This should never happen
-          console.log("KeypressHandler error -- Selected anime not found in catalog!");
-          return;
         }
         break;
       case "ArrowLeft":
         modifier = -1;
       case "ArrowRight":
         list = this.finalistList;
+        currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name)
         break;
       case ("Enter"):
         if (this.canSelectAsFinalist) {
@@ -181,22 +184,40 @@ export class HomeComponent implements AfterViewChecked {
         // do nothing
         return;
     }
-    let currentIndex = list.indexOf(this.selectedAnime);
+    
     if (currentIndex !== -1) {
+      event.preventDefault();   // need this to prevent automatic keyboard scrolling
       let newIndex = (currentIndex + 1 * modifier) % list.length;
       if (newIndex < 0) {
         newIndex = list.length - 1;
       }
       this.selectedAnime = list[newIndex];
       if (list === this.wantToWatchList) {
-        this.scrollTop = newIndex * 40;
+        this.catalogScrollTop = newIndex * 40 + 40; // extra 40 is for list category header
       } else if (list === this.consideringList) {
-        this.scrollTop = this.wantToWatchList.length * 40 + newIndex * 40;
+        this.catalogScrollTop = this.wantToWatchList.length * 40 + newIndex * 40 + 80  // extra 80 is for list category headers
       } else if (list === this.completedList) {
-        this.scrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40;
+        this.catalogScrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40 + 120 // extra 120 is for list category headers
+      }
+      else if (list == this.finalistList) {
+        this.finalistListScrollTop = newIndex * 70 + 75;   // extra 75 is for header list item
+      } else {
+        console.log("handleKeypress error -- No list found for keypress event!")
       }
     }
+
     this.validateSelectAsFinalistButton();
+  }
+
+  private getIndexOfAnimeInList(list: Anime[], animeName: string) {
+    // Use this instead of indexOf since indexOf won't recognize copies
+    for (let i=0; i<list.length; i++) {
+      if (list[i].name == animeName) {
+        return i;
+      }
+    }
+    
+    return -1;
   }
 
   openAddAnimePrompt() {
@@ -913,7 +934,7 @@ export class HomeComponent implements AfterViewChecked {
     this.selectedAiringStatus = "No Filter";
     
     this.applyFilters();
-    this.scrollTop = Math.random();
+    this.catalogScrollTop = Math.random();
   }
 
   private formatDate(date: string) {
@@ -967,7 +988,7 @@ export class HomeComponent implements AfterViewChecked {
         return;
     }
     this.applyFilters();
-    this.scrollTop = Math.random();
+    this.catalogScrollTop = Math.random();
   }
 
   private populateGroupFilterLists() {
@@ -1098,7 +1119,8 @@ export class HomeComponent implements AfterViewChecked {
     this.isLoading = true;
     this.currentlyAddingAnime = false;
     this.catalogIsLoading = false;
-    this.scrollTop = 0;
+    this.catalogScrollTop = 0;
+    this.finalistListScrollTop = 0;
 
     this.autoTimelineAdd = false;
 
