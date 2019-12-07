@@ -884,7 +884,6 @@ export class HomeComponent implements AfterViewChecked {
           this.selectedAnime.recommenders.push({ name: this.currentUser });
         }
         this.selectedAnime.ownerIsRecommender = true;
-        this.refresh();
       } else if (res.message == "Token") {
         this.displayToast("Your session has expired. Please refresh and log back in.", true);
       } else {
@@ -912,7 +911,6 @@ export class HomeComponent implements AfterViewChecked {
         this.displayToast("There was a problem.", true);
         console.log(res);
       }
-      this.refresh();
     });
   }
 
