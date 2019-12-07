@@ -319,7 +319,7 @@
           <span>Move to Completed</span>
         </a>
       </mat-menu>
-      <button [disabled]="!canSelectAsFinalist" *ngIf="selectedAnime.category != 'Completed' || selectedAnime.category == 'Completed' && selectedAnime.hasNewSeason" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
+      <button [disabled]="!canSelectAsFinalist" class="details-button" (click)="selectAsFinalist()" mat-raised-button color="primary">Select as Finalist</button>
       <button *ngIf="selectedAnime.category == 'Completed' && !selectedAnime.ownerIsRecommender" class="details-button" (click)="recommendAnime()" mat-raised-button color="primary">Recommend</button>
       <button *ngIf="selectedAnime.category == 'Completed' && selectedAnime.ownerIsRecommender" class="details-button" (click)="undoRecommendAnime()" mat-raised-button color="primary">Undo Recommend</button>
       <button *ngIf="selectedAnime.category == 'Completed' && !selectedAnime.hasNewSeason" class="new-season-button" (click)="addNewSeason()" mat-raised-button color="accent">Add New Season</button>

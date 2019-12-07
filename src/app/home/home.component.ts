@@ -515,17 +515,14 @@ export class HomeComponent implements AfterViewChecked {
 
   private validateSelectAsFinalistButton() {
     // Custom validation for 'select as finalist' button
-    if (this.selectedAnime.category != "Completed" || this.selectedAnime.category == "Completed" && this.selectedAnime.hasNewSeason) {
-      this.canSelectAsFinalist = true;
-      for (let anime of this.finalistList) {
-        if (this.selectedAnime._id == anime._id) {
-          this.canSelectAsFinalist = false;
-          break;
-        }
+    let validFinalist = true;
+    for (let anime of this.finalistList) {
+      if (this.selectedAnime._id == anime._id) {
+        validFinalist = false;
+        break;
       }
-    } else {
-      this.canSelectAsFinalist = false;
     }
+    this.canSelectAsFinalist = validFinalist;
   }
 
   selectAsFinalist() {
