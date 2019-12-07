@@ -368,25 +368,25 @@ $warn: map-get($my-app-theme, warn);
   background-color: mat-color($primary);
   border: 1px solid #330000;
   border-width: 2px;
-  height: 40px;
+  height: 40px !important;
   line-height: 40px;
   text-shadow: 1px 1px 0 #444;
 }
 .home-button {
-  border-radius: 50px;
+  border-radius: 50px !important;
   height: 20px;
   color: black;
-  line-height: 20px;
-  margin-left: 60px;
+  line-height: 20px !important;
+  margin-left: 60px !important;
 }
 .reset-button {
   float: right;
-  margin-top: 10px;
-  border-radius: 50px;
+  margin-top: 10px !important;
+  border-radius: 50px !important;
   height: 20px;
   color: black;
-  line-height: 20px;
-  margin-right: 60px;
+  line-height: 20px !important;
+  margin-right: 60px !important;
 }
 .hero {
   position: relative;
@@ -780,4 +780,28 @@ $warn: map-get($my-app-theme, warn);
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+}
+.mal-tooltip-owner {
+  border-bottom: 1px dotted black;
+}
+.mal-tooltip {
+  width: 160px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.mal-tooltip-wide {
+  width: 180px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.mal-tooltip::after {
+  content: " ";
+  position: absolute;
+  top: 45%;
+  left: 0%;
+  margin-left: -10px;
+  border-width: 10px 10px 10px 0;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
 }

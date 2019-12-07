@@ -46,14 +46,14 @@
 
 <div *ngIf="eraList.length" class="timeline">
   <div *ngFor="let era of eraList; let i = index;" class="container" [ngClass]="{'left': i % 2 == 0, 'right': i % 2 == 1}">
-    <mat-card *ngIf="editingEra != i" class="content" [ngStyle]="{'background-color': era['backgroundColor']}">
+    <mat-card *ngIf="editingEra != i" class="content" [ngStyle]="{'background-color': era.backgroundCOlor}">
       <!-- VIEW -->
-      <div class="era-container" [ngClass]="{'era-white': era['whiteText']}">
-        <h1 class="era-header era-title">{{ era["name"] }}</h1>
-        <p *ngIf="era['subHeader']" class="era-title era-subheader"><i>{{ era["subHeader"] }}</i></p>
-        <h4 *ngIf="era['startDate'] && era['endDate'] &&era['startDate'] != era['endDate'] " class="era-date">{{ era["startDate"] }} - {{ era["endDate"] }}</h4>
-        <h4 *ngIf="era['startDate'] && era['endDate'] && era['startDate'] == era['endDate']" class="era-date">{{ era["startDate"] }}</h4>
-        <h4 *ngIf="era['startDate'] && !era['endDate']" class="era-date">{{ era["startDate"] }} - Present</h4>
+      <div class="era-container" [ngClass]="{'era-white': era.whiteText}">
+        <h1 class="era-header era-title">{{ era.name }}</h1>
+        <p *ngIf="era.subHeader" class="era-title era-subheader"><i>{{ era.subHeader }}</i></p>
+        <h4 *ngIf="era.startDate && era.endDate &&era.startDate != era.endDate " class="era-date">{{ era.startDate }} - {{ era.endDate }}</h4>
+        <h4 *ngIf="era.startDate && era.endDate && era.startDate == era.endDate" class="era-date">{{ era.startDate }}</h4>
+        <h4 *ngIf="era.startDate && !era.endDate" class="era-date">{{ era.startDate }} - Present</h4>
         <button [disabled]="!isTimelineOwner" class="edit-era-button" mat-raised-button color="accent" (click)="editEra(i)">Edit</button>
         <button [disabled]="!isTimelineOwner || editingEra != -1" class="add-new-era-button" mat-raised-button color="primary" (click)="addNewEra(i)">Add New Era</button>
         <button [disabled]="!isTimelineOwner || i == 0 || editingEra != -1" class="delete-era-button" mat-raised-button color="warn" (click)="deleteEra(i)">Delete Era</button>
@@ -61,8 +61,8 @@
       <!-- EDIT -->
       <span class="era-horizontal-line"></span>
       <br>
-      <div [ngClass]="{'era-white': era['whiteText']}">
-        <p *ngFor="let entry of era['entries']">{{ entry }}</p>
+      <div [ngClass]="{'era-white': era.whiteText}">
+        <p *ngFor="let entry of era.entries">{{ entry }}</p>
       </div>
     </mat-card>
 
@@ -70,26 +70,26 @@
     <mat-card *ngIf="editingEra == i && isTimelineOwner">
       <div class="era-container">
         <mat-form-field color="accent">
-          <input matInput placeholder="Era Name" [(ngModel)]="era['name']" name="eraName">
+          <input matInput placeholder="Era Name" [(ngModel)]="era.name" name="eraName">
         </mat-form-field>
         <br>
         <mat-form-field color="accent">
-          <input matInput placeholder="Era Subheader" [(ngModel)]="era['subHeader']" name="eraSubheader">
+          <input matInput placeholder="Era Subheader" [(ngModel)]="era.subHeader" name="eraSubheader">
         </mat-form-field>
         <br>
         <mat-form-field color="accent" class="edit-start-date">
-          <input matInput placeholder="Start Date" [(ngModel)]="era['startDate']" name="eraStart">
+          <input matInput placeholder="Start Date" [(ngModel)]="era.startDate" name="eraStart">
         </mat-form-field>
         <mat-form-field color="accent" class="edit-end-date">
-          <input matInput placeholder="End Date" [(ngModel)]="era['endDate']" name="eraEnd">
+          <input matInput placeholder="End Date" [(ngModel)]="era.endDate" name="eraEnd">
         </mat-form-field>
         <br>
         <mat-form-field color="accent">
-          <input matInput placeholder="Background color" [(colorPicker)]="era['backgroundColor']" [style.background]="era['backgroundColor']"
-          [value]="era['backgroundColor']" [cpPosition]="'bottom'"/>
+          <input matInput placeholder="Background color" [(colorPicker)]="era.backgroundCOlor" [style.background]="era.backgroundCOlor"
+          [value]="era.backgroundCOlor" [cpPosition]="'bottom'"/>
         </mat-form-field>
         <br>
-        <mat-checkbox matInput labelPosition="before" [(ngModel)]="era['whiteText']">
+        <mat-checkbox matInput labelPosition="before" [(ngModel)]="era.whiteText">
           White Text
         </mat-checkbox>
         <br>

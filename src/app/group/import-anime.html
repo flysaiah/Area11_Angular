@@ -8,13 +8,13 @@
         <img class="import-thumbnail" [src]="anime['thumbnail']">
         <div class="import-info">
           <div>
-            <h3>{{ anime["name"] }}</h3>
+            <h3>{{ anime.name }}</h3>
           </div>
           <div>
-            Type: {{ anime["type"] }}
+            Type: {{ anime.type }}
           </div>
           <div>
-            MAL Rating: {{ anime["rating"] }}
+            MAL Rating: {{ anime.rating }}
           </div>
           <div class="recommended-message-container" *ngIf="anime.recommenders && anime.recommenders.length">
             <mat-chip class="recommended-message">Recommended by <span *ngFor="let recommender of anime.recommenders; let i = index">{{ recommender.name + (i == anime.recommenders.length - 1 ? "" : ", ") }}</span></mat-chip>

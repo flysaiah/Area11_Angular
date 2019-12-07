@@ -1,8 +1,5 @@
-const express = require('express');
-const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
 const Infolist = require('../models/infolist.js')
-const User = require("../models/user.js");
 
 module.exports = (router) => {
 
@@ -25,13 +22,26 @@ module.exports = (router) => {
 
   router.post('/saveInfolist', (req, res) => {
     // Save state of infolist
-    Infolist.findOneAndUpdate({ "user": ObjectID(req.decoded.userId), "name": req.body.infolist.name }, { $set: { entries: req.body.infolist.entries, lastEditedDate: new Date() } }, (err, infolist) => {
+    // Name is updated separately--if new name is present then don't update anything else
+    let newInfolist;
+    if (req.body.newName) {
+      newInfolist = {
+        name: req.body.newName
+      }
+    } else {
+      newInfolist = {
+        entries: req.body.infolist.entries,
+        lastEditedDate: new Date()
+      }
+    }
+
+    Infolist.findOneAndUpdate({ "user": ObjectID(req.decoded.userId), "name": req.body.infolist.name }, { $set: newInfolist }, { new: true }, (err, infolist) => {
       if (err) {
         res.json({ success: false, message: err });
       } else if (!infolist) {
         res.json({ success: false, message: "Infolist not found" });
       } else {
-        res.json({ success: true, message: "Infolist updated successfully!" });
+        res.json({ success: true, infolist: infolist, message: "Infolist updated successfully!" });
       }
     });
   });

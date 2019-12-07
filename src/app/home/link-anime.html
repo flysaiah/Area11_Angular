@@ -4,19 +4,19 @@
   <br>
   <mat-card class="link-item" *ngFor="let anime of data.suggestions; let i = index">
     <div>
-      <img class="link-thumbnail" [src]="anime['thumbnail']">
+      <img class="link-thumbnail" [src]="anime.thumbnail">
       <div class="link-info">
         <div>
-          <h3>{{ anime["name"] }}</h3>
+          <h3>{{ anime.name }}</h3>
         </div>
         <div>
-          Air date: {{  anime["startDate"] ? (anime["startDate"] == "Invalid Date" ? "Unknown" : anime["startDate"]) : "Unknown"  }}
+          Air date: {{  anime.startDate ? (anime.startDate == "Invalid Date" ? "Unknown" : anime.startDate) : "Unknown"  }}
         </div>
         <div>
-          Type: {{ anime["type"] }}
+          Type: {{ anime.type }}
         </div>
         <div>
-          MAL Rating: {{ anime["rating"] }}
+          MAL Rating: {{ anime.rating }}
         </div>
         <button class="link-button" mat-raised-button color="accent" [matDialogClose]="i">Link This Anime</button>
       </div>

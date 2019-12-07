@@ -21,11 +21,11 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.authService.registerUser({ username: this.model.username, password: this.model.password, bestgirl: this.model.bestgirl }).subscribe(res => {
-      if (res["success"]) {
+      if (res.success) {
         this.displayToast("Successfully registered! Logging in...")
         setTimeout(() => {
           this.authService.login(this.model).subscribe(res => {
-            if (res["success"]) {
+            if (res.success) {
               this.authService.storeUserData(res.token, res.user);
               this.router.navigate(['/'])
             } else {
@@ -37,10 +37,10 @@ export class RegisterComponent implements OnInit {
             }
           })
         }, 1500);
-      } else if (res["message"]["code"] && res["message"]["code"] == 11000) {
+      } else if (res.message.code && res.message.code == 11000) {
         this.displayToast("That username already exists.", true);
         this.submitted = false;
-      } else if (res["message"] == "spaces"){
+      } else if (res.message == "spaces"){
         this.displayToast("Username cannot contain spaces.", true);
         this.submitted = false;
       } else {

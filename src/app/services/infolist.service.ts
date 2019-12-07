@@ -31,9 +31,9 @@ export class InfolistService {
     return this.http.post(this.domain + '/api/infolist/addNewInfolist', { infolist: infolist }, this.options).map(res => res.json());
   }
 
-  saveInfolist(infolist: Infolist) {
+  saveInfolist(infolist: Infolist, newName?: string) {
     this.createAuthenticationHeaders();
-    return this.http.post(this.domain + '/api/infolist/saveInfolist', { infolist: infolist }, this.options).map(res => res.json());
+    return this.http.post(this.domain + '/api/infolist/saveInfolist', { infolist: infolist, newName: newName }, this.options).map(res => res.json());
   }
 
   deleteInfolist(infolist: Infolist) {

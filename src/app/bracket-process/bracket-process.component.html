@@ -11,37 +11,43 @@
 <div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <div class="matchup-details matchup-details-left" id="matchup-details-left" [ngClass]="{'matchup-details-show': showMatchupDetails}">
   <div *ngIf="leftMatchupAnime && leftMatchupAnime.name" class="details-panel">
-    <h2 class="details-title">{{ leftMatchupAnime["name"] }}</h2>
+    <h2 class="details-title">{{ leftMatchupAnime.name }}</h2>
     <div class="details-flex-container">
       <div class="details-thumbnail-container">
-        <img [src]="leftMatchupAnime['thumbnail']" alt="Thumbnail not available.">
+        <img [src]="leftMatchupAnime.thumbnail" alt="Thumbnail not available.">
       </div>
       <div class="details-misc">
-        <p class="details-top-p" *ngIf="leftMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime["startDate"]) }}</p>
-        <p *ngIf="leftMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(leftMatchupAnime["endDate"]) }}</p>
-        <p *ngIf="leftMatchupAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(leftMatchupAnime["startDate"]) }}</p>
-        <p><strong>MAL rating: </strong> {{ leftMatchupAnime["rating"] ? leftMatchupAnime["rating"] : "Unknown" }}</p>
-        <p><strong>Studios: </strong> <span [innerHTML]="leftMatchupAnime['studios'] ? leftMatchupAnime['studios'] : 'Unknown'"></span></p>
-        <p><strong>Type: </strong> {{ leftMatchupAnime["type"] ? leftMatchupAnime["type"] : "Unknown" }}</p>
-        <p><strong>English: </strong> {{ leftMatchupAnime["englishTitle"] ? leftMatchupAnime["englishTitle"] : "Unknown" }}</p>
-        <p><strong>Status: </strong> {{ leftMatchupAnime["status"] ? leftMatchupAnime["status"] : "Unknown" }}</p>
-        <p *ngIf="leftMatchupAnime['runtime']"><strong>Runtime: </strong> {{ leftMatchupAnime["runtime"] }}</p>
-        <p><strong>Genres: </strong>
-          <span *ngIf="leftMatchupAnime['genres'] && leftMatchupAnime['genres'].length">
-            <span *ngFor="let genre of leftMatchupAnime['genres']; let i = index;">{{ genre + (i == leftMatchupAnime['genres'].length - 1 ? '' : ', ') }}</span>
+        <p class="details-top-p" *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
+        <p *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(leftMatchupAnime.endDate) }}</p>
+        <p *ngIf="leftMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
+        <p>
+          <strong>MAL rating: </strong>
+          <span class="mal-tooltip-owner" matTooltip="Score ranking: {{ leftMatchupAnime.ranking ? '#' + leftMatchupAnime.ranking : 'Unknown' }}
+          Popularity ranking: {{ leftMatchupAnime.popularity ? '#' + leftMatchupAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="leftMatchupAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
+          {{ leftMatchupAnime.rating ? leftMatchupAnime.rating : "Unknown" }}
           </span>
-          <span *ngIf="!leftMatchupAnime['genres'] || !leftMatchupAnime['genres'].length">Unavailable (updated nightly)</span>
+        </p>
+        <p><strong>Studios: </strong> <span [innerHTML]="leftMatchupAnime.studios ? leftMatchupAnime.studios : 'Unknown'"></span></p>
+        <p><strong>Type: </strong> {{ leftMatchupAnime.type ? leftMatchupAnime.type : "Unknown" }}</p>
+        <p><strong>English: </strong> {{ leftMatchupAnime.englishTitle ? leftMatchupAnime.englishTitle : "Unknown" }}</p>
+        <p><strong>Status: </strong> {{ leftMatchupAnime.status ? leftMatchupAnime.status : "Unknown" }}</p>
+        <p *ngIf="leftMatchupAnime.runtime"><strong>Runtime: </strong> {{ leftMatchupAnime.runtime }}</p>
+        <p><strong>Genres: </strong>
+          <span *ngIf="leftMatchupAnime.genres && leftMatchupAnime.genres.length">
+            <span *ngFor="let genre of leftMatchupAnime.genres; let i = index;">{{ genre + (i == leftMatchupAnime.genres.length - 1 ? '' : ', ') }}</span>
+          </span>
+          <span *ngIf="!leftMatchupAnime.genres || !leftMatchupAnime.genres.length">Unavailable (updated nightly)</span>
         </p>
         <p><strong>Recommenders: </strong>
-          <span *ngIf="leftMatchupAnime['recommenders'] && leftMatchupAnime['recommenders'].length">
-            <span *ngFor="let recommender of leftMatchupAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == leftMatchupAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+          <span *ngIf="leftMatchupAnime.recommenders && leftMatchupAnime.recommenders.length">
+            <span *ngFor="let recommender of leftMatchupAnime.recommenders; let i = index;">{{ recommender.name + (i == leftMatchupAnime.recommenders.length - 1 ? '' : ', ') }}</span>
           </span>
-          <span *ngIf="!leftMatchupAnime['recommenders'] || !leftMatchupAnime['recommenders'].length">None</span>
+          <span *ngIf="!leftMatchupAnime.recommenders || !leftMatchupAnime.recommenders.length">None</span>
         </p>
       </div>
     </div>
     <div class="details-description">
-      <p [innerHTML]="leftMatchupAnime['description']"></p>
+      <p [innerHTML]="leftMatchupAnime.description"></p>
     </div>
   </div>
 </div>
@@ -56,37 +62,43 @@
 <div class="matchup-details matchup-details-right" id="matchup-details-right" [ngClass]="{'matchup-details-show': showMatchupDetails}">
   <div *ngIf="rightMatchupAnime && rightMatchupAnime.name" class="details-panel">
     <div class="details-panel-content">
-      <h2 class="details-title">{{ rightMatchupAnime["name"] }}</h2>
+      <h2 class="details-title">{{ rightMatchupAnime.name }}</h2>
       <div class="details-flex-container">
         <div class="details-thumbnail-container">
-          <img [src]="rightMatchupAnime['thumbnail']" alt="Thumbnail not available.">
+          <img [src]="rightMatchupAnime.thumbnail" alt="Thumbnail not available.">
         </div>
         <div class="details-misc">
-          <p class="details-top-p" *ngIf="rightMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime["startDate"]) }}</p>
-          <p *ngIf="rightMatchupAnime['endDate'] !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(rightMatchupAnime["endDate"]) }}</p>
-          <p *ngIf="rightMatchupAnime['endDate'] === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime["startDate"]) }}</p>
-          <p><strong>MAL rating: </strong> {{ rightMatchupAnime["rating"] ? rightMatchupAnime["rating"] : "Unknown" }}</p>
-          <p><strong>Studios: </strong> <span [innerHTML]="rightMatchupAnime['studios'] ? rightMatchupAnime['studios'] : 'Unknown'"></span></p>
-          <p><strong>Type: </strong> {{ rightMatchupAnime["type"] ? rightMatchupAnime["type"] : "Unknown" }}</p>
-          <p><strong>English: </strong> {{ rightMatchupAnime["englishTitle"] ? rightMatchupAnime["englishTitle"] : "Unknown" }}</p>
-          <p><strong>Status: </strong> {{ rightMatchupAnime["status"] ? rightMatchupAnime["status"] : "Unknown" }}</p>
-          <p *ngIf="rightMatchupAnime['runtime']"><strong>Runtime: </strong> {{ rightMatchupAnime["runtime"] }}</p>
-          <p><strong>Genres: </strong>
-            <span *ngIf="rightMatchupAnime['genres'] && rightMatchupAnime['genres'].length">
-              <span *ngFor="let genre of rightMatchupAnime['genres']; let i = index;">{{ genre + (i == rightMatchupAnime['genres'].length - 1 ? '' : ', ') }}</span>
+          <p class="details-top-p" *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
+          <p *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(rightMatchupAnime.endDate) }}</p>
+          <p *ngIf="rightMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
+          <p>
+            <strong>MAL rating: </strong>
+            <span class="mal-tooltip-owner" [matTooltipHideDelay]="3000000" matTooltip="Score ranking: {{ rightMatchupAnime.ranking ? '#' + rightMatchupAnime.ranking : 'Unknown' }}
+            Popularity ranking: {{ rightMatchupAnime.popularity ? '#' + rightMatchupAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="rightMatchupAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
+            {{ rightMatchupAnime.rating ? rightMatchupAnime.rating : "Unknown" }}
             </span>
-            <span *ngIf="!rightMatchupAnime['genres'] || !rightMatchupAnime['genres'].length">Unavailable (updated nightly)</span>
+          </p>          
+          <p><strong>Studios: </strong> <span [innerHTML]="rightMatchupAnime.studios ? rightMatchupAnime.studios : 'Unknown'"></span></p>
+          <p><strong>Type: </strong> {{ rightMatchupAnime.type ? rightMatchupAnime.type : "Unknown" }}</p>
+          <p><strong>English: </strong> {{ rightMatchupAnime.englishTitle ? rightMatchupAnime.englishTitle : "Unknown" }}</p>
+          <p><strong>Status: </strong> {{ rightMatchupAnime.status ? rightMatchupAnime.status : "Unknown" }}</p>
+          <p *ngIf="rightMatchupAnime.runtime"><strong>Runtime: </strong> {{ rightMatchupAnime.runtime }}</p>
+          <p><strong>Genres: </strong>
+            <span *ngIf="rightMatchupAnime.genres && rightMatchupAnime.genres.length">
+              <span *ngFor="let genre of rightMatchupAnime.genres; let i = index;">{{ genre + (i == rightMatchupAnime.genres.length - 1 ? '' : ', ') }}</span>
+            </span>
+            <span *ngIf="!rightMatchupAnime.genres || !rightMatchupAnime.genres.length">Unavailable (updated nightly)</span>
           </p>
           <p><strong>Recommenders: </strong>
-            <span *ngIf="rightMatchupAnime['recommenders'] && rightMatchupAnime['recommenders'].length">
-              <span *ngFor="let recommender of rightMatchupAnime['recommenders']; let i = index;">{{ recommender["name"] + (i == rightMatchupAnime['recommenders'].length - 1 ? '' : ', ') }}</span>
+            <span *ngIf="rightMatchupAnime.recommenders && rightMatchupAnime.recommenders.length">
+              <span *ngFor="let recommender of rightMatchupAnime.recommenders; let i = index;">{{ recommender.name + (i == rightMatchupAnime.recommenders.length - 1 ? '' : ', ') }}</span>
             </span>
-            <span *ngIf="!rightMatchupAnime['recommenders'] || !rightMatchupAnime['recommenders'].length">None</span>
+            <span *ngIf="!rightMatchupAnime.recommenders || !rightMatchupAnime.recommenders.length">None</span>
           </p>
         </div>
       </div>
       <div class="details-description">
-        <p [innerHTML]="rightMatchupAnime['description']"></p>
+        <p [innerHTML]="rightMatchupAnime.description"></p>
       </div>
     </div>
   </div>

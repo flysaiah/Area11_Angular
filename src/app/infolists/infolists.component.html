@@ -27,7 +27,7 @@
     <div class="infolists-list">
       <div class="infolists-list-item" *ngFor="let infolist of allInfolists; let i = index;">
         <mat-checkbox [(ngModel)]="infolist.isSelected">
-          {{ infolist["name"] }}
+          {{ infolist.name }}
         </mat-checkbox>
         <button mat-raised-button color="warn" class="delete-infolist-button" (click)="deleteInfolist(infolist, i)">Delete</button>
       </div>
@@ -41,12 +41,12 @@
   <div class="infolists-right-container">
     <div *ngFor="let infolist of allInfolists; let idx = index">
       <mat-card *ngIf="infolist.isSelected" class="infolists-right-card" >
-        <h2>{{ infolist["name"] }}</h2>
+        <h2>{{ infolist.name }}</h2>
 
         <div class="allInfolists-add-save-container">
           <button class="infolists-right-button" mat-raised-button color="accent" (click)="addNewEntry(infolist)">New Entry</button>
           <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="primary" (click)="saveChanges(infolist)">Save</button>
-          <button [disabled]="!infolist.entries || !infolist.entries.length" class="infolists-right-button" mat-raised-button color="warn" (click)="deleteEmptyRows(infolist)">Delete Empty Rows</button>
+          <button class="infolists-right-button infolists-gold-background" mat-raised-button (click)="renameInfolist(infolist)">Rename</button>
         </div>
 
         <div class="empty-list-placeholder" *ngIf="!infolist.entries || !infolist.entries.length">
@@ -69,8 +69,10 @@
             <tr>
               <td colspan="2">
                 <span class="paginator">
-                  <label for="paginatorLabel">Items per page: </label>
-                  <select id="paginatorLabel-{{ idx }}" [(ngModel)]="paginatorOptionsMap[infolist.name]" (ngModelChange)="paginatorCurrentIndexMap[infolist.name] = 0;">
+                  <label for="paginatorSortByName"></label>
+                  <button id="paginatorSortByName" [disabled]="!infolist.entries || !infolist.entries.length" class="paginator-sort-button" mat-raised-button color="accent" (click)="sortByName(infolist)">Sort by Name</button>
+                  <label for="paginatorItemsPerPage">Items per page: </label>
+                  <select id="paginatorItemsPerPage-{{ idx }}" [(ngModel)]="paginatorOptionsMap[infolist.name]" (ngModelChange)="paginatorCurrentIndexMap[infolist.name] = 0;">
                     <option selected="selected" value=10>10</option>
                     <option value=25>25</option>
                     <option value=50>50</option>

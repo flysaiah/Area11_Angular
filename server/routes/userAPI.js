@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
 const Anime = require('../models/anime.js');
 const User = require('../models/user.js');
@@ -9,7 +7,7 @@ const multer = require('multer');
 const async = require('async');
 const fs = require('fs');
 
-// Make sure Area11/public exists; if not then create it
+// Make sure /public exists; if not then create it
 if (!fs.existsSync('public') ){
     fs.mkdirSync('public/');
 }

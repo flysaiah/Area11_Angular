@@ -151,10 +151,17 @@ $warn: map-get($my-app-theme, warn);
   display: inline-block;
   width: 200px;
   margin-right: 10px;
+  font-size: 12px;
+}
+.category-checkbox-option span {
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  font-size: 12px;
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  width: 170px;
+  vertical-align: middle;
 }
 @media screen and (max-width: 1025px) {
   .toptens-top-navigator {
@@ -165,6 +172,9 @@ $warn: map-get($my-app-theme, warn);
   }
   .category-checkbox-option {
     width: 170px;
+  }
+  .category-checkbox-option span {
+    width: 140px;
   }
 }
 /deep/ .mat-checkbox-layout {

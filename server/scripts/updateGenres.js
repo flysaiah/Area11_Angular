@@ -2,7 +2,7 @@ const config = require('../config/database.js')
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.uri, {useMongoClient: true}, (err) => {
+mongoose.connect(config.uri, (err) => {
   if (err) {
     console.log('Could not connect to database: ', err);
   } else {
@@ -118,7 +118,6 @@ Anime.find({}, (err, animeList) => {
               console.log("---STATUS---");
               console.log(status);
 
-              // const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
               let studios = "";
               const studioBlock = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</div>')[0].split('</a>');
               for (let i=0; i<studioBlock.length - 1; i++) {
@@ -132,7 +131,25 @@ Anime.find({}, (err, animeList) => {
               console.log("---STUDIOS---");
               console.log(studios);
 
-              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime, studios: studios });
+              // Ranking
+              let ranking = stuff.split('<span class="dark_text">Ranked:</span>')[1].split('<sup>')[0].trim().replace("#", "");
+              if (isNaN(ranking)) {
+                ranking = null;
+              }
+
+              console.log("---RANKING---");
+              console.log(ranking);
+
+              // Popularity
+              let popularity = stuff.split('<span class="dark_text">Popularity:</span>')[1].split('</div>')[0].trim().replace("#", "");
+              if (isNaN(popularity)) {
+                popularity = null;
+              }
+
+              console.log("---POPULARITY---");
+              console.log(popularity)
+
+              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime, studios: studios, ranking: ranking, popularity: popularity });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");

@@ -1,8 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const ObjectID = require('mongodb').ObjectID;
-const User = require('../models/user.js');
-const Group = require('../models/group.js');
 const TopTens = require('../models/toptens.js');
 
 module.exports = (router) => {

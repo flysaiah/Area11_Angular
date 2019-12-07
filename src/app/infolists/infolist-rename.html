@@ -1,0 +1,11 @@
+<h1 matDialogTitle>Rename Infolist</h1>
+<div mat-dialog-content>
+  <p>Add new name here:</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.newName">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [matDialogClose]="data.newName">Confirm</button>
+  <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>
