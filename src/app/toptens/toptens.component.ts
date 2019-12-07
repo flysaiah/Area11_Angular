@@ -116,23 +116,41 @@ export class TopTensComponent implements OnInit {
 
   cancelChanges(category: string, index: number) {
     // Load old version
-    let oldVersion = JSON.parse(JSON.stringify(this.oldVersionMap.get(category)));
-    this.topTensMap.get(category).set(this.currentUser, oldVersion);
-    this.oldVersionMap.set(category, null);
-    this.categoryLogistics[index].isEditing = false;
-    this.statusMap.set(category + "-edit", false);
+
+    let dialogRef = this.dialog.open(ConfirmDialog, {
+      data: { doIt: true }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        let oldVersion = JSON.parse(JSON.stringify(this.oldVersionMap.get(category)));
+        this.topTensMap.get(category).set(this.currentUser, oldVersion);
+        this.oldVersionMap.set(category, null);
+        this.categoryLogistics[index].isEditing = false;
+        this.statusMap.set(category + "-edit", false);
+      }
+    });
   }
 
   clearCategory(category: string) {
     // Reset this top tens object with 10 empty entries
-    let currentTTO = this.topTensMap.get(category).get(this.currentUser);
-    currentTTO.entries = currentTTO.entries.slice(0, 10);
-    for (let entry of currentTTO.entries) {
-      entry.name = "";
-      for (let viewerPref of entry.viewerPrefs) {
-        viewerPref.shouldHide = false;
+
+    let dialogRef = this.dialog.open(ConfirmDialog, {
+      data: { doIt: true }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        let currentTTO = this.topTensMap.get(category).get(this.currentUser);
+        currentTTO.entries = currentTTO.entries.slice(0, 10);
+        for (let entry of currentTTO.entries) {
+          entry.name = "";
+          for (let viewerPref of entry.viewerPrefs) {
+            viewerPref.shouldHide = false;
+          }
+        }
       }
-    }
+    });
   }
 
   saveChanges(category: string, index: number) {
