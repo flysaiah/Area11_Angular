@@ -37,7 +37,7 @@
         <hr>
         <div class="category-checkbox-options-container">
           <div *ngFor="let category of allCategories" class="category-checkbox-option" title="{{category.category}}">
-            <mat-checkbox [(ngModel)]="category.isSelected" [value]="category.category">{{ category.category }}</mat-checkbox>
+            <mat-checkbox [(ngModel)]="category.isSelected" [value]="category.category"><span>{{ category.category }}</span></mat-checkbox>
           </div>
         </div>
     </div>
