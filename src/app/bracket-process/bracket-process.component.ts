@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { Anime } from '../anime';
 
@@ -22,7 +22,8 @@ function shuffle(array) {
 @Component({
   selector: 'app-bracket-process',
   templateUrl: './bracket-process.component.html',
-  styleUrls: ['./bracket-process.component.scss']
+  styleUrls: ['./bracket-process.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BracketProcessComponent implements OnInit {
 

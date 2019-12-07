@@ -20,7 +20,13 @@
         <p class="details-top-p" *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
         <p *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(leftMatchupAnime.endDate) }}</p>
         <p *ngIf="leftMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
-        <p><strong>MAL rating: </strong> {{ leftMatchupAnime.rating ? leftMatchupAnime.rating : "Unknown" }}</p>
+        <p>
+          <strong>MAL rating: </strong>
+          <span class="mal-tooltip-owner" matTooltip="Score ranking: {{ leftMatchupAnime.ranking ? '#' + leftMatchupAnime.ranking : 'Unknown' }}
+          Popularity ranking: {{ leftMatchupAnime.popularity ? '#' + leftMatchupAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="leftMatchupAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
+          {{ leftMatchupAnime.rating ? leftMatchupAnime.rating : "Unknown" }}
+          </span>
+        </p>
         <p><strong>Studios: </strong> <span [innerHTML]="leftMatchupAnime.studios ? leftMatchupAnime.studios : 'Unknown'"></span></p>
         <p><strong>Type: </strong> {{ leftMatchupAnime.type ? leftMatchupAnime.type : "Unknown" }}</p>
         <p><strong>English: </strong> {{ leftMatchupAnime.englishTitle ? leftMatchupAnime.englishTitle : "Unknown" }}</p>
@@ -65,7 +71,13 @@
           <p class="details-top-p" *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
           <p *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(rightMatchupAnime.endDate) }}</p>
           <p *ngIf="rightMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
-          <p><strong>MAL rating: </strong> {{ rightMatchupAnime.rating ? rightMatchupAnime.rating : "Unknown" }}</p>
+          <p>
+            <strong>MAL rating: </strong>
+            <span class="mal-tooltip-owner" [matTooltipHideDelay]="3000000" matTooltip="Score ranking: {{ rightMatchupAnime.ranking ? '#' + rightMatchupAnime.ranking : 'Unknown' }}
+            Popularity ranking: {{ rightMatchupAnime.popularity ? '#' + rightMatchupAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="rightMatchupAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
+            {{ rightMatchupAnime.rating ? rightMatchupAnime.rating : "Unknown" }}
+            </span>
+          </p>          
           <p><strong>Studios: </strong> <span [innerHTML]="rightMatchupAnime.studios ? rightMatchupAnime.studios : 'Unknown'"></span></p>
           <p><strong>Type: </strong> {{ rightMatchupAnime.type ? rightMatchupAnime.type : "Unknown" }}</p>
           <p><strong>English: </strong> {{ rightMatchupAnime.englishTitle ? rightMatchupAnime.englishTitle : "Unknown" }}</p>
