@@ -73,7 +73,7 @@
           <p *ngIf="rightMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
           <p>
             <strong>MAL rating: </strong>
-            <span class="mal-tooltip-owner" [matTooltipHideDelay]="3000000" matTooltip="Score ranking: {{ rightMatchupAnime.ranking ? '#' + rightMatchupAnime.ranking : 'Unknown' }}
+            <span class="mal-tooltip-owner" matTooltip="Score ranking: {{ rightMatchupAnime.ranking ? '#' + rightMatchupAnime.ranking : 'Unknown' }}
             Popularity ranking: {{ rightMatchupAnime.popularity ? '#' + rightMatchupAnime.popularity : 'Unknown' }}" matTooltipPosition="right" [matTooltipClass]="rightMatchupAnime.popularity ? 'mal-tooltip' : 'mal-tooltip-wide'">
             {{ rightMatchupAnime.rating ? rightMatchupAnime.rating : "Unknown" }}
             </span>
