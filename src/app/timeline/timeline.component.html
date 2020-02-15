@@ -46,7 +46,7 @@
 
 <div *ngIf="eraList.length" class="timeline">
   <div *ngFor="let era of eraList; let i = index;" class="container" [ngClass]="{'left': i % 2 == 0, 'right': i % 2 == 1}">
-    <mat-card *ngIf="editingEra != i" class="content" [ngStyle]="{'background-color': era.backgroundCOlor}">
+    <mat-card *ngIf="editingEra != i" class="content" [ngStyle]="{'background-color': era.backgroundColor}">
       <!-- VIEW -->
       <div class="era-container" [ngClass]="{'era-white': era.whiteText}">
         <h1 class="era-header era-title">{{ era.name }}</h1>
@@ -85,8 +85,8 @@
         </mat-form-field>
         <br>
         <mat-form-field color="accent">
-          <input matInput placeholder="Background color" [(colorPicker)]="era.backgroundCOlor" [style.background]="era.backgroundCOlor"
-          [value]="era.backgroundCOlor" [cpPosition]="'bottom'"/>
+          <input matInput placeholder="Background color" [(colorPicker)]="era.backgroundColor" [style.background]="era.backgroundColor"
+          [value]="era.backgroundColor" [cpPosition]="'bottom'"/>
         </mat-form-field>
         <br>
         <mat-checkbox matInput labelPosition="before" [(ngModel)]="era.whiteText">
