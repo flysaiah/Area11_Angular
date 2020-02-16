@@ -23,7 +23,7 @@ import { TimelineService } from './services/timeline.service';
 import { InfolistService } from './services/infolist.service';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
-import { SettingsComponent, DeleteAccountDialog } from './settings/settings.component';
+import { SettingsComponent } from './settings/settings.component';
 import { GroupComponent, ImportAnimeDialog } from './group/group.component';
 import { HeaderComponent } from './header/header.component';
 import { TopTensComponent } from './toptens/toptens.component';
@@ -37,7 +37,6 @@ import { BracketProcessComponent } from './bracket-process/bracket-process.compo
     HomeComponent,
     LinkAnimeDialog,
     FinalistCommentsDialog,
-    DeleteAccountDialog,
     ConfirmDialog,
     DeleteEraDialog,
     RenameInfolistDialog,
@@ -80,6 +79,6 @@ import { BracketProcessComponent } from './bracket-process/bracket-process.compo
   ],
   providers: [AuthService, AnimeService, UserService, GroupService, TopTensService, TimelineService, InfolistService, AuthGuard, NotAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, DeleteAccountDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog, RenameInfolistDialog]
+  entryComponents: [LinkAnimeDialog, FinalistCommentsDialog, ConfirmDialog, ImportAnimeDialog, DeleteEraDialog, RenameInfolistDialog]
 })
 export class AppModule { }

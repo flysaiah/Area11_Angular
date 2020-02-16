@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
-import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { User } from '../register/user';
+import { ConfirmDialog } from '../app.component';
 
 @Component({
   selector: 'app-settings',
@@ -79,9 +80,7 @@ export class SettingsComponent implements OnInit {
 
   deleteAccount() {
     // Open dialog
-    let dialogRef = this.dialog.open(DeleteAccountDialog, {
-      data: {confirm: true}
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe(result => {
       // If result is defined then they confirmed the deletion
@@ -169,17 +168,4 @@ export class SettingsComponent implements OnInit {
     this.isLoading = true;
     this.refresh();
   };
-}
-@Component({
-  selector: 'delete-account',
-  templateUrl: './delete-account.html'
-})
-export class DeleteAccountDialog {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteAccountDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }

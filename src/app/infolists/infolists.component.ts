@@ -192,9 +192,7 @@ export class InfolistsComponent implements OnInit {
   }
 
   deleteInfolist(infolist: Infolist, index: number) {
-    let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: {}
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe((result) => {
       // Result is the index of the anime they chose to link, if they chose to link one

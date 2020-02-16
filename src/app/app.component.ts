@@ -20,6 +20,6 @@ export class ConfirmDialog {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.data);
   }
 }
