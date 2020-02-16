@@ -151,10 +151,11 @@ export class HomeComponent implements AfterViewChecked {
       return;
     }
     let modifier = 1;
-    let list;
+    let list: Anime[];
     let currentIndex = -1;
     switch (event.key) {
       case "ArrowUp":
+        // up and down cycle through catalog
         modifier = -1;
       case "ArrowDown":
         currentIndex = this.getIndexOfAnimeInList(this.wantToWatchList, this.selectedAnime.name);
@@ -170,16 +171,27 @@ export class HomeComponent implements AfterViewChecked {
         }
         break;
       case "ArrowLeft":
+        // left & right cycle through finalists
         modifier = -1;
       case "ArrowRight":
         list = this.finalistList;
-        currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name)
+        currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name);
         break;
       case ("Enter"):
+        // enter selects as finalist
         if (this.canSelectAsFinalist) {
           this.selectAsFinalist();
         }
         return;
+      case ("Backspace"):
+        // backspace removes as finalist
+        if (this.selectedAnime != null) {
+          let indexOfFinalist = this.getIndexOfAnimeInList(this.finalistList, this.selectedAnime.name);
+          if (indexOfFinalist !== -1) {
+            this.removeFinalist(indexOfFinalist);
+          }
+        }
+        break;
       default:
         // do nothing
         return;
@@ -756,6 +768,10 @@ export class HomeComponent implements AfterViewChecked {
     this.animeService.removeFinalist(this.finalistList[index]._id).subscribe((res) => {
       if (res.success) {
         this.finalistList.splice(index, 1);
+        // Change selected anime to be next up in finalist list to enable fully mouseless finalist processing
+        if (this.finalistList.length > 0) {
+          this.selectedAnime = this.finalistList[index % this.finalistList.length]
+        }
         this.validateSelectAsFinalistButton();
         switch (this.finalistList.length) {
           case 4: {
