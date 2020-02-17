@@ -129,11 +129,12 @@ export class HomeComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   handleKeypress(event: KeyboardEvent) {
-    // Key up => move through catalog forwards
-    // Key down => move through catalog backwards
-    // Key right => move through finalists forwards
-    // Key left => move through finalists backwards
+    // Key UP => move through catalog forwards
+    // Key DOWN => move through catalog backwards
+    // Key RIGHT => move through finalists forwards
+    // Key LEFT => move through finalists backwards
     // Key ENTER => either select anime from searchbar OR select anime as finalist
+    // Key BACKSPACE => Remove anime as finalist
     
     if (document.activeElement.id === "animeSearchbar") {
       if (event.key === "Enter" && this.searchText) {
@@ -155,7 +156,6 @@ export class HomeComponent implements AfterViewChecked {
     let currentIndex = -1;
     switch (event.key) {
       case "ArrowUp":
-        // up and down cycle through catalog
         modifier = -1;
       case "ArrowDown":
         currentIndex = this.getIndexOfAnimeInList(this.wantToWatchList, this.selectedAnime.name);
@@ -171,20 +171,17 @@ export class HomeComponent implements AfterViewChecked {
         }
         break;
       case "ArrowLeft":
-        // left & right cycle through finalists
         modifier = -1;
       case "ArrowRight":
         list = this.finalistList;
         currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name);
         break;
       case ("Enter"):
-        // enter selects as finalist
         if (this.canSelectAsFinalist) {
           this.selectAsFinalist();
         }
         return;
       case ("Backspace"):
-        // backspace removes as finalist
         if (this.selectedAnime != null) {
           let indexOfFinalist = this.getIndexOfAnimeInList(this.finalistList, this.selectedAnime.name);
           if (indexOfFinalist !== -1) {
