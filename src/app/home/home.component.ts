@@ -207,9 +207,11 @@ export class HomeComponent implements AfterViewChecked {
       if (list === this.wantToWatchList) {
         this.catalogScrollTop = newIndex * 40 + 40; // extra 40 is for list category header
       } else if (list === this.consideringList) {
-        this.catalogScrollTop = this.wantToWatchList.length * 40 + newIndex * 40 + 80  // extra 80 is for list category headers
+        let offset = this.showCategory === "All Categories" ? this.wantToWatchList.length * 40 + 40 : 0;
+        this.catalogScrollTop =  newIndex * 40 + offset + 40;  // extra 40 is for list category header
       } else if (list === this.completedList) {
-        this.catalogScrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40 + 120 // extra 120 is for list category headers
+        let offset = this.showCategory === "All Categories" ? this.wantToWatchList.length * 40 + this.consideringList.length * 40 + 80 : 0;
+        this.catalogScrollTop = offset + newIndex * 40 + 40 // extra 40 is for list category header
       }
       else if (list == this.finalistList) {
         this.finalistListScrollTop = newIndex * 70 + 75;   // extra 75 is for header list item
