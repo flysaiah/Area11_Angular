@@ -726,7 +726,7 @@ $warn: map-get($my-app-theme, warn);
   border: 1px solid black;
   text-align: center;
 }
-.details-panel {
+.bp-details-panel {
   text-align: center;
 
   padding-top: 0px !important;
@@ -735,31 +735,31 @@ $warn: map-get($my-app-theme, warn);
   overflow: auto;
   padding-right: 24px;
 }
-.details-title {
+.bp-details-title {
   margin-bottom: 8px;
 }
-.details-flex-container {
+.bp-details-flex-container {
   display: flex;
   align-items: flex-start;
   justify-content: space-around;
 }
 @media screen and (max-width: 1305px) {
-  .details-flex-container {
+  .bp-details-flex-container {
     justify-content: space-between;
   }
 }
-.details-thumbnail-container {
+.bp-details-thumbnail-container {
   display: inline-block;
   width: 48%;
   text-align: center;
 }
-.details-description {
+.bp-details-description {
   clear: both;
 }
-.details-top-p {
+.bp-details-top-p {
   margin-top: 5px;
 }
-.details-misc {
+.bp-details-misc {
   display: inline-block;
   width: 35%;
   text-align: left;

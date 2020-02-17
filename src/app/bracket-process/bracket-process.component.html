@@ -10,14 +10,14 @@
 </div>
 <div class="area11-settings-toast" [ngClass]="{show: showToast, 'toast-error': toastError}">{{ toastMessage }}</div>
 <div class="matchup-details matchup-details-left" id="matchup-details-left" [ngClass]="{'matchup-details-show': showMatchupDetails}">
-  <div *ngIf="leftMatchupAnime && leftMatchupAnime.name" class="details-panel">
-    <h2 class="details-title">{{ leftMatchupAnime.name }}</h2>
-    <div class="details-flex-container">
-      <div class="details-thumbnail-container">
+  <div *ngIf="leftMatchupAnime && leftMatchupAnime.name" class="bp-details-panel">
+    <h2 class="bp-details-title">{{ leftMatchupAnime.name }}</h2>
+    <div class="bp-details-flex-container">
+      <div class="bp-details-thumbnail-container">
         <img [src]="leftMatchupAnime.thumbnail" alt="Thumbnail not available.">
       </div>
-      <div class="details-misc">
-        <p class="details-top-p" *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
+      <div class="bp-details-misc">
+        <p class="bp-details-top-p" *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
         <p *ngIf="leftMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(leftMatchupAnime.endDate) }}</p>
         <p *ngIf="leftMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(leftMatchupAnime.startDate) }}</p>
         <p>
@@ -46,7 +46,7 @@
         </p>
       </div>
     </div>
-    <div class="details-description">
+    <div class="bp-details-description">
       <p [innerHTML]="leftMatchupAnime.description"></p>
     </div>
   </div>
@@ -60,15 +60,15 @@
   </div>
 </div>
 <div class="matchup-details matchup-details-right" id="matchup-details-right" [ngClass]="{'matchup-details-show': showMatchupDetails}">
-  <div *ngIf="rightMatchupAnime && rightMatchupAnime.name" class="details-panel">
-    <div class="details-panel-content">
-      <h2 class="details-title">{{ rightMatchupAnime.name }}</h2>
-      <div class="details-flex-container">
-        <div class="details-thumbnail-container">
+  <div *ngIf="rightMatchupAnime && rightMatchupAnime.name" class="bp-details-panel">
+    <div class="bp-details-panel-content">
+      <h2 class="bp-details-title">{{ rightMatchupAnime.name }}</h2>
+      <div class="bp-details-flex-container">
+        <div class="bp-details-thumbnail-container">
           <img [src]="rightMatchupAnime.thumbnail" alt="Thumbnail not available.">
         </div>
-        <div class="details-misc">
-          <p class="details-top-p" *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
+        <div class="bp-details-misc">
+          <p class="bp-details-top-p" *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Started: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
           <p *ngIf="rightMatchupAnime.endDate !== 'OneAiredDate'"><strong>Ended: </strong> {{ getFormattedDate(rightMatchupAnime.endDate) }}</p>
           <p *ngIf="rightMatchupAnime.endDate === 'OneAiredDate'"><strong>Aired: </strong> {{ getFormattedDate(rightMatchupAnime.startDate) }}</p>
           <p>
@@ -97,7 +97,7 @@
           </p>
         </div>
       </div>
-      <div class="details-description">
+      <div class="bp-details-description">
         <p [innerHTML]="rightMatchupAnime.description"></p>
       </div>
     </div>
