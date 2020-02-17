@@ -860,14 +860,16 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   filterAnime(name: string) {
-    // Simple fuzzy search
+    // Fuzzy search, ignoring punctuation & capitalization
+    let searchName = name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
     const case1 = this.searchAnime.filter(anime => {
-      if (anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+      let animeName = anime.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      if (animeName.indexOf(searchName) === 0) {
         return true;
       }
-      const titleWords = anime.name.split(" ");
+      const titleWords = animeName.split(" ");
       for (let word of titleWords) {
-        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        if (word.length > 3 && word.indexOf(searchName) === 0) {
           return true;
         }
       }
@@ -877,16 +879,19 @@ export class HomeComponent implements AfterViewChecked {
       if (!anime.englishTitle || case1.indexOf(anime) !== -1) {
         return false;
       }
-      if (anime.englishTitle.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+      let animeEnglishTitle = anime.englishTitle.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      if (animeEnglishTitle.indexOf(searchName) === 0) {
         return true;
       }
-      const titleWords = anime.englishTitle.split(" ");
+      const titleWords = animeEnglishTitle.split(" ");
       for (let word of titleWords) {
-        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        if (word.length > 3 && word.indexOf(searchName) === 0) {
           return true;
         }
       }
-      return false;    });
+      return false;
+    });
+
     return case1.concat(case2);
   }
 
