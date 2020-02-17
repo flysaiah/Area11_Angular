@@ -155,22 +155,20 @@ export class GroupComponent implements OnInit {
 
   disbandGroup() {
 
-    let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: { doIt: true }
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe((result) => {
       // Result is the index of the anime they chose to link, if they chose to link one
       if (result) {
-      this.groupService.disbandGroup(this.currentGroup.name).subscribe((res) => {
-        if (!res.success && res.message == "Token") {
-          this.displayToast("Your session has expired. Please refresh and log back in.", true);
-        } else if (!res.success) {
-          this.displayToast("There was a problem deleting the account.", true);
-          console.log(res);
-        }
-        this.refresh();
-      });
+        this.groupService.disbandGroup(this.currentGroup.name).subscribe((res) => {
+          if (!res.success && res.message == "Token") {
+            this.displayToast("Your session has expired. Please refresh and log back in.", true);
+          } else if (!res.success) {
+            this.displayToast("There was a problem deleting the account.", true);
+            console.log(res);
+          }
+          this.refresh();
+        });
       }
     });
   }

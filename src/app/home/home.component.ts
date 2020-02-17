@@ -129,11 +129,12 @@ export class HomeComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   handleKeypress(event: KeyboardEvent) {
-    // Key up => move through catalog forwards
-    // Key down => move through catalog backwards
-    // Key right => move through finalists forwards
-    // Key left => move through finalists backwards
+    // Key UP => move through catalog forwards
+    // Key DOWN => move through catalog backwards
+    // Key RIGHT => move through finalists forwards
+    // Key LEFT => move through finalists backwards
     // Key ENTER => either select anime from searchbar OR select anime as finalist
+    // Key BACKSPACE => Remove anime as finalist
     
     if (document.activeElement.id === "animeSearchbar") {
       if (event.key === "Enter" && this.searchText) {
@@ -151,7 +152,7 @@ export class HomeComponent implements AfterViewChecked {
       return;
     }
     let modifier = 1;
-    let list;
+    let list: Anime[];
     let currentIndex = -1;
     switch (event.key) {
       case "ArrowUp":
@@ -173,13 +174,21 @@ export class HomeComponent implements AfterViewChecked {
         modifier = -1;
       case "ArrowRight":
         list = this.finalistList;
-        currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name)
+        currentIndex = this.getIndexOfAnimeInList(list, this.selectedAnime.name);
         break;
       case ("Enter"):
         if (this.canSelectAsFinalist) {
           this.selectAsFinalist();
         }
         return;
+      case ("Backspace"):
+        if (this.selectedAnime != null) {
+          let indexOfFinalist = this.getIndexOfAnimeInList(this.finalistList, this.selectedAnime.name);
+          if (indexOfFinalist !== -1) {
+            this.removeFinalist(indexOfFinalist);
+          }
+        }
+        break;
       default:
         // do nothing
         return;
@@ -195,9 +204,11 @@ export class HomeComponent implements AfterViewChecked {
       if (list === this.wantToWatchList) {
         this.catalogScrollTop = newIndex * 40 + 40; // extra 40 is for list category header
       } else if (list === this.consideringList) {
-        this.catalogScrollTop = this.wantToWatchList.length * 40 + newIndex * 40 + 80  // extra 80 is for list category headers
+        let offset = this.showCategory === "All Categories" ? this.wantToWatchList.length * 40 + 40 : 0;
+        this.catalogScrollTop =  newIndex * 40 + offset + 40;  // extra 40 is for list category header
       } else if (list === this.completedList) {
-        this.catalogScrollTop = this.wantToWatchList.length * 40 + this.consideringList.length * 40 + newIndex * 40 + 120 // extra 120 is for list category headers
+        let offset = this.showCategory === "All Categories" ? this.wantToWatchList.length * 40 + this.consideringList.length * 40 + 80 : 0;
+        this.catalogScrollTop = offset + newIndex * 40 + 40 // extra 40 is for list category header
       }
       else if (list == this.finalistList) {
         this.finalistListScrollTop = newIndex * 70 + 75;   // extra 75 is for header list item
@@ -755,7 +766,12 @@ export class HomeComponent implements AfterViewChecked {
     let genres = this.finalistList[index].genres ? JSON.parse(JSON.stringify(this.finalistList[index].genres)) : [];
     this.animeService.removeFinalist(this.finalistList[index]._id).subscribe((res) => {
       if (res.success) {
+        this.finalistList[index].comments = [];
         this.finalistList.splice(index, 1);
+        // Change selected anime to be next up in finalist list to enable fully mouseless finalist processing
+        if (this.finalistList.length > 0) {
+          this.selectedAnime = this.finalistList[index % this.finalistList.length]
+        }
         this.validateSelectAsFinalistButton();
         switch (this.finalistList.length) {
           case 4: {
@@ -844,14 +860,16 @@ export class HomeComponent implements AfterViewChecked {
   }
 
   filterAnime(name: string) {
-    // Simple fuzzy search
+    // Fuzzy search, ignoring punctuation & capitalization
+    let searchName = name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
     const case1 = this.searchAnime.filter(anime => {
-      if (anime.name.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+      let animeName = anime.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      if (animeName.indexOf(searchName) === 0) {
         return true;
       }
-      const titleWords = anime.name.split(" ");
+      const titleWords = animeName.split(" ");
       for (let word of titleWords) {
-        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        if (word.length > 3 && word.indexOf(searchName) === 0) {
           return true;
         }
       }
@@ -861,16 +879,19 @@ export class HomeComponent implements AfterViewChecked {
       if (!anime.englishTitle || case1.indexOf(anime) !== -1) {
         return false;
       }
-      if (anime.englishTitle.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+      let animeEnglishTitle = anime.englishTitle.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      if (animeEnglishTitle.indexOf(searchName) === 0) {
         return true;
       }
-      const titleWords = anime.englishTitle.split(" ");
+      const titleWords = animeEnglishTitle.split(" ");
       for (let word of titleWords) {
-        if (word.length > 3 && word.toLowerCase().indexOf(name.toLowerCase()) === 0) {
+        if (word.length > 3 && word.indexOf(searchName) === 0) {
           return true;
         }
       }
-      return false;    });
+      return false;
+    });
+
     return case1.concat(case2);
   }
 

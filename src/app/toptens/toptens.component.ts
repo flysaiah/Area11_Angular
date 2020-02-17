@@ -117,9 +117,7 @@ export class TopTensComponent implements OnInit {
   cancelChanges(category: string, index: number) {
     // Load old version
 
-    let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: { doIt: true }
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -135,9 +133,7 @@ export class TopTensComponent implements OnInit {
   clearCategory(category: string) {
     // Reset this top tens object with 10 empty entries
 
-    let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: { doIt: true }
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -283,9 +279,7 @@ export class TopTensComponent implements OnInit {
   }
 
   deleteCategory(category: string) {
-    let dialogRef = this.dialog.open(ConfirmDialog, {
-      data: { doIt: true }
-    });
+    let dialogRef = this.dialog.open(ConfirmDialog);
 
     dialogRef.afterClosed().subscribe((result) => {
       // Result is the index of the anime they chose to link, if they chose to link one

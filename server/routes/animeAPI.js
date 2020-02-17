@@ -245,7 +245,7 @@ module.exports = (router) => {
         englishTitle = et[1].split('</div>')[0].trim();
       }
       const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
-      const name = stuff.split('<h1 class="h1"><span itemprop="name">')[1].split('</span></h1>')[0].trim();
+      const name = stuff.split('<span class="h1-title"><span itemprop="name">')[1].split('</span></span>')[0].trim();
       const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
       const malID = req.body.malURL.split("/anime/")[1].split("/")[0];
       // Ranking

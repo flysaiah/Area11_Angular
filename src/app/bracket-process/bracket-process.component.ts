@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, HostListener, ViewEncapsulation } from '@angular/core';
 
 import { Anime } from '../anime';
 
@@ -57,6 +57,31 @@ export class BracketProcessComponent implements OnInit {
     16: {1:0, 2:14, 3:10, 4:6, 5:4, 6:8, 7:12, 8:2, 9:3, 10:13, 11:9, 12:5, 13:7, 14:11, 15:15, 16:1},
     32: {1:0, 2:30, 3:16, 4:14, 5:8, 6:22, 7:24, 8:6, 9:4, 10:26, 11:20, 12:10, 13:12, 14:18,
       15:28, 16:2, 17:3, 18:29, 19:19, 20:13, 21:11, 22:21, 23:27, 24:5, 25:7, 26:25, 27:23, 28:9, 29:15, 30:17, 31:31, 32:1}
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeypress(event: KeyboardEvent) {
+    // Key RIGHT => Move to next matchup in same round
+    // Key LEFT => Move to previous matchup in same round
+    // Key ESCAPE => Selects "Decide later"
+
+    if (!this.showMatchupDetails) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowRight":
+        // TODO: this
+        break;
+      case "ArrowLeft":
+        // TODO: this
+        break;
+      case "Escape":
+        this.escapeMatchupDetails();
+        break;
+      default:
+        return;
+    }
   }
 
   getRanges(side:number, round:number) {
