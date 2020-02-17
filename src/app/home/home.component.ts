@@ -769,6 +769,7 @@ export class HomeComponent implements AfterViewChecked {
     let genres = this.finalistList[index].genres ? JSON.parse(JSON.stringify(this.finalistList[index].genres)) : [];
     this.animeService.removeFinalist(this.finalistList[index]._id).subscribe((res) => {
       if (res.success) {
+        this.finalistList[index].comments = [];
         this.finalistList.splice(index, 1);
         // Change selected anime to be next up in finalist list to enable fully mouseless finalist processing
         if (this.finalistList.length > 0) {
