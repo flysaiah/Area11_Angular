@@ -68,6 +68,13 @@ export class InfolistsComponent implements OnInit {
       }
       return true;
     });
+
+    // If list is empty then re-initialize with 1 empty item
+    if (!infolist.entries || infolist.entries.length == 0) {
+      this.addNewEntry(infolist);
+      return;
+    }
+    
     // Guard against paginator becoming inconsistent
     if (1 + this.paginatorCurrentIndexMap[infolist.name] * this.paginatorOptionsMap[infolist.name] > (this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]) > infolist.entries.length ? infolist.entries.length : this.paginatorOptionsMap[infolist.name] * (1 + this.paginatorCurrentIndexMap[infolist.name]))) {
       this.paginatorCurrentIndexMap[infolist.name] -= 1;
