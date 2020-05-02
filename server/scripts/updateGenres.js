@@ -153,7 +153,7 @@ Anime.find({}, (err, animeList) => {
               console.log("---POPULARITY---");
               console.log(popularity)
 
-              updateList.push({ name: someAnime.name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime, studios: studios, ranking: ranking, popularity: popularity });
+              updateList.push({ name: name, malID: someAnime.id, genres: genreArr, description: description, rating: rating, thumbnail: thumbnail, startDate: startDate, endDate: endDate, type: type, englishTitle: englishTitle, status: status, runtime: runtime, studios: studios, ranking: ranking, popularity: popularity });
 
             } catch (err) {
               console.log("---------------ERRORHAI---------------");
