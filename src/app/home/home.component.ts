@@ -567,7 +567,7 @@ export class HomeComponent implements AfterViewChecked {
         if (!res.success && res.message == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else if (!res.success) {
-          this.displayToast("There was a problem.", true);
+          this.displayToast("There was a problem. Finalist not saved on server.", true);
         }
       });
       this.finalistList.push(selectedAnime);
@@ -861,9 +861,9 @@ export class HomeComponent implements AfterViewChecked {
 
   filterAnime(name: string) {
     // Fuzzy search, ignoring punctuation & capitalization
-    let searchName = name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+    let searchName = name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"]/g,"").toLowerCase();
     const case1 = this.searchAnime.filter(anime => {
-      let animeName = anime.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      let animeName = anime.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"]/g,"").toLowerCase();
       if (animeName.indexOf(searchName) === 0) {
         return true;
       }
@@ -879,7 +879,7 @@ export class HomeComponent implements AfterViewChecked {
       if (!anime.englishTitle || case1.indexOf(anime) !== -1) {
         return false;
       }
-      let animeEnglishTitle = anime.englishTitle.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      let animeEnglishTitle = anime.englishTitle.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"]/g,"").toLowerCase();
       if (animeEnglishTitle.indexOf(searchName) === 0) {
         return true;
       }

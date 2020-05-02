@@ -43,15 +43,19 @@ Anime.find({}, (err, animeList) => {
           });
           horseman.open("http://myanimelist.net/anime/" + someAnime.id).html().then((stuff) => {
             try {
+              // Re-update name
+              const name = stuff.split('<span class="h1-title"><span itemprop="name">')[1].split('<')[0].trim();
+              console.log("---NAME---");
+              console.log(name);
               // Description
               const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
               console.log("---DESC---");
               console.log(description)
               // Rating
               let rating;
-              let r = stuff.split('<span itemprop="ratingValue">');
+              let r = stuff.split('<span itemprop="ratingValue"');
               if (r.length > 1) {
-                rating = r[1].split("</span>")[0].trim();
+                rating = r[1].split(">")[1].split("<")[0].trim();
               }
               console.log("---RATING---");
               console.log(rating);
