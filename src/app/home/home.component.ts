@@ -567,7 +567,7 @@ export class HomeComponent implements AfterViewChecked {
         if (!res.success && res.message == "Token") {
           this.displayToast("Your session has expired. Please refresh and log back in.", true);
         } else if (!res.success) {
-          this.displayToast("There was a problem.", true);
+          this.displayToast("There was a problem. Finalist not saved on server.", true);
         }
       });
       this.finalistList.push(selectedAnime);

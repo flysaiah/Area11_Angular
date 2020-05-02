@@ -191,9 +191,9 @@ module.exports = (router) => {
       const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
       // Rating
       let rating;
-      let r = stuff.split('<span itemprop="ratingValue">');
+      let r = stuff.split('<span itemprop="ratingValue"');
       if (r.length > 1) {
-        rating = r[1].split("</span>")[0].trim();
+        rating = r[1].split(">")[1].split("<")[0].trim();
       }
       // Thumbnail
       const thumbnail = stuff.split('<meta property="og:image" content="')[1].split('">')[0].trim();
@@ -245,7 +245,7 @@ module.exports = (router) => {
         englishTitle = et[1].split('</div>')[0].trim();
       }
       const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
-      const name = stuff.split('<span class="h1-title"><span itemprop="name">')[1].split('</span></span>')[0].trim();
+      const name = stuff.split('<span class="h1-title"><span itemprop="name">')[1].split('<')[0].trim();
       const studios = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</a>')[0].split('>')[1].trim();
       const malID = req.body.malURL.split("/anime/")[1].split("/")[0];
       // Ranking
