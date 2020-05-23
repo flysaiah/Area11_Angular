@@ -159,7 +159,7 @@ Anime.find({}, (err, animeList) => {
               console.log("---------------ERRORHAI---------------");
               console.log(someAnime);
               console.log(err);
-              console.log("---------------ERRORBYE---------------")
+              console.log("---------------ERRORBYE---------------");
             }
           }).close();
         }

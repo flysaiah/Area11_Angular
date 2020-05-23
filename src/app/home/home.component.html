@@ -50,6 +50,9 @@
       <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="airingStatusFilterMenu" >
           <span>Filter by Airing Status ({{ selectedAiringStatus }})</span>
         </a>
+        <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="newSeasonFilterMenu" >
+          <span>Filter by New Season ({{ selectedHasNewSeason }})</span>
+        </a>
       <a class="search-toolbar-submenu-extrawide" mat-menu-item [matMenuTriggerFor]="sortFilterMenu" >
         <span>Sort by: {{ sortScheme.get(sortCriteria) }}</span>
       </a>
@@ -120,13 +123,23 @@
           </a>
         </mat-menu>
 
-        <!-- Recommendation filter -->
+        <!-- Airing Status filter -->
         <mat-menu class="catalog-actions" [overlapTrigger]="false" #airingStatusFilterMenu="matMenu">
           <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'No Filter');">
             <span>No Filter<span *ngIf="selectedAiringStatus === 'No Filter'" class="submenu-checkmark">✓</span></span>
           </a>
           <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('AiringStatus', 'Finished Airing');">
             <span>Only Completed<span *ngIf="selectedAiringStatus === 'Finished Airing'" class="submenu-checkmark">✓</span></span>
+          </a>
+        </mat-menu>
+
+        <!-- New Season filter -->
+        <mat-menu class="catalog-actions" [overlapTrigger]="false" #newSeasonFilterMenu="matMenu">
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('NewSeason', 'No Filter');">
+            <span>No Filter<span *ngIf="selectedHasNewSeason === 'No Filter'" class="submenu-checkmark">✓</span></span>
+          </a>
+          <a class="search-toolbar-submenu-wide" mat-menu-item (click)="$event.stopPropagation(); filterWatch('NewSeason', 'Has New Season');">
+            <span>Has New Season<span *ngIf="selectedHasNewSeason === 'Has New Season'" class="submenu-checkmark">✓</span></span>
           </a>
         </mat-menu>
 

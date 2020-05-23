@@ -63,6 +63,7 @@ export class HomeComponent implements AfterViewChecked {
 
   recommendationPreference: string;
   selectedAiringStatus: string;
+  selectedHasNewSeason: string;
 
   refreshHeader: number;
   isLoading: boolean;
@@ -403,6 +404,10 @@ export class HomeComponent implements AfterViewChecked {
     return (this.selectedAiringStatus === anime.status);
   }
 
+  private hasNewSeasonFilter(anime: Anime) {
+    return (this.selectedHasNewSeason == "Has New Season" ? anime.hasNewSeason : !anime.hasNewSeason);
+  }
+
   applyFilters() {
     this.catalogIsLoading = true;
     let wantToWatch = JSON.parse(JSON.stringify(this.newWantToWatch));
@@ -449,6 +454,12 @@ export class HomeComponent implements AfterViewChecked {
       wantToWatch = wantToWatch.filter(this.airingStatusFilter.bind(this));
       considering = considering.filter(this.airingStatusFilter.bind(this));
       completed = completed.filter(this.airingStatusFilter.bind(this));
+    }
+
+    if (this.selectedHasNewSeason !== "No Filter") {
+      wantToWatch = wantToWatch.filter(this.hasNewSeasonFilter.bind(this));
+      considering = considering.filter(this.hasNewSeasonFilter.bind(this));
+      completed = completed.filter(this.hasNewSeasonFilter.bind(this));
     }
 
     this.wantToWatchList = wantToWatch;
@@ -948,6 +959,7 @@ export class HomeComponent implements AfterViewChecked {
     this.groupFilterIndex = -1;
     this.recommendationPreference = "No Filter";
     this.selectedAiringStatus = "No Filter";
+    this.selectedHasNewSeason = "No Filter";
     
     this.applyFilters();
     this.catalogScrollTop = Math.random();
@@ -998,6 +1010,9 @@ export class HomeComponent implements AfterViewChecked {
         break;
       case "AiringStatus":
         this.selectedAiringStatus = newValue;
+        break;
+      case "NewSeason":
+        this.selectedHasNewSeason = newValue;
         break;
       default:
         console.log("Unknown filter type received: " + type);
@@ -1167,7 +1182,8 @@ export class HomeComponent implements AfterViewChecked {
     this.allStudios = [];
 
     this.recommendationPreference = "No Filter";
-    this.selectedAiringStatus = "No Filter"
+    this.selectedAiringStatus = "No Filter";
+    this.selectedHasNewSeason = "No Filter";
 
     this.groupFilterTypes = [];
     this.groupFilterAnime = [];
