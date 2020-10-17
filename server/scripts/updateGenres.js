@@ -37,23 +37,23 @@ Anime.find({}, (err, animeList) => {
         console.log("Current: " + someAnime.name);
         if (someAnime.id) {
           const horseman = new Horseman({
-            timeout: 5000,
+            timeout: 30000,
             loadImages: false,
             injectJquery: false,
           });
           horseman.open("http://myanimelist.net/anime/" + someAnime.id).html().then((stuff) => {
             try {
               // Re-update name
-              const name = stuff.split('<span class="h1-title"><span itemprop="name">')[1].split('<')[0].trim();
+              const name = stuff.split('class="title-name h1_bold_none"><strong>')[1].split('<')[0].trim();
               console.log("---NAME---");
               console.log(name);
               // Description
-              const description = stuff.split('<span itemprop="description">')[1].split("</span>")[0];
+              const description = stuff.split('itemprop="description">')[1].split("</p>")[0];
               console.log("---DESC---");
               console.log(description)
               // Rating
               let rating;
-              let r = stuff.split('<span itemprop="ratingValue"');
+              let r = stuff.split('itemprop="ratingValue"');
               if (r.length > 1) {
                 rating = r[1].split(">")[1].split("<")[0].trim();
               }
@@ -74,7 +74,7 @@ Anime.find({}, (err, animeList) => {
               console.log(genreArr);
               // Start Date
               let runtime = "";
-              const airing = stuff.split('<span class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
+              const airing = stuff.split('class="dark_text">Aired:</span>')[1].split('</div>')[0].trim();
               let startDate = "Unknown";
               let endDate = "Unknown";
               if (airing.split(" to ").length > 1) {
@@ -98,7 +98,7 @@ Anime.find({}, (err, animeList) => {
                   startDate = start.toLocaleDateString();
                 }
                 endDate = "OneAiredDate";
-                runtime = stuff.split('<span class="dark_text">Duration:</span>')[1].split('</div>')[0].trim();
+                runtime = stuff.split('class="dark_text">Duration:</span>')[1].split('</div>')[0].trim();
               }
               console.log("---STARTDATE---");
               console.log(startDate);
@@ -106,7 +106,7 @@ Anime.find({}, (err, animeList) => {
               console.log("---ENDDATE---");
               console.log(endDate);
               // Type
-              const type = stuff.split('<span class="dark_text">Type:</span>')[1].split('</a></div>')[0].split(">")[1].trim();
+              const type = stuff.split('class="dark_text">Type:</span>')[1].split('</a></div>')[0].split(">")[1].trim();
               console.log("---TYPE---");
               console.log(type);
               // English Title
@@ -118,12 +118,12 @@ Anime.find({}, (err, animeList) => {
               console.log("---ENGLISH_TITLE---");
               console.log(englishTitle);
               // Status
-              const status = stuff.split('<span class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
+              const status = stuff.split('class="dark_text">Status:</span>')[1].split('</div>')[0].trim();
               console.log("---STATUS---");
               console.log(status);
 
               let studios = "";
-              const studioBlock = stuff.split('<span class="dark_text">Studios:</span>')[1].split('</div>')[0].split('</a>');
+              const studioBlock = stuff.split('class="dark_text">Studios:</span>')[1].split('</div>')[0].split('</a>');
               for (let i=0; i<studioBlock.length - 1; i++) {
                 const studio = studioBlock[i].split('</a>')[0].split('>')[1].trim();
                 if (!studios) {
@@ -136,7 +136,7 @@ Anime.find({}, (err, animeList) => {
               console.log(studios);
 
               // Ranking
-              let ranking = stuff.split('<span class="dark_text">Ranked:</span>')[1].split('<sup>')[0].trim().replace("#", "");
+              let ranking = stuff.split('class="dark_text">Ranked:</span>')[1].split('<sup>')[0].trim().replace("#", "");
               if (isNaN(ranking)) {
                 ranking = null;
               }
