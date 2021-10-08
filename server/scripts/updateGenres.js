@@ -65,7 +65,11 @@ Anime.find({}, (err, animeList) => {
               console.log(thumbnail);
               // Genres
               let genreArr = [];
-              const foo = stuff.split("Genres:")[1].split("</div>")[0].replace(/["]+/g, '').split("title=");
+              let genresIdentifier = "Genres:";
+              if (stuff.indexOf(genresIdentifier) == -1) {
+                genresIdentifier = "Genre:";
+              }
+              const foo = stuff.split(genresIdentifier)[1].split("</div>")[0].replace(/["]+/g, '').split("title=");
               for (let i=1; i<foo.length; i++) {
                 let tmp = foo[i];
                 genreArr.push(tmp.split("<a")[0].split(">")[0]);
